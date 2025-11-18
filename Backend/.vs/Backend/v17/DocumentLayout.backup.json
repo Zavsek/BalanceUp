@@ -1,0 +1,172 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\endpoints\\userendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\endpoints\\userendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\friendrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\friendrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\userevents.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\userevents.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\usereventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\usereventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FriendRequest.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\FriendRequest.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\FriendRequest.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\FriendRequest.cs",
+              "RelativeToolTip": "Backend\\Models\\FriendRequest.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAkwBAAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T10:09:07.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Friendship.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Friendship.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Friendship.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Friendship.cs",
+              "RelativeToolTip": "Backend\\Models\\Friendship.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBcAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:46:51.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserEvents.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\UserEvents.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\UserEvents.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\UserEvents.cs",
+              "RelativeToolTip": "Backend\\Models\\UserEvents.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:37:44.688Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\User.cs",
+              "RelativeToolTip": "Backend\\Models\\User.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwCsAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:37:39.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Expense.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Expense.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Expense.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Expense.cs",
+              "RelativeToolTip": "Backend\\Models\\Expense.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:37:09.552Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserEventsController.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserEventsController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\UserEventsController.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserEventsController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\UserEventsController.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAlwBYAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-16T20:29:02.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAYwE0AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-16T16:22:48.517Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserEndpoints.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Endpoints\\UserEndpoints.cs",
+              "RelativeDocumentMoniker": "Backend\\Endpoints\\UserEndpoints.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Endpoints\\UserEndpoints.cs",
+              "RelativeToolTip": "Backend\\Endpoints\\UserEndpoints.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-16T16:55:50.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserDto.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\UserDto.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Dto\\UserDto.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\UserDto.cs",
+              "RelativeToolTip": "Backend\\Models\\Dto\\UserDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-16T12:39:59.224Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

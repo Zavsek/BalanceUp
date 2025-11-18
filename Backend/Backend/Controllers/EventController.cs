@@ -1,0 +1,123 @@
+﻿using Backend.Data;
+using Backend.Models;
+using Backend.Models.Dto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Backend.Controllers
+{
+    public static class EventController
+    {
+        public static async Task<IResult> UpdateEvent(Guid Id, EventDto Event, AppDbContext context)
+        {
+            try
+            {
+                if (Id != Event.Id) return TypedResults.BadRequest("Id does not match");
+                var existingEvent = await context.Events.FindAsync(Id);
+                if (existingEvent == null)
+                    return TypedResults.NotFound("Event not found");
+                existingEvent.Title = Event.Title;
+                existingEvent.Description = Event.Description;
+                context.Events.Update(existingEvent);
+                await context.SaveChangesAsync();
+                return TypedResults.Ok(existingEvent);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Error in Event Controller " + ex.Message);
+            }
+        }
+        public static async Task<IResult> CreateEvent([FromBody] CreateEventDto dto, AppDbContext context)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(dto.Title))
+                    return Results.BadRequest("Naslov je obvezen.");
+
+                var ev = new Event
+                {
+                    Title = dto.Title,
+                    Description = dto.Description,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                context.Events.Add(ev);
+                await context.SaveChangesAsync();
+
+                foreach (var userId in dto.Users)
+                {
+                    var result = await UserEventsController.AddUserToEventInternal(userId, ev.Id, context);
+
+                    if (!result.ok)
+                        return Results.BadRequest($"Error in adding user {userId}: {result.error}");
+                }
+
+                return Results.Ok(new
+                {
+                    eventId = ev.Id,
+                    message = "Event created."
+                });
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Error in creating event: " + ex.Message);
+            }
+        }
+        public static async Task<IResult> GetExpensesForEvent(Guid eventId, AppDbContext context)
+        {
+            try
+            {
+                var expenses = await context.Expenses
+                    .Where(e => e.EventId == eventId)
+                    .Include(e => e.UserExpenseShares) 
+                    .ToListAsync();
+
+                var result = expenses.Select(e => new
+                {
+                    e.Id,
+                    e.EventId,
+                    e.Amount,
+                    e.Type,
+                    e.Description,
+                    e.DateTime,
+                    Shares = e.UserExpenseShares.Select(s => new { s.UserId, s.ShareAmount })
+                });
+
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Napaka pri pridobivanju expense-ov: " + ex.Message);
+            }
+        }
+        public static async Task<IResult> DeleteExpenseFromEvent(Guid eventId, Guid expenseId, AppDbContext context)
+        {
+            try
+            {
+                var expense = await context.Expenses
+                    .Include(e => e.UserExpenseShares)
+                    .FirstOrDefaultAsync(e => e.Id == expenseId && e.EventId == eventId);
+
+                if (expense == null)
+                    return Results.NotFound("Expense ne obstaja za ta event.");
+
+                if (expense.UserExpenseShares.Any())
+                {
+                    context.UserExpenseShares.RemoveRange(expense.UserExpenseShares);
+                }
+
+                context.Expenses.Remove(expense);
+                await context.SaveChangesAsync();
+
+                return Results.Ok("Expense odstranjen.");
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Napaka pri brisanju expense-a: " + ex.Message);
+            }
+        }
+
+
+
+    }
+}
