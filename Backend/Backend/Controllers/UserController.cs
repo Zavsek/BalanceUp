@@ -1,6 +1,9 @@
 ﻿
 using Backend.Data;
 using Backend.Models;
+using Backend.Models.Dto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -65,27 +68,121 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in User Controller " + ex.Message);
             }
         }
-        public async Task<IResult> AddFriend(Guid senderId, Guid User2id, AppDbContext context)
+        public static async Task<IResult> SendFriendRequest(FriendRequestDto FriendRequest, AppDbContext context)
         {
             try
             {
-                if (await context.Users.FindAsync(senderId, User2id) == null) return TypedResults.BadRequest("Users in request are not valid");
-                var Friendship = new Friendship
+                if (await context.Users.FindAsync(FriendRequest.fromUserId, FriendRequest.toUserId) == null) return TypedResults.BadRequest("Users in request are not valid");
+                var friendRequest = new FriendRequest
                 {
-
-                    Friend1FK = senderId,
-                    Friend2FK = User2id,
-                    FriendsSince = DateTime.UtcNow
-
+                    FromUserId = FriendRequest.fromUserId,
+                    ToUserId = FriendRequest.toUserId,
+                    SentAt = DateOnly.FromDateTime(DateTime.UtcNow)
                 };
-                await context.Friendships.AddAsync(Friendship);
+                await context.FriendRequests.AddAsync(friendRequest);
                 context.SaveChangesAsync();
-                return TypedResults.Ok("Friendship created");
-                
+                return TypedResults.Ok("Friend Request Sent");
             }
             catch (Exception ex)
             {
-                return TypedResults.InternalServerError($"Error in USer Controller{ex.Message}");
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        public static async Task<IResult> GetFriendRequests(Guid id, AppDbContext context)
+        {
+            try
+            {
+                var requests = await context.FriendRequests
+                    .Where(fr => fr.ToUserId == id)
+                    .Select(fr => new
+                    {
+                        fromUserId = fr.FromUserId,
+                        toUserId = fr.ToUserId,
+                        sentAt = fr.SentAt
+                    })
+                    .ToListAsync();
+                return TypedResults.Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        public static async Task<IResult> DeleteFriendRequest(Guid id, AppDbContext context)
+        {
+            try
+            {
+                var request = await context.FriendRequests.FindAsync(id);
+                if (request == null)
+                    return TypedResults.NotFound("Friend request not found");
+                context.FriendRequests.Remove(request);
+                await context.SaveChangesAsync();
+                return TypedResults.Ok("Friend request deleted");
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+        public static async Task<IResult> GetFriends(Guid id, AppDbContext context)
+        {
+            try
+            {
+                var friends = await context.Friendships
+                    .Where(f => f.Friend1FK == id || f.Friend2FK == id)
+                    .Select(f => new
+                    {
+                        friendId = f.Friend1FK == id ? f.Friend2FK : f.Friend1FK,
+                        friendsSince = f.FriendsSince
+                    })
+                    .ToListAsync();
+                return TypedResults.Ok(friends);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+        public static async Task<IResult> AddFriend([FromQuery] Guid requestId, AppDbContext context)
+        {
+            try
+            {
+                var Request = await context.FriendRequests.FindAsync(requestId);
+                if (Request == null) return TypedResults.BadRequest("Users in request are not valid");
+                var Friendship = new Friendship
+                {
+                    Friend1FK = Request.FromUserId,
+                    Friend2FK = Request.ToUserId,
+                    FriendsSince = DateTime.UtcNow
+                };
+                await context.Friendships.AddAsync(Friendship);
+                context.FriendRequests.Remove(Request);
+                await context.SaveChangesAsync();
+                return TypedResults.Ok("Friendship created");
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+        public static async Task<IResult> RemoveFriend(Guid userId, Guid friendId, AppDbContext context)
+        {
+            try
+            {
+                var friendship = await context.Friendships
+                    .FirstOrDefaultAsync(f => (f.Friend1FK == userId && f.Friend2FK == friendId) ||
+                                              (f.Friend1FK == friendId && f.Friend2FK == userId));
+                if (friendship == null)
+                    return TypedResults.NotFound("Friendship not found");
+                context.Friendships.Remove(friendship);
+                await context.SaveChangesAsync();
+                return TypedResults.Ok("Friend removed");
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
     }

@@ -21,5 +21,8 @@ namespace Backend.Models
 
         [ForeignKey("ToUserId")]
         public User ToUser { get; set; }
+
+        [Required]
+        public DateOnly SentAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

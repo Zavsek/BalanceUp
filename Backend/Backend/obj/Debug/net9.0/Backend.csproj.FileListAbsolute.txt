@@ -157,3 +157,4 @@ C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\n
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.Reactive.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\Websocket.Client.dll
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\Backend.sourcelink.json
