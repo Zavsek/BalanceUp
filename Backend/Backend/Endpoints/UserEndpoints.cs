@@ -7,7 +7,13 @@ namespace Backend.Endpoints
         {
             //PUT update user
             app.MapPut("/api/users/{id}", UserController.UpdateUser);
+            //GET user by id
+            app.MapGet("/api/users/{id}", UserController.GetUserById);
+            //GET user by username
+            app.MapGet("/api/users/id/{username}", UserController.GetUserByUsername);
+            app.MapDelete("/api/users/{id}", UserController.DeleteUser);
 
+            //------------------------------------------
             // Friend Requests Endpoints
             //PUT send friend request
             app.MapPut("/api/users/friend_requests", UserController.SendFriendRequest);
@@ -18,6 +24,7 @@ namespace Backend.Endpoints
             //POST accept friend request
             app.MapPost("/api/users/friend_requests/{requestId}", UserController.AddFriend);
 
+            //--------------------------------------------
             //Friends Endpoints
             //GET friends for user
             app.MapGet("/api/users/{id}/friends", UserController.GetFriends);

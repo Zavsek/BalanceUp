@@ -45,7 +45,6 @@ namespace Backend.Controllers
 
                     profileUrl = bucket.GetPublicUrl(fileName);
                 }
-
                 var user = new User
                 {
                     FirebaseUid = firebaseUid,
@@ -56,6 +55,10 @@ namespace Backend.Controllers
                     UserEvents = new List<UserEvents>()
                 };
 
+                var spendingGoal = new SpendingGoal
+                {
+                    UserId = user.Id,
+                };
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
 
@@ -81,12 +84,7 @@ namespace Backend.Controllers
                 if (user == null)
                     return Results.NotFound("User not found");
                 return Results.Ok(new UserDto
-                {
-                    Id = user.Id,
-                    Username = user.Username,
-                    Gender = user.Gender,
-                    ProfilePictureUrl = user.ProfilePictureUrl
-                });
+                (user.Id, user.Username, user.Gender, user.ProfilePictureUrl));
             }
             catch (Exception ex)
             {

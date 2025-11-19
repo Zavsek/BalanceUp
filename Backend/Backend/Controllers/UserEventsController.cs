@@ -15,12 +15,7 @@ namespace Backend.Controllers
                 var events = await context.UserEvents
                 .Where(x => x.UserId == userId)
                 .Select(x => new EventDto
-                {
-                    Id = x.Event.Id,
-                    Title = x.Event.Title,
-                    Description = x.Event.Description,
-                    CreatedAt = x.Event.CreatedAt
-                })
+                (x.Event.Id, x.Event.Title, x.Event.Description, x.Event.CreatedAt))
                 .ToListAsync();
 
                 return TypedResults.Ok(events);

@@ -44,5 +44,8 @@ namespace Backend.Models
         [NotMapped]
         public ICollection<FriendRequest> RecievedFriendRequests { get; set; }
 
+        public SpendingGoal SpendingGoal { get; set; }
+
+
     }
 }

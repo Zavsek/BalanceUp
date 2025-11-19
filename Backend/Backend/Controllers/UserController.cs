@@ -9,6 +9,7 @@ namespace Backend.Controllers
 {
     public class UserController
     {
+        //User tasks
         public static async Task<IResult> UpdateUser(Guid id,
         HttpRequest request,
         AppDbContext context,
@@ -68,6 +69,56 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in User Controller " + ex.Message);
             }
         }
+        public static async Task<IResult> GetUserById(Guid id, AppDbContext context)
+        {
+            try
+            {
+                var user = await context.Users.FindAsync(id);
+                if (user == null)
+                    return TypedResults.NotFound("User not found");
+                return TypedResults.Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        public static async Task<IResult> GetUserByUsername(string username, AppDbContext context)
+        {
+            try
+            {
+                var user = await context.Users
+                    .FirstOrDefaultAsync(u => u.Username == username);
+                if (user == null)
+                    return TypedResults.NotFound("User not found");
+                return TypedResults.Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        public static async Task<IResult> DeleteUser(Guid Id, AppDbContext context)
+        {
+            try
+            {
+                var user = await context.Users.FindAsync(Id);
+                if (user == null)
+                    return TypedResults.NotFound("User not found");
+                context.Users.Remove(user);
+                await context.SaveChangesAsync();
+                return TypedResults.Ok("User deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        //-------------------------------------------------------
+        //Friend request tasks
         public static async Task<IResult> SendFriendRequest(FriendRequestDto FriendRequest, AppDbContext context)
         {
             try
@@ -126,6 +177,9 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
+
+        //-------------------------------------------------------
+        //Friendship tasks
         public static async Task<IResult> GetFriends(Guid id, AppDbContext context)
         {
             try

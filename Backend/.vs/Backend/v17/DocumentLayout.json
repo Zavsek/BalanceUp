@@ -3,48 +3,84 @@
   "WorkspaceRootPath": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\endpoints\\userendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\endpoints\\userendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\friendrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\friendrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\userevents.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\userevents.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\expensedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\expensedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\spendinggoal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\spendinggoal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\expensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\expensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\eventcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\eventcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\controllers\\usereventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\usereventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\friendrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\friendrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\usereventdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\usereventdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\authrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\authrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\eventdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\eventdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\expensedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\expensedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\dto\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\dto\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\endpoints\\userendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\endpoints\\userendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|c:\\users\\zavse\\desktop\\studij\\3.letnik\\rmr\\balanceup\\backend\\backend\\models\\userevents.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5294AE31-DA2D-497D-B6D2-9B0EBE93E27D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\userevents.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,11 +90,128 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Backend\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Backend\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAA4AAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:57:27.698Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "EventController.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\EventController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\EventController.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\EventController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\EventController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:51:46.185Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAlwC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:44:39.502Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SpendingGoal.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\SpendingGoal.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\SpendingGoal.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\SpendingGoal.cs",
+              "RelativeToolTip": "Backend\\Models\\SpendingGoal.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAmwBUAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:40:10.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Event.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Event.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Event.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Event.cs",
+              "RelativeToolTip": "Backend\\Models\\Event.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:27:11.213Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "AuthRequestDto.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\AuthRequestDto.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Dto\\AuthRequestDto.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\AuthRequestDto.cs",
+              "RelativeToolTip": "Backend\\Models\\Dto\\AuthRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:25:46.562Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "EventDto.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\EventDto.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Dto\\EventDto.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\EventDto.cs",
+              "RelativeToolTip": "Backend\\Models\\Dto\\EventDto.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAYAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:24:59.105Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "UserEventDto.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\UserEventDto.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Dto\\UserEventDto.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\UserEventDto.cs",
+              "RelativeToolTip": "Backend\\Models\\Dto\\UserEventDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:23:35.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "ExpenseController.cs",
+              "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\ExpenseController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\ExpenseController.cs",
+              "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\ExpenseController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\ExpenseController.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAQwHsAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T15:12:16.412Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "ExpenseDto.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\ExpenseDto.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\Dto\\ExpenseDto.cs",
@@ -71,7 +224,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 17,
               "Title": "FriendRequestDto.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\FriendRequestDto.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\Dto\\FriendRequestDto.cs",
@@ -84,33 +237,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 10,
               "Title": "FriendRequest.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\FriendRequest.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\FriendRequest.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\FriendRequest.cs",
               "RelativeToolTip": "Backend\\Models\\FriendRequest.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBkAAABWAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-17T10:09:07.884Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Friendship.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Friendship.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\Friendship.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Friendship.cs",
               "RelativeToolTip": "Backend\\Models\\Friendship.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBcAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBAAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-17T09:46:51.893Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 19,
               "Title": "UserEvents.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\UserEvents.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\UserEvents.cs",
@@ -123,75 +276,78 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 1,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\User.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\User.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\User.cs",
               "RelativeToolTip": "Backend\\Models\\User.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwCsAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAACMAAAAAAAAAAAAswC4AAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T09:37:39.26Z"
+              "WhenOpened": "2025-11-17T09:37:39.26Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "Expense.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Expense.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\Expense.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Expense.cs",
               "RelativeToolTip": "Backend\\Models\\Expense.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T09:37:09.552Z"
+              "WhenOpened": "2025-11-17T09:37:09.552Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "UserEventsController.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserEventsController.cs",
               "RelativeDocumentMoniker": "Backend\\Controllers\\UserEventsController.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserEventsController.cs",
               "RelativeToolTip": "Backend\\Controllers\\UserEventsController.cs",
-              "ViewState": "AgIAADcAAAAAAAAAAAAlwBYAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAIA5wAoAAABaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-16T20:29:02.419Z"
+              "WhenOpened": "2025-11-16T20:29:02.419Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "Backend\\Controllers\\UserController.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Controllers\\UserController.cs",
               "RelativeToolTip": "Backend\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAFsAAAAAAAAAAAA3wL0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAN8AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T16:22:48.517Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 18,
               "Title": "UserEndpoints.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Endpoints\\UserEndpoints.cs",
               "RelativeDocumentMoniker": "Backend\\Endpoints\\UserEndpoints.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Endpoints\\UserEndpoints.cs",
               "RelativeToolTip": "Backend\\Endpoints\\UserEndpoints.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAAwBgAAABSAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAYwB8AAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T16:55:50.857Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "UserDto.cs",
               "DocumentMoniker": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\UserDto.cs",
               "RelativeDocumentMoniker": "Backend\\Models\\Dto\\UserDto.cs",
               "ToolTip": "C:\\Users\\zavse\\Desktop\\studij\\3.letnik\\RMR\\BalanceUp\\Backend\\Backend\\Models\\Dto\\UserDto.cs",
               "RelativeToolTip": "Backend\\Models\\Dto\\UserDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T12:39:59.224Z",
               "EditorCaption": ""

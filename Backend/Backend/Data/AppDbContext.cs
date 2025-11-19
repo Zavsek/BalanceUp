@@ -14,12 +14,17 @@ namespace Backend.Data
         public DbSet<UserExpenseShare> UserExpenseShares { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<SpendingGoal> SpendingGoals { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+        //User
             modelBuilder.Entity<User>()
                 .Property(u => u.Gender)
                 .HasConversion<string>();
 
+
+        //Expense
             modelBuilder.Entity<Expense>()
                 .Property(e => e.Type)
                 .HasConversion<string>();
@@ -28,7 +33,20 @@ namespace Backend.Data
                 .Property(e => e.Amount)
                 .HasColumnType("decimal(18,2)");
 
+            modelBuilder.Entity<Expense>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Expenses)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<Expense>()
+                .HasOne(e => e.Event)
+                .WithMany(ev => ev.Expenses)
+                .HasForeignKey(e => e.EventId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+
+        //UserEvents - Many to Many between User and Event
             modelBuilder.Entity<UserEvents>()
                 .HasIndex(ue => new { ue.UserId, ue.EventId })
                 .IsUnique();
@@ -45,18 +63,8 @@ namespace Backend.Data
                 .HasForeignKey(ue => ue.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Expense>()
-                .HasOne(e => e.User)
-                .WithMany(u => u.Expenses)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Expense>()
-                .HasOne(e => e.Event)
-                .WithMany(ev => ev.Expenses)
-                .HasForeignKey(e => e.EventId)
-                .OnDelete(DeleteBehavior.SetNull);
-
+        //UserExpenseShare 
             modelBuilder.Entity<UserExpenseShare>()
                 .HasOne(ues => ues.User)
                 .WithMany(u => u.UserExpenseShares)
@@ -68,7 +76,9 @@ namespace Backend.Data
                 .WithMany(e => e.UserExpenseShares)
                 .HasForeignKey(ues => ues.ExpenseId)
                 .OnDelete(DeleteBehavior.Cascade);
+        
 
+        //Friendship
             modelBuilder.Entity<Friendship>()
     .           HasOne(f => f.Friend1)
         .       WithMany(u => u.Friendships)
@@ -80,6 +90,8 @@ namespace Backend.Data
                 .HasForeignKey(f => f.Friend2FK)
                 .OnDelete(DeleteBehavior.Cascade);
             
+
+        //FriendRequest
             modelBuilder.Entity<FriendRequest>()
                 .HasOne(fr => fr.FromUser)
                 .WithMany(u => u.SentFriendRequests)
@@ -91,6 +103,13 @@ namespace Backend.Data
                 .HasForeignKey(fr => fr.ToUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
+        //SpendingGoal - One to One between User and SpendingGoal
+            modelBuilder.Entity<SpendingGoal>()
+                .HasOne(sg => sg.User)
+                .WithOne(u => u.SpendingGoal)
+                .HasForeignKey<SpendingGoal>(sg => sg.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
 
