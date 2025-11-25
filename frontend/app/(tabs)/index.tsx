@@ -1,9 +1,14 @@
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import AppHeader from "../components/header";
 
 export default function Index() {
   return (
-    <View className="flex-1 justify-center items-center bg-black">
-      <Text className="text-golden text-4xl font-bold">BalanceUp</Text>
+    <View className="flex-1  items-center bg-black justify-start">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <AppHeader />
+        <Text className="text-golden text-3xl mt-5">Welcome to Balance Up!</Text>
+
+      </ScrollView>
     </View>
   );
 }

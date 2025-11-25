@@ -1,5 +1,5 @@
 interface event {
-  id: number;
+  id: string;
   title: string;
   description: string;
   createdAt: string; // ISO date string

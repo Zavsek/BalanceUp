@@ -6,8 +6,13 @@ module.exports = {
     extend: {
       colors:{
         golden: '#FFC107',
+        brightGolden: '#FFDE08',
         graySlate: '#607D8B',
-        jungleGreen:'#4CAF50'
+        jungleGreen:'#4CAF50',
+        mostlyBlack: '#191919'
+      },
+      fontFamily:{
+        customFont: ['ShareTech', 'sans-serif']
       }
     },
   },

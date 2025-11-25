@@ -4,6 +4,7 @@
     "slug": "Balance-up",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/chart-mixed-up-circle-dollar.png",
     "scheme": "balanceup",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,6 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
+        "foregroundImage": "./assets/chart-mixed-up-circle-dollar.png",
         "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
@@ -19,13 +21,15 @@
     },
     "web": {
       "bundler":"metro",
-      "output": "static"
+      "output": "static",
+      "favicon": "./assets/chart-mixed-up-circle-dollar.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
+          "image":"./assets/chart-mixed-up-circle-dollar.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",

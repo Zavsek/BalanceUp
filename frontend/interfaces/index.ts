@@ -6,3 +6,4 @@ export { default as friendship } from './friendship';
 export { default as spendingGoal } from './spendingGoal';
 export { default as userEvents } from './userEvents';
 export { default as userExpenseShare } from './userExpenseShare';
+export { default as loginRequest } from './loginRequest';

@@ -1,5 +1,5 @@
 interface userEvents {
-  id: number;
+  id: string;
   userId: number;
   eventId: number;
 }

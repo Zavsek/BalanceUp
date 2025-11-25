@@ -7,7 +7,7 @@ export enum ExpenseType {
 }
 
 interface expense {
-  id: number;
+  id: string;
   amount: number;
   type: ExpenseType;
   description: string;

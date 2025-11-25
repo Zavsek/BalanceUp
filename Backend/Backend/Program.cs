@@ -1,12 +1,34 @@
 using Backend.Constants;
 using Backend.Data;
 using Backend.Routes;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowExpo", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:19006",
+                "http://127.0.0.1:19006",
+                "http://localhost:19000",
+                "http://127.0.0.1:19000",
+                "http://10.0.2.2:19006",
+                "http://10.0.2.2:19000"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+
+    options.AddPolicy("AllowAll", builder =>
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
 // Minimal API setup: do NOT add MVC controllers
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddEntityFrameworkNpgsql()
@@ -32,18 +54,21 @@ builder.Services.AddSingleton(provider =>
         })
 );
 
-// Register services your endpoint handlers need
 builder.Services.AddScoped<FirebaseAuthService>();
-// Keep AuthController as a DI-resolved class (it's not used as MVC controller)
 builder.Services.AddScoped<Backend.Controllers.AuthController>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication().AddBearerToken();
 
+builder.Services.ConfigureHttpJsonOptions(opts =>
+{
+    opts.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+});
+
 var app = builder.Build();
 
-// Map minimal API endpoints (explicit bindings inside RouteExtensions)
 app.MapAuthEndpoints();
 
 if (app.Environment.IsDevelopment())
@@ -52,8 +77,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-// No app.MapControllers() — all endpoints are mapped via minimal API
 app.UseAuthorization();
-app.UseCors("AllowAll");
+app.UseCors("AllowExpo");
 
 app.Run();

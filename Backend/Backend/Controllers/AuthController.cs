@@ -34,6 +34,7 @@ namespace Backend.Controllers
                     Username = request.Username,
                     Gender = Enum.Parse<Gender>(request.Gender),
                     ProfilePictureUrl = null,
+                    CreatedAt = DateTime.Now,
                 };
 
                 _context.Users.Add(user);
@@ -70,7 +71,7 @@ namespace Backend.Controllers
                 if (user == null)
                     return Results.NotFound("User not found");
                 return Results.Ok(new
-                { user.Id, user.Username, user.Gender,  user.ProfilePictureUrl });
+                { user.Id, user.Username, user.Gender,  user.ProfilePictureUrl, user.CreatedAt });
             }
             catch (Exception ex)
             {

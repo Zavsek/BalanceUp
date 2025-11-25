@@ -12,15 +12,15 @@ namespace Backend.Routes
         {
             // Auth Endpoints
             // POST register
-            app.MapPost("/api/register", async ([FromBody] AuthRequestDto request, [FromServices] AuthController controller) =>
+            app.MapPost("/api/register", async ( AuthRequestDto request, [FromServices] AuthController controller) =>
             {
                 return await controller.Register(request);
             });
 
             // POST login 
-            app.MapPost("/api/login", async ([FromBody] string Uid, [FromServices] AuthController controller) =>
+            app.MapPost("/api/login/{uid}", async (string uid, [FromServices] AuthController controller) =>
             {
-                return await controller.LoginRequest(Uid);
+                return await controller.LoginRequest(uid);
             });
         }
     }

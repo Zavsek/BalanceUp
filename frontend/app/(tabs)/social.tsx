@@ -1,12 +1,13 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { ScrollView, Text, View } from "react-native";
+import AppHeader from "../components/header";
 
-const social = () => {
+export default function Social() {
   return (
-    <View>
-      <Text>social</Text>
-    </View>
-  )
-}
+    <View className="flex-1  items-center bg-black justify-start">
+      <ScrollView className="flex-1 " showsVerticalScrollIndicator={false}>
+        <AppHeader />
 
-export default social
+      </ScrollView>
+    </View>
+  );
+}

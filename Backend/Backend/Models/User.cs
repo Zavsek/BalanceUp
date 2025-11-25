@@ -30,6 +30,9 @@ namespace Backend.Models
         [Column("firebase_uid")]
         public string FirebaseUid { get; set; }
 
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         [NotMapped]
         public ICollection<Expense> Expenses {get; set;} 
 

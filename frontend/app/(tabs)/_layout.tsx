@@ -18,14 +18,17 @@ const _layout = () => {
             alignItems:'center'
         },
         tabBarStyle:{
-            backgroundColor:'#6C5100',
+            backgroundColor:'rgba(108,81,0,0.8)',
+            
             borderRadius:50,
-            marginBottom:40,
+            marginBottom:50,
             paddingHorizontal:15,
-            height:55,
+            marginHorizontal:10,
+            height:56,
             position:'absolute',
             overflow:'hidden',
-            borderWidth:0
+            borderWidth:1,
+            borderColor:'#FFDE08',
         }
     }}  
     >
