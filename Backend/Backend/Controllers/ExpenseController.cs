@@ -8,13 +8,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Backend.Controllers
 {
-    public static class ExpenseController
+    public  class ExpenseController
     {
-        public static async Task<IResult> GetExpenses([FromQuery]Guid UserId, AppDbContext context)
+        private readonly AppDbContext _context;
+
+        public ExpenseController(AppDbContext context)
+        {
+            _context = context;
+        }
+        public  async Task<IResult> GetExpenses([FromQuery]Guid UserId)
         {
             try
             {
-                var expenses = await context.Expenses
+                var expenses = await _context.Expenses
                    .Where(e => e.UserId == UserId)
                    .ToListAsync();
                 return Results.Ok(expenses);
@@ -25,7 +31,7 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> CreateExpense(ExpenseDto expense, Guid UserId, AppDbContext context)
+        public  async Task<IResult> CreateExpense(ExpenseDto expense, Guid UserId)
         {
             try
             {
@@ -37,8 +43,8 @@ namespace Backend.Controllers
                     DateTime = expense.Time,
                     UserId = UserId
                 };
-                context.Expenses.Add(NewExpense);
-                await context.SaveChangesAsync();
+                _context.Expenses.Add(NewExpense);
+                await _context.SaveChangesAsync();
                 return Results.Ok(expense);
             }
             catch (Exception ex)
@@ -48,9 +54,8 @@ namespace Backend.Controllers
         }
 
 
-        public static async Task<IResult> CreateExpenseForEvent(Guid eventId,
-            [FromBody] EventExpenseDto payload,
-            AppDbContext db)
+        public  async Task<IResult> CreateExpenseForEvent(Guid eventId,
+             EventExpenseDto payload)
             {
             try
             {
@@ -60,7 +65,7 @@ namespace Backend.Controllers
                 if (payload.Shares == null || !payload.Shares.Any())
                     return Results.BadRequest("There must be atleast 1 share.");
 
-                var ev = await db.Events
+                var ev = await _context.Events
                 .Include(e => e.UserEvents)
                     .FirstOrDefaultAsync(e => e.Id == eventId);
 
@@ -89,8 +94,8 @@ namespace Backend.Controllers
                     DateTime = payload.Time
                 };
 
-                db.Expenses.Add(expense);
-                await db.SaveChangesAsync();
+                _context.Expenses.Add(expense);
+                await _context.SaveChangesAsync();
 
                 var shares = payload.Shares.Select(s => new UserExpenseShare
                 {
@@ -99,8 +104,8 @@ namespace Backend.Controllers
                     ShareAmount = s.ShareAmount
                 }).ToList();
 
-                db.UserExpenseShares.AddRange(shares);
-                await db.SaveChangesAsync();
+                _context.UserExpenseShares.AddRange(shares);
+                await _context.SaveChangesAsync();
 
                 
                 var result = new
@@ -121,14 +126,14 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
             }
         }
-        public static async Task<IResult> DeleteExpense(Guid id, AppDbContext context)
+        public  async Task<IResult> DeleteExpense(Guid id)
         {
             try
             {
-                if (await context.Expenses.FindAsync(id) is Expense expense)
+                if (await _context.Expenses.FindAsync(id) is Expense expense)
                 {
-                    context.Expenses.Remove(expense);
-                    await context.SaveChangesAsync();
+                    _context.Expenses.Remove(expense);
+                    await   _context.SaveChangesAsync();
                     return Results.NoContent();
                 }
                 else return Results.NotFound();
@@ -138,15 +143,15 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in Expense Controller " + ex.Message);
             }
         }
-        public static async Task<IResult> UpdateExpense(Guid id, Expense expense, AppDbContext context)
+        public  async Task<IResult> UpdateExpense(Guid id, Expense expense)
         {
             try
             {
                 if (id != expense.Id) return TypedResults.BadRequest("Id does not match");
-                if (!await context.Expenses.AnyAsync(e => e.Id == id)) return TypedResults.BadRequest("Expense not Found in Database");
+                if (!await _context.Expenses.AnyAsync(e => e.Id == id)) return TypedResults.BadRequest("Expense not Found in Database");
                 
-                context.Expenses.Update(expense);
-                await context.SaveChangesAsync();
+                _context.Expenses.Update(expense);
+                await _context.SaveChangesAsync();
                 return Results.NoContent();
 
             }
@@ -156,7 +161,7 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> UpdateShares(Guid eventId, Guid expenseId, [FromBody] UpdateSharesDto payload, AppDbContext db)
+        public  async Task<IResult> UpdateShares(Guid eventId, Guid expenseId, UpdateSharesDto payload)
         {
             try
             {
@@ -164,21 +169,20 @@ namespace Backend.Controllers
                 if (payload == null || payload.Shares == null || !payload.Shares.Any())
                     return Results.BadRequest("Poslati morate nove deleže.");
 
-                // pridobi expense skupaj z eventom
-                var expense = await db.Expenses
+
+                var expense = await _context.Expenses
                     .Include(e => e.Event)
                     .FirstOrDefaultAsync(e => e.Id == expenseId && e.EventId == eventId);
 
                 if (expense == null)
                     return Results.NotFound("Expense ne obstaja v tem eventu.");
 
-                // userji, ki so del eventa
-                var eventUserIds = await db.UserEvents
+
+                var eventUserIds = await _context.UserEvents
                     .Where(x => x.EventId == eventId)
                     .Select(x => x.UserId)
                     .ToListAsync();
 
-                // validacija userjev
                 foreach (var s in payload.Shares)
                 {
                     if (!eventUserIds.Contains(s.UserId))
@@ -190,9 +194,9 @@ namespace Backend.Controllers
                     return Results.BadRequest($"Vsota deležev {sum} se ne ujema z zneskom {expense.Amount}.");
 
                 
-                var oldShares = db.UserExpenseShares.Where(x => x.ExpenseId == expenseId);
-                db.UserExpenseShares.RemoveRange(oldShares);
-                await db.SaveChangesAsync();
+                var oldShares = _context.UserExpenseShares.Where(x => x.ExpenseId == expenseId);
+                _context.UserExpenseShares.RemoveRange(oldShares);
+                await _context.SaveChangesAsync();
 
                 
                 var newShares = payload.Shares.Select(s => new UserExpenseShare
@@ -202,8 +206,8 @@ namespace Backend.Controllers
                     ShareAmount = s.ShareAmount
                 });
 
-                db.UserExpenseShares.AddRange(newShares);
-                await db.SaveChangesAsync();
+                _context.UserExpenseShares.AddRange(newShares);
+                await _context.SaveChangesAsync();
 
                 return Results.Ok("Deleži posodobljeni.");
             }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
@@ -17,7 +18,7 @@ namespace Backend.Models
         [Column("id")]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(20)]
+        [StringLength(20)]
         [Column("username")]
         public string Username { get; set; }
         [MaxLength(100)]

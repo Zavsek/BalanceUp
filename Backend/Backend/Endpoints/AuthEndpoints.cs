@@ -1,6 +1,8 @@
+using Backend.Controllers;
 using Backend.Data;
 using Backend.Models;
-using Backend.Controllers;
+using Backend.Models.Dto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Routes
 {
@@ -8,12 +10,18 @@ namespace Backend.Routes
     {
         public static void MapAuthEndpoints(this WebApplication app)
         {
-            app.MapPost("/api/register",AuthController.Register);
+            // Auth Endpoints
+            // POST register
+            app.MapPost("/api/register", async ([FromBody] AuthRequestDto request, [FromServices] AuthController controller) =>
+            {
+                return await controller.Register(request);
+            });
 
-            app.MapGet("/api/login", AuthController.Login); 
-
-
-
+            // POST login 
+            app.MapPost("/api/login", async ([FromBody] string Uid, [FromServices] AuthController controller) =>
+            {
+                return await controller.LoginRequest(Uid);
+            });
         }
     }
 }

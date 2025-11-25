@@ -6,20 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
-    public static class EventController
+    public  class EventController
     {
-        public static async Task<IResult> UpdateEvent(Guid Id, EventDto Event, AppDbContext context)
+        private readonly AppDbContext _context;
+        public EventController(AppDbContext context)
+        {
+            _context = context;
+        }
+        public  async Task<IResult> UpdateEvent(Guid id, EventDto Event)
         {
             try
             {
-                if (Id != Event.Id) return TypedResults.BadRequest("Id does not match");
-                var existingEvent = await context.Events.FindAsync(Id);
+                if (id != Event.Id) return TypedResults.BadRequest("Id does not match");
+                var existingEvent = await _context.Events.FindAsync(id);
                 if (existingEvent == null)
                     return TypedResults.NotFound("Event not found");
                 existingEvent.Title = Event.Title;
                 existingEvent.Description = Event.Description;
-                context.Events.Update(existingEvent);
-                await context.SaveChangesAsync();
+                _context.Events.Update(existingEvent);
+                await _context.SaveChangesAsync();
                 return TypedResults.Ok(existingEvent);
             }
             catch (Exception ex)
@@ -27,7 +32,7 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in Event Controller " + ex.Message);
             }
         }
-        public static async Task<IResult> CreateEvent([FromBody] CreateEventDto dto, AppDbContext context)
+        public  async Task<IResult> CreateEvent([FromBody] CreateEventDto dto)
         {
             try
             {
@@ -41,12 +46,12 @@ namespace Backend.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
 
-                context.Events.Add(ev);
-                await context.SaveChangesAsync();
+                _context.Events.Add(ev);
+                await _context.SaveChangesAsync();
 
                 foreach (var userId in dto.Users)
                 {
-                    var result = await UserEventsController.AddUserToEventInternal(userId, ev.Id, context);
+                    var result = await UserEventsController.AddUserToEventInternal(userId, ev.Id, _context);
 
                     if (!result.ok)
                         return Results.BadRequest($"Error in adding user {userId}: {result.error}");
@@ -63,11 +68,11 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in creating event: " + ex.Message);
             }
         }
-        public static async Task<IResult> GetExpensesForEvent(Guid eventId, AppDbContext context)
+        public  async Task<IResult> GetExpensesForEvent(Guid eventId )
         {
             try
             {
-                var expenses = await context.Expenses
+                var expenses = await _context.Expenses
                     .Where(e => e.EventId == eventId)
                     .Include(e => e.UserExpenseShares) 
                     .ToListAsync();
@@ -90,11 +95,11 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Napaka pri pridobivanju expense-ov: " + ex.Message);
             }
         }
-        public static async Task<IResult> DeleteExpenseFromEvent(Guid eventId, Guid expenseId, AppDbContext context)
+        public  async Task<IResult> DeleteExpenseFromEvent(Guid eventId, Guid expenseId)
         {
             try
             {
-                var expense = await context.Expenses
+                var expense = await _context.Expenses
                     .Include(e => e.UserExpenseShares)
                     .FirstOrDefaultAsync(e => e.Id == expenseId && e.EventId == eventId);
 
@@ -103,11 +108,11 @@ namespace Backend.Controllers
 
                 if (expense.UserExpenseShares.Any())
                 {
-                    context.UserExpenseShares.RemoveRange(expense.UserExpenseShares);
+                    _context.UserExpenseShares.RemoveRange(expense.UserExpenseShares);
                 }
 
-                context.Expenses.Remove(expense);
-                await context.SaveChangesAsync();
+                _context.Expenses.Remove(expense);
+                await _context.SaveChangesAsync();
 
                 return Results.Ok("Expense odstranjen.");
             }

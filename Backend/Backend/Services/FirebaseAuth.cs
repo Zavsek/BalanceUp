@@ -1,7 +1,20 @@
-﻿using FirebaseAdmin.Auth;
+﻿using FirebaseAdmin;
+using FirebaseAdmin.Auth;
+using Google.Apis.Auth.OAuth2;
 
 public sealed class FirebaseAuthService
 {
+    private readonly FirebaseAuth _firebaseAuth;
+    public FirebaseAuthService()
+    {
+        FirebaseApp.Create(new AppOptions()
+        {
+            Credential = GoogleCredential.FromFile("firebase-config.json"),
+            ProjectId = "balanceup-85fcc"
+        });
+
+        _firebaseAuth = FirebaseAuth.DefaultInstance;
+    }
     public async Task<string> RegisterAsync(string email, string password)
     {
         var args = new UserRecordArgs

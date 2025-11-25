@@ -35,12 +35,6 @@ C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\n
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets\msbuild.build.Backend.props
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.Backend.props
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.Backend.props
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.pack.json
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\Backend.csproj.Up2Date
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\Backend.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\refint\Backend.dll
@@ -65,7 +59,6 @@ C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\n
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.Composition.Hosting.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.Composition.Runtime.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.Composition.TypedParts.dll
-C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.Text.Json.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.resources.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -158,3 +151,10 @@ C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\n
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\System.Reactive.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\Websocket.Client.dll
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\Backend.sourcelink.json
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\rjimswa.dswa.cache.json
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.build.json.cache
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\swae.build.ex.cache
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

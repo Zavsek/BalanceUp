@@ -9,19 +9,26 @@ namespace Backend.Controllers
 {
     public class UserController
     {
+        private readonly AppDbContext _context;
+        private readonly Supabase.Client _supabase;
+        private readonly HttpRequest _request;
+
+        public UserController(AppDbContext context, Supabase.Client supabase, HttpRequest request)
+        {
+            _context = context;
+            _supabase = supabase;
+            _request = request;
+        }
         //User tasks
-        public static async Task<IResult> UpdateUser(Guid id,
-        HttpRequest request,
-        AppDbContext context,
-        Supabase.Client supabase)
+        public  async Task<IResult> UpdateUser(Guid id)
         {
             try
             {
-                var user = await context.Users.FindAsync(id);
+                var user = await _context.Users.FindAsync(id);
                 if (user == null)
                     return Results.NotFound("User not found");
 
-                var form = await request.ReadFormAsync();
+                var form = await _request.ReadFormAsync();
 
                 var username = form["username"].ToString();
                 if (string.IsNullOrWhiteSpace(username))
@@ -44,7 +51,7 @@ namespace Backend.Controllers
                     await file.CopyToAsync(ms);
                     var bytes = ms.ToArray();
 
-                    var bucket = supabase.Storage.From(Constants.Constants.SupabaseBucket);
+                    var bucket = _supabase.Storage.From(Constants.Constants.SupabaseBucket);
                     var fileName = $"{Guid.NewGuid()}{ext}";
 
                     await bucket.Upload(bytes, fileName, new Supabase.Storage.FileOptions
@@ -55,7 +62,7 @@ namespace Backend.Controllers
                     user.ProfilePictureUrl = bucket.GetPublicUrl(fileName);
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 return Results.Ok(new
                 {
@@ -69,11 +76,11 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in User Controller " + ex.Message);
             }
         }
-        public static async Task<IResult> GetUserById(Guid id, AppDbContext context)
+        public  async Task<IResult> GetUserById(Guid id)
         {
             try
             {
-                var user = await context.Users.FindAsync(id);
+                var user = await _context.Users.FindAsync(id);
                 if (user == null)
                     return TypedResults.NotFound("User not found");
                 return TypedResults.Ok(user);
@@ -84,11 +91,11 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> GetUserByUsername(string username, AppDbContext context)
+        public  async Task<IResult> GetUserByUsername(string username)
         {
             try
             {
-                var user = await context.Users
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Username == username);
                 if (user == null)
                     return TypedResults.NotFound("User not found");
@@ -100,15 +107,15 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> DeleteUser(Guid Id, AppDbContext context)
+        public  async Task<IResult> DeleteUser(Guid Id)
         {
             try
             {
-                var user = await context.Users.FindAsync(Id);
+                var user = await _context.Users.FindAsync(Id);
                 if (user == null)
                     return TypedResults.NotFound("User not found");
-                context.Users.Remove(user);
-                await context.SaveChangesAsync();
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
                 return TypedResults.Ok("User deleted successfully");
             }
             catch (Exception ex)
@@ -117,21 +124,52 @@ namespace Backend.Controllers
             }
         }
 
-        //-------------------------------------------------------
-        //Friend request tasks
-        public static async Task<IResult> SendFriendRequest(FriendRequestDto FriendRequest, AppDbContext context)
+        public  async Task<IResult> UploadProfilePic(Guid id, IFormFile file) 
         {
             try
             {
-                if (await context.Users.FindAsync(FriendRequest.fromUserId, FriendRequest.toUserId) == null) return TypedResults.BadRequest("Users in request are not valid");
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                    return TypedResults.NotFound("User not found");
+                if (file != null && file.Length > 0)
+                {
+                    using var ms = new MemoryStream();
+                    await file.CopyToAsync(ms);
+                    var bytes = ms.ToArray();
+                    var bucket = _supabase.Storage.From("profile-pictures");
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    await bucket.Upload(bytes, fileName, new Supabase.Storage.FileOptions { Upsert = true });
+                    user.ProfilePictureUrl = bucket.GetPublicUrl(fileName);
+                }
+                await _context.SaveChangesAsync();
+                return TypedResults.Ok(new
+                {
+                    localId = user.Id,
+                    username = user.Username,
+                    profilePictureUrl = user.ProfilePictureUrl
+                });
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Error in User Controller " + ex.Message);
+            }
+        }
+
+        //-------------------------------------------------------
+        //Friend request tasks
+        public  async Task<IResult> SendFriendRequest(FriendRequestDto FriendRequest)
+        {
+            try
+            {
+                if (await _context.Users.FindAsync(FriendRequest.fromUserId, FriendRequest.toUserId) == null) return TypedResults.BadRequest("Users in request are not valid");
                 var friendRequest = new FriendRequest
                 {
                     FromUserId = FriendRequest.fromUserId,
                     ToUserId = FriendRequest.toUserId,
                     SentAt = DateOnly.FromDateTime(DateTime.UtcNow)
                 };
-                await context.FriendRequests.AddAsync(friendRequest);
-                context.SaveChangesAsync();
+                await _context.FriendRequests.AddAsync(friendRequest);
+                await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friend Request Sent");
             }
             catch (Exception ex)
@@ -140,11 +178,11 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> GetFriendRequests(Guid id, AppDbContext context)
+        public  async Task<IResult> GetFriendRequests(Guid id)
         {
             try
             {
-                var requests = await context.FriendRequests
+                var requests = await _context.FriendRequests
                     .Where(fr => fr.ToUserId == id)
                     .Select(fr => new
                     {
@@ -161,15 +199,15 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> DeleteFriendRequest(Guid id, AppDbContext context)
+        public  async Task<IResult> DeleteFriendRequest(Guid id)
         {
             try
             {
-                var request = await context.FriendRequests.FindAsync(id);
+                var request = await _context.FriendRequests.FindAsync(id);
                 if (request == null)
                     return TypedResults.NotFound("Friend request not found");
-                context.FriendRequests.Remove(request);
-                await context.SaveChangesAsync();
+                _context.FriendRequests.Remove(request);
+                await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friend request deleted");
             }
             catch (Exception ex)
@@ -180,11 +218,11 @@ namespace Backend.Controllers
 
         //-------------------------------------------------------
         //Friendship tasks
-        public static async Task<IResult> GetFriends(Guid id, AppDbContext context)
+        public  async Task<IResult> GetFriends(Guid id)
         {
             try
             {
-                var friends = await context.Friendships
+                var friends = await _context.Friendships
                     .Where(f => f.Friend1FK == id || f.Friend2FK == id)
                     .Select(f => new
                     {
@@ -199,11 +237,11 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
-        public static async Task<IResult> AddFriend([FromQuery] Guid requestId, AppDbContext context)
+        public  async Task<IResult> AddFriend(Guid requestId)
         {
             try
             {
-                var Request = await context.FriendRequests.FindAsync(requestId);
+                var Request = await _context.FriendRequests.FindAsync(requestId);
                 if (Request == null) return TypedResults.BadRequest("Users in request are not valid");
                 var Friendship = new Friendship
                 {
@@ -211,9 +249,9 @@ namespace Backend.Controllers
                     Friend2FK = Request.ToUserId,
                     FriendsSince = DateTime.UtcNow
                 };
-                await context.Friendships.AddAsync(Friendship);
-                context.FriendRequests.Remove(Request);
-                await context.SaveChangesAsync();
+                await _context.Friendships.AddAsync(Friendship);
+                _context.FriendRequests.Remove(Request);
+                await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friendship created");
             }
             catch (Exception ex)
@@ -221,17 +259,17 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
-        public static async Task<IResult> RemoveFriend(Guid userId, Guid friendId, AppDbContext context)
+        public  async Task<IResult> RemoveFriend(Guid userId, Guid friendId)
         {
             try
             {
-                var friendship = await context.Friendships
+                var friendship = await _context.Friendships
                     .FirstOrDefaultAsync(f => (f.Friend1FK == userId && f.Friend2FK == friendId) ||
                                               (f.Friend1FK == friendId && f.Friend2FK == userId));
                 if (friendship == null)
                     return TypedResults.NotFound("Friendship not found");
-                context.Friendships.Remove(friendship);
-                await context.SaveChangesAsync();
+                _context.Friendships.Remove(friendship);
+                await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friend removed");
             }
             catch (Exception ex)

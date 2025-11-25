@@ -6,13 +6,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Backend.Controllers
 {
-    public static class UserEventsController
+    public  class UserEventsController
     {
-        public static async Task<IResult> GetUserEvents(Guid userId, AppDbContext context)
+        private readonly AppDbContext _context;
+        public UserEventsController(AppDbContext context)
+        {
+            _context = context;
+        }
+        public  async Task<IResult> GetUserEvents(Guid userId)
         {
             try
             {
-                var events = await context.UserEvents
+                var events = await _context.UserEvents
                 .Where(x => x.UserId == userId)
                 .Select(x => new EventDto
                 (x.Event.Id, x.Event.Title, x.Event.Description, x.Event.CreatedAt))
@@ -25,11 +30,11 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in UserEvents Controller " + ex.Message);
             }
         }
-        public static async Task<IResult> AddUserToEvent(UserEventDto dto, AppDbContext context)
+        public  async Task<IResult> AddUserToEvent(UserEventDto dto)
         {
             try
             {
-                var exists = await context.UserEvents
+                var exists = await _context.UserEvents
                     .AnyAsync(x => x.UserId == dto.UserId && x.EventId == dto.EventId);
 
                 if (exists)
@@ -41,8 +46,8 @@ namespace Backend.Controllers
                     EventId = dto.EventId
                 };
 
-                context.UserEvents.Add(ue);
-                await context.SaveChangesAsync();
+                _context.UserEvents.Add(ue);
+                await _context.SaveChangesAsync();
 
                 return TypedResults.Ok("Dodano.");
             }
@@ -52,18 +57,18 @@ namespace Backend.Controllers
             }
         }
 
-        public static async Task<IResult> RemoveUserFromEvent(UserEventDto dto, AppDbContext context)
+        public  async Task<IResult> RemoveUserFromEvent(Guid eventId, Guid userId)
         {
             try
             {
-                var ue = await context.UserEvents
-                    .FirstOrDefaultAsync(x => x.UserId == dto.UserId && x.EventId == dto.EventId);
+                var ue = await _context.UserEvents
+                    .FirstOrDefaultAsync(x => x.UserId == userId && x.EventId == eventId);
 
                 if (ue == null)
                     return Results.NotFound("Connection doesn't exist.");
 
-                context.UserEvents.Remove(ue);
-                await context.SaveChangesAsync();
+                _context.UserEvents.Remove(ue);
+                await _context.SaveChangesAsync();
 
                 return Results.Ok("Removed.");
             }
@@ -72,18 +77,18 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in UserEvents Controller " + ex.Message);
             }
         }
-        public static async Task<IResult> RemoveEventFromAllUsers(Guid eventId, AppDbContext context)
+        public  async Task<IResult> RemoveEventFromAllUsers(Guid eventId)
         {
             try
             {
-                var userEvents = await context.UserEvents
+                var userEvents = await _context.UserEvents
                 .Where(ue => ue.EventId == eventId)
                 .ToListAsync();
-                context.UserEvents.RemoveRange(userEvents);
-                var ev = await context.Events.FindAsync(eventId);
-                if (ev != null) context.Events.Remove(ev);
+                _context.UserEvents.RemoveRange(userEvents);
+                var ev = await _context.Events.FindAsync(eventId);
+                if (ev != null) _context.Events.Remove(ev);
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return Results.Ok("Event removed from all users.");
             }
             catch (Exception ex)

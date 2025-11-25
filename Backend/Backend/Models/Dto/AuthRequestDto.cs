@@ -4,8 +4,8 @@
     string Email,
     string Password,
     string Username,
-    Gender Gender
+    string Gender
     );
-    public record LoginRequest(string FirebaseUid);
+    public record LoginRequest(string Email, string Password);
 
 }
