@@ -16,7 +16,7 @@ namespace Backend.Controllers
             try
             {
                 var goal = await _context.SpendingGoals
-                    .Where(sg => sg.UserId == userId)
+                    .Where(sg => sg.userId == userId)
                     .SingleOrDefaultAsync();
                 return TypedResults.Ok(goal);
             }
@@ -29,12 +29,12 @@ namespace Backend.Controllers
         {
             try
             {
-                if (Id != spendingGoal.Id) return TypedResults.BadRequest("Id does not match!");
+                if (Id != spendingGoal.id) return TypedResults.BadRequest("Id does not match!");
                 var existingGoal = await _context.SpendingGoals.FindAsync(Id);
                 if (existingGoal != null) return TypedResults.NotFound("Goal not found");
-                existingGoal.WeeklyLimit = spendingGoal.WeeklyLimit;
-                existingGoal.MonthlyLimit = spendingGoal.MonthlyLimit;
-                existingGoal.DailyLimit = spendingGoal.DailyLimit;
+                existingGoal.weeklyLimit = spendingGoal.weeklyLimit;
+                existingGoal.monthlyLimit = spendingGoal.monthlyLimit;
+                existingGoal.dailyLimit = spendingGoal.dailyLimit;
                 _context.SpendingGoals.Update(existingGoal);
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok(existingGoal);

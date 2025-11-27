@@ -1,5 +1,5 @@
 import { ScrollView, Text, View } from "react-native";
-import AppHeader from "../components/header";
+import AppHeader from "../components/Header";
 
 export default function Social() {
   return (

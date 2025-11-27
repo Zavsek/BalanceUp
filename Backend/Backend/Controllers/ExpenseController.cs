@@ -21,7 +21,7 @@ namespace Backend.Controllers
             try
             {
                 var expenses = await _context.Expenses
-                   .Where(e => e.UserId == UserId)
+                   .Where(e => e.userId == UserId)
                    .ToListAsync();
                 return Results.Ok(expenses);
             }
@@ -37,11 +37,11 @@ namespace Backend.Controllers
             {
                 var NewExpense = new Expense
                 {
-                    Amount = expense.Amount,
-                    Type = expense.Type,
-                    Description = expense.Description,
-                    DateTime = expense.Time,
-                    UserId = UserId
+                    amount = expense.amount,
+                    type = expense.type,
+                    description = expense.description,
+                    dateTime = expense.time,
+                    userId = UserId
                 };
                 _context.Expenses.Add(NewExpense);
                 await _context.SaveChangesAsync();
@@ -61,47 +61,47 @@ namespace Backend.Controllers
             {
 
                 if (payload == null) return Results.BadRequest("Payload is Empty.");
-                if (payload.EventId != eventId) return Results.BadRequest("EventId does not match.");
-                if (payload.Shares == null || !payload.Shares.Any())
+                if (payload.eventId != eventId) return Results.BadRequest("EventId does not match.");
+                if (payload.shares == null || !payload.shares.Any())
                     return Results.BadRequest("There must be atleast 1 share.");
 
                 var ev = await _context.Events
-                .Include(e => e.UserEvents)
-                    .FirstOrDefaultAsync(e => e.Id == eventId);
+                .Include(e => e.userEvents)
+                    .FirstOrDefaultAsync(e => e.id == eventId);
 
                 if (ev == null) return Results.NotFound("Event ne obstaja.");
 
-                var eventUserIds = ev.UserEvents.Select(ue => ue.UserId).ToHashSet();
+                var eventUserIds = ev.userEvents.Select(ue => ue.userId).ToHashSet();
 
-                foreach (var s in payload.Shares)
+                foreach (var s in payload.shares)
                 {
-                    if (!eventUserIds.Contains(s.UserId))
-                        return Results.BadRequest($"User {s.UserId} ni član dogodka.");
-                    if (s.ShareAmount < 0)
+                    if (!eventUserIds.Contains(s.userId))
+                        return Results.BadRequest($"User {s.userId} ni član dogodka.");
+                    if (s.shareAmount < 0)
                         return Results.BadRequest("ShareAmount ne sme biti negativen.");
                 }
 
-                decimal sumShares = payload.Shares.Sum(s => s.ShareAmount);
-                if (Math.Round(sumShares, 2) != Math.Round(payload.Amount, 2))
-                    return Results.BadRequest($"Vsota share-ov ({sumShares}) se ne ujema z Amount ({payload.Amount}).");
+                decimal sumShares = payload.shares.Sum(s => s.shareAmount);
+                if (Math.Round(sumShares, 2) != Math.Round(payload.amount, 2))
+                    return Results.BadRequest($"Vsota share-ov ({sumShares}) se ne ujema z Amount ({payload.amount}).");
 
                 var expense = new Expense
                 {
-                    EventId = payload.EventId,
-                    Amount = payload.Amount,
-                    Type = payload.Type,
-                    Description = payload.Description,
-                    DateTime = payload.Time
+                    eventId = payload.eventId,
+                    amount = payload.amount,
+                    type = payload.type,
+                    description = payload.description,
+                    dateTime = payload.time
                 };
 
                 _context.Expenses.Add(expense);
                 await _context.SaveChangesAsync();
 
-                var shares = payload.Shares.Select(s => new UserExpenseShare
+                var shares = payload.shares.Select(s => new UserExpenseShare
                 {
-                    ExpenseId = expense.Id,
-                    UserId = s.UserId,
-                    ShareAmount = s.ShareAmount
+                    expenseId = expense.id,
+                    userId = s.userId,
+                    shareAmount = s.shareAmount
                 }).ToList();
 
                 _context.UserExpenseShares.AddRange(shares);
@@ -110,13 +110,13 @@ namespace Backend.Controllers
                 
                 var result = new
                 {
-                    expense.Id,
-                    expense.EventId,
-                    expense.Amount,
-                    expense.Type,
-                    expense.Description,
-                    expense.DateTime,
-                    Shares = shares.Select(x => new { x.UserId, x.ShareAmount })
+                    expense.id,
+                    expense.eventId,
+                    expense.amount,
+                    expense.type,
+                    expense.description,
+                    expense.dateTime,
+                    Shares = shares.Select(x => new { x.userId, x.shareAmount })
                 };
 
                 return Results.Ok(result);
@@ -147,8 +147,8 @@ namespace Backend.Controllers
         {
             try
             {
-                if (id != expense.Id) return TypedResults.BadRequest("Id does not match");
-                if (!await _context.Expenses.AnyAsync(e => e.Id == id)) return TypedResults.BadRequest("Expense not Found in Database");
+                if (id != expense.id) return TypedResults.BadRequest("Id does not match");
+                if (!await _context.Expenses.AnyAsync(e => e.id == id)) return TypedResults.BadRequest("Expense not Found in Database");
                 
                 _context.Expenses.Update(expense);
                 await _context.SaveChangesAsync();
@@ -166,44 +166,44 @@ namespace Backend.Controllers
             try
             {
 
-                if (payload == null || payload.Shares == null || !payload.Shares.Any())
+                if (payload == null || payload.shares == null || !payload.shares.Any())
                     return Results.BadRequest("Poslati morate nove deleže.");
 
 
                 var expense = await _context.Expenses
-                    .Include(e => e.Event)
-                    .FirstOrDefaultAsync(e => e.Id == expenseId && e.EventId == eventId);
+                    .Include(e => e.expenseEvent)
+                    .FirstOrDefaultAsync(e => e.id == expenseId && e.eventId == eventId);
 
                 if (expense == null)
                     return Results.NotFound("Expense ne obstaja v tem eventu.");
 
 
                 var eventUserIds = await _context.UserEvents
-                    .Where(x => x.EventId == eventId)
-                    .Select(x => x.UserId)
+                    .Where(x => x.eventId == eventId)
+                    .Select(x => x.userId)
                     .ToListAsync();
 
-                foreach (var s in payload.Shares)
+                foreach (var s in payload.shares)
                 {
-                    if (!eventUserIds.Contains(s.UserId))
-                        return Results.BadRequest($"Uporabnik {s.UserId} ni del dogodka.");
+                    if (!eventUserIds.Contains(s.userId))
+                        return Results.BadRequest($"Uporabnik {s.userId} ni del dogodka.");
                 }
 
-                var sum = payload.Shares.Sum(x => x.ShareAmount);
-                if (Math.Round(sum, 2) != Math.Round(expense.Amount, 2))
-                    return Results.BadRequest($"Vsota deležev {sum} se ne ujema z zneskom {expense.Amount}.");
+                var sum = payload.shares.Sum(x => x.shareAmount);
+                if (Math.Round(sum, 2) != Math.Round(expense.amount, 2))
+                    return Results.BadRequest($"Vsota deležev {sum} se ne ujema z zneskom {expense.amount}.");
 
                 
-                var oldShares = _context.UserExpenseShares.Where(x => x.ExpenseId == expenseId);
+                var oldShares = _context.UserExpenseShares.Where(x => x.expenseId == expenseId);
                 _context.UserExpenseShares.RemoveRange(oldShares);
                 await _context.SaveChangesAsync();
 
                 
-                var newShares = payload.Shares.Select(s => new UserExpenseShare
+                var newShares = payload.shares.Select(s => new UserExpenseShare
                 {
-                    ExpenseId = expenseId,
-                    UserId = s.UserId,
-                    ShareAmount = s.ShareAmount
+                    expenseId = expenseId,
+                    userId = s.userId,
+                    shareAmount = s.shareAmount
                 });
 
                 _context.UserExpenseShares.AddRange(newShares);

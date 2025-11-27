@@ -1,11 +1,9 @@
 ﻿namespace Backend.Models.Dto
 {
     public record AuthRequestDto(
-    string Email,
-    string Password,
-    string Username,
-    string Gender
+    string email,
+    string password,
+    string username,
+    string gender
     );
-    public record LoginRequest(string Email, string Password);
-
 }

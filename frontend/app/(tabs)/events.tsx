@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from 'react-native'
-import AppHeader from '../components/header'
+import AppHeader from '../components/Header'
 import React from 'react'
 
 const events = () => {

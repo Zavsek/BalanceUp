@@ -1,6 +1,6 @@
 interface spendingGoal {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   weeklyLimit?: number | null;
   dailyLimit?: number | null;
   monthlyLimit?: number | null;

@@ -1,7 +1,7 @@
 interface friendship {
-  id: number;
-  friend1FK: number;
-  friend2FK: number;
+  id: string;
+  friend1FK: string;
+  friend2FK: string;
   friendsSince: string; // ISO date string
 }
 

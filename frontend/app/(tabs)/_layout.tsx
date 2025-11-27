@@ -3,7 +3,7 @@ import React from 'react'
 import { TabActions } from '@react-navigation/native';
 import {Tabs} from "expo-router"
 import { ICONS } from '../../constants/icons';
-import TabIcon from '../components/tabicon';
+import TabIcon from '../components/Tabicon';
 
 
 const _layout = () => {

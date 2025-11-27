@@ -1,19 +1,19 @@
 ﻿namespace Backend.Models.Dto
 {
-    public record ExpenseDto( Guid Id, decimal Amount, ExpenseType Type, string Description, DateTime Time);
+    public record ExpenseDto( Guid id, decimal amount, ExpenseType type, string description, DateTime time);
 
-    public record UserShareDto(Guid UserId, decimal ShareAmount);
+    public record UserShareDto(Guid userId, decimal shareAmount);
 
     public record EventExpenseDto(
-        Guid EventId,
-        decimal Amount,
-        ExpenseType Type,
-        string Description,
-        DateTime Time,
-        List<UserShareDto> Shares
+        Guid eventId,
+        decimal amount,
+        ExpenseType type,
+        string description,
+        DateTime time,
+        List<UserShareDto> shares
     );
 
     public record UpdateSharesDto(
-    List<UserShareDto> Shares   
+    List<UserShareDto> shares   
     );
 }

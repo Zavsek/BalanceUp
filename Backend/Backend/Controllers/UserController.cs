@@ -32,12 +32,12 @@ namespace Backend.Controllers
 
                 var username = form["username"].ToString();
                 if (string.IsNullOrWhiteSpace(username))
-                    return Results.BadRequest("Username cannot be empty.");
-                user.Username = username;
+                    return Results.BadRequest("username cannot be empty.");
+                user.username = username;
 
                 if (!Enum.TryParse<Gender>(form["gender"], out var gender))
                     return Results.BadRequest("Invalid gender value.");
-                user.Gender = gender;
+                user.gender = gender;
 
                 var file = form.Files.GetFile("profilePicture");
                 if (file != null && file.Length > 0)
@@ -59,16 +59,16 @@ namespace Backend.Controllers
                         Upsert = true
                     });
 
-                    user.ProfilePictureUrl = bucket.GetPublicUrl(fileName);
+                    user.profilePictureUrl = bucket.GetPublicUrl(fileName);
                 }
 
                 await _context.SaveChangesAsync();
 
                 return Results.Ok(new
                 {
-                    localId = user.Id,
-                    username = user.Username,
-                    profilePictureUrl = user.ProfilePictureUrl
+                    localId = user.id,
+                    username = user.username,
+                    profilePictureUrl = user.profilePictureUrl
                 });
             }
             catch (Exception ex)
@@ -96,7 +96,7 @@ namespace Backend.Controllers
             try
             {
                 var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Username == username);
+                    .FirstOrDefaultAsync(u => u.username == username);
                 if (user == null)
                     return TypedResults.NotFound("User not found");
                 return TypedResults.Ok(user);
@@ -139,14 +139,14 @@ namespace Backend.Controllers
                     var bucket = _supabase.Storage.From("profile-pictures");
                     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                     await bucket.Upload(bytes, fileName, new Supabase.Storage.FileOptions { Upsert = true });
-                    user.ProfilePictureUrl = bucket.GetPublicUrl(fileName);
+                    user.profilePictureUrl = bucket.GetPublicUrl(fileName);
                 }
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok(new
                 {
-                    localId = user.Id,
-                    username = user.Username,
-                    profilePictureUrl = user.ProfilePictureUrl
+                    localId = user.id,
+                    username = user.username,
+                    profilePictureUrl = user.profilePictureUrl
                 });
             }
             catch (Exception ex)
@@ -164,9 +164,9 @@ namespace Backend.Controllers
                 if (await _context.Users.FindAsync(FriendRequest.fromUserId, FriendRequest.toUserId) == null) return TypedResults.BadRequest("Users in request are not valid");
                 var friendRequest = new FriendRequest
                 {
-                    FromUserId = FriendRequest.fromUserId,
-                    ToUserId = FriendRequest.toUserId,
-                    SentAt = DateOnly.FromDateTime(DateTime.UtcNow)
+                    fromUserId = FriendRequest.fromUserId,
+                    toUserId = FriendRequest.toUserId,
+                    sentAt = DateOnly.FromDateTime(DateTime.UtcNow)
                 };
                 await _context.FriendRequests.AddAsync(friendRequest);
                 await _context.SaveChangesAsync();
@@ -183,12 +183,12 @@ namespace Backend.Controllers
             try
             {
                 var requests = await _context.FriendRequests
-                    .Where(fr => fr.ToUserId == id)
+                    .Where(fr => fr.toUserId == id)
                     .Select(fr => new
                     {
-                        fromUserId = fr.FromUserId,
-                        toUserId = fr.ToUserId,
-                        sentAt = fr.SentAt
+                        fromUserId = fr.fromUserId,
+                        toUserId = fr.toUserId,
+                        sentAt = fr.sentAt
                     })
                     .ToListAsync();
                 return TypedResults.Ok(requests);
@@ -223,11 +223,11 @@ namespace Backend.Controllers
             try
             {
                 var friends = await _context.Friendships
-                    .Where(f => f.Friend1FK == id || f.Friend2FK == id)
+                    .Where(f => f.friend1FK == id || f.friend2FK == id)
                     .Select(f => new
                     {
-                        friendId = f.Friend1FK == id ? f.Friend2FK : f.Friend1FK,
-                        friendsSince = f.FriendsSince
+                        friendId = f.friend1FK == id ? f.friend2FK : f.friend1FK,
+                        friendsSince = f.friendsSince
                     })
                     .ToListAsync();
                 return TypedResults.Ok(friends);
@@ -245,9 +245,9 @@ namespace Backend.Controllers
                 if (Request == null) return TypedResults.BadRequest("Users in request are not valid");
                 var Friendship = new Friendship
                 {
-                    Friend1FK = Request.FromUserId,
-                    Friend2FK = Request.ToUserId,
-                    FriendsSince = DateTime.UtcNow
+                    friend1FK = Request.fromUserId,
+                    friend2FK = Request.toUserId,
+                    friendsSince = DateTime.UtcNow
                 };
                 await _context.Friendships.AddAsync(Friendship);
                 _context.FriendRequests.Remove(Request);
@@ -264,8 +264,8 @@ namespace Backend.Controllers
             try
             {
                 var friendship = await _context.Friendships
-                    .FirstOrDefaultAsync(f => (f.Friend1FK == userId && f.Friend2FK == friendId) ||
-                                              (f.Friend1FK == friendId && f.Friend2FK == userId));
+                    .FirstOrDefaultAsync(f => (f.friend1FK == userId && f.friend2FK == friendId) ||
+                                              (f.friend1FK == friendId && f.friend2FK == userId));
                 if (friendship == null)
                     return TypedResults.NotFound("Friendship not found");
                 _context.Friendships.Remove(friendship);

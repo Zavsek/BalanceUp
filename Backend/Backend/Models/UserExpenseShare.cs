@@ -9,16 +9,16 @@ namespace Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
         [Column("expense_id")]
-        public Guid ExpenseId { get; set; }
+        public Guid expenseId { get; set; }
         [ForeignKey("ExpenseId")]
-        public Expense Expense { get; set; }
+        public Expense expense { get; set; }
         [Column("user_id")]
-        public Guid UserId { get; set; }
+        public Guid userId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User user { get; set; }
         [Column("share_amount")]
-        public decimal ShareAmount { get; set; }
+        public decimal shareAmount { get; set; }
     }
 }

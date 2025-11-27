@@ -18,9 +18,9 @@ namespace Backend.Controllers
             try
             {
                 var events = await _context.UserEvents
-                .Where(x => x.UserId == userId)
+                .Where(x => x.userId == userId)
                 .Select(x => new EventDto
-                (x.Event.Id, x.Event.Title, x.Event.Description, x.Event.CreatedAt))
+                (x.userEvent.id, x.userEvent.title, x.userEvent.description, x.userEvent.createdAt))
                 .ToListAsync();
 
                 return TypedResults.Ok(events);
@@ -35,15 +35,15 @@ namespace Backend.Controllers
             try
             {
                 var exists = await _context.UserEvents
-                    .AnyAsync(x => x.UserId == dto.UserId && x.EventId == dto.EventId);
+                    .AnyAsync(x => x.userId == dto.userId && x.eventId == dto.eventId);
 
                 if (exists)
                     return TypedResults.BadRequest("Uporabnik je že prijavljen na dogodek.");
 
                 var ue = new UserEvents
                 {
-                    UserId = dto.UserId,
-                    EventId = dto.EventId
+                    userId = dto.userId,
+                    eventId = dto.eventId
                 };
 
                 _context.UserEvents.Add(ue);
@@ -62,7 +62,7 @@ namespace Backend.Controllers
             try
             {
                 var ue = await _context.UserEvents
-                    .FirstOrDefaultAsync(x => x.UserId == userId && x.EventId == eventId);
+                    .FirstOrDefaultAsync(x => x.userId == userId && x.eventId == eventId);
 
                 if (ue == null)
                     return Results.NotFound("Connection doesn't exist.");
@@ -82,7 +82,7 @@ namespace Backend.Controllers
             try
             {
                 var userEvents = await _context.UserEvents
-                .Where(ue => ue.EventId == eventId)
+                .Where(ue => ue.eventId == eventId)
                 .ToListAsync();
                 _context.UserEvents.RemoveRange(userEvents);
                 var ev = await _context.Events.FindAsync(eventId);
@@ -99,15 +99,15 @@ namespace Backend.Controllers
         public static async Task<(bool ok, string? error)> AddUserToEventInternal(Guid userId, Guid eventId, AppDbContext context)
         {
             var exists = await context.UserEvents
-                .AnyAsync(x => x.UserId == userId && x.EventId == eventId);
+                .AnyAsync(x => x.userId == userId && x.eventId == eventId);
 
             if (exists)
                 return (false, "Uporabnik je že prijavljen na dogodek.");
 
             var ue = new UserEvents
             {
-                UserId = userId,
-                EventId = eventId
+                userId = userId,
+                eventId = eventId
             };
 
             context.UserEvents.Add(ue);

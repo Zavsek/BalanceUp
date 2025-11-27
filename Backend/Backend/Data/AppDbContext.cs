@@ -20,95 +20,95 @@ namespace Backend.Data
 
         //User
             modelBuilder.Entity<User>()
-                .Property(u => u.Gender)
+                .Property(u => u.gender)
                 .HasConversion<string>();
 
 
         //Expense
             modelBuilder.Entity<Expense>()
-                .Property(e => e.Type)
+                .Property(e => e.type)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Expense>()
-                .Property(e => e.Amount)
+                .Property(e => e.amount)
                 .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Expense>()
-                .HasOne(e => e.User)
-                .WithMany(u => u.Expenses)
-                .HasForeignKey(e => e.UserId)
+                .HasOne(e => e.user)
+                .WithMany(u => u.expenses)
+                .HasForeignKey(e => e.userId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Expense>()
-                .HasOne(e => e.Event)
-                .WithMany(ev => ev.Expenses)
-                .HasForeignKey(e => e.EventId)
+                .HasOne(e => e.expenseEvent)
+                .WithMany(ev => ev.expenses)
+                .HasForeignKey(e => e.eventId)
                 .OnDelete(DeleteBehavior.SetNull);
 
 
         //UserEvents - Many to Many between User and Event
             modelBuilder.Entity<UserEvents>()
-                .HasIndex(ue => new { ue.UserId, ue.EventId })
+                .HasIndex(ue => new { ue.userId, ue.eventId })
                 .IsUnique();
 
             modelBuilder.Entity<UserEvents>()
-                .HasOne(ue => ue.User)
-                .WithMany(u => u.UserEvents)
-                .HasForeignKey(ue => ue.UserId)
+                .HasOne(ue => ue.user)
+                .WithMany(u => u.userEvents)
+                .HasForeignKey(ue => ue.userId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserEvents>()
-                .HasOne(ue => ue.Event)
-                .WithMany(e => e.UserEvents)
-                .HasForeignKey(ue => ue.EventId)
+                .HasOne(ue => ue.userEvent)
+                .WithMany(e => e.userEvents)
+                .HasForeignKey(ue => ue.eventId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
         //UserExpenseShare 
             modelBuilder.Entity<UserExpenseShare>()
-                .HasOne(ues => ues.User)
-                .WithMany(u => u.UserExpenseShares)
-                .HasForeignKey(ues => ues.UserId)
+                .HasOne(ues => ues.user)
+                .WithMany(u => u.userExpenseShares)
+                .HasForeignKey(ues => ues.userId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserExpenseShare>()
-                .HasOne(ues => ues.Expense)
-                .WithMany(e => e.UserExpenseShares)
-                .HasForeignKey(ues => ues.ExpenseId)
+                .HasOne(ues => ues.expense)
+                .WithMany(e => e.userExpenseShares)
+                .HasForeignKey(ues => ues.expenseId)
                 .OnDelete(DeleteBehavior.Cascade);
         
 
         //Friendship
             modelBuilder.Entity<Friendship>()
-    .           HasOne(f => f.Friend1)
-        .       WithMany(u => u.Friendships)
-    .           HasForeignKey(f => f.Friend1FK)
+    .           HasOne(f => f.friend1)
+        .       WithMany(u => u.friendships)
+    .           HasForeignKey(f => f.friend1FK)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.Friend2)
+                .HasOne(f => f.friend2)
                 .WithMany()
-                .HasForeignKey(f => f.Friend2FK)
+                .HasForeignKey(f => f.friend2FK)
                 .OnDelete(DeleteBehavior.Cascade);
             
 
         //FriendRequest
             modelBuilder.Entity<FriendRequest>()
-                .HasOne(fr => fr.FromUser)
-                .WithMany(u => u.SentFriendRequests)
-                .HasForeignKey(fr =>  fr.FromUserId)
+                .HasOne(fr => fr.fromUser)
+                .WithMany(u => u.sentFriendRequests)
+                .HasForeignKey(fr =>  fr.fromUserId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<FriendRequest>()
-                .HasOne(fr => fr.ToUser)
-                .WithMany(u => u.RecievedFriendRequests)
-                .HasForeignKey(fr => fr.ToUserId)
+                .HasOne(fr => fr.toUser)
+                .WithMany(u => u.recievedFriendRequests)
+                .HasForeignKey(fr => fr.toUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
         //SpendingGoal - One to One between User and SpendingGoal
             modelBuilder.Entity<SpendingGoal>()
-                .HasOne(sg => sg.User)
-                .WithOne(u => u.SpendingGoal)
-                .HasForeignKey<SpendingGoal>(sg => sg.UserId)
+                .HasOne(sg => sg.user)
+                .WithOne(u => u.spendingGoal)
+                .HasForeignKey<SpendingGoal>(sg => sg.userId)
                 .OnDelete(DeleteBehavior.Cascade);
 
         }

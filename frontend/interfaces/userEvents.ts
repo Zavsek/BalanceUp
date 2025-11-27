@@ -1,7 +1,7 @@
 interface userEvents {
   id: string;
-  userId: number;
-  eventId: number;
+  userId: string;
+  eventId: string;
 }
 
 export default userEvents;

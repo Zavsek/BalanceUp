@@ -3,10 +3,10 @@ enum gender{
     Female = 2,
     Other = 3
 }
-interface loginRequest {
+interface registerRequest {
   email: string;
   password: string;
   username: string;
   gender: gender;
 }
-export default loginRequest;
+export default registerRequest;

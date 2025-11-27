@@ -12,8 +12,8 @@ interface expense {
   type: ExpenseType;
   description: string;
   dateTime: string; // ISO date string
-  userId?: number | null;
-  eventId?: number | null;
+  userId?: string | null;
+  eventId?: string | null;
 }
 
 export default expense;

@@ -9,17 +9,17 @@ namespace Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")] 
-        public int Id { get; set; }
+        public int id { get; set; }
         [Required]
         [Column("user_id")]
-        public Guid UserId { get; set; }
+        public Guid userId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User user { get; set; }
         [Required]
         [Column("event_id")]
-        public Guid EventId { get; set; }
+        public Guid eventId { get; set; }
         [ForeignKey("ExpenseId")]
         [NotMapped]
-        public Event Event{ get; set; } 
+        public Event userEvent{ get; set; } 
     }
 }

@@ -9,18 +9,18 @@ namespace Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
         [Column("title")]
-        public string Title { get; set; }
+        public string title { get; set; }
         [Column("description")]
-        public string Description { get; set; }
+        public string description { get; set; }
         [Required]
         [Column("created_at")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime createdAt { get; set; }
         [NotMapped]
-        public ICollection<UserEvents> UserEvents { get; set; }
+        public ICollection<UserEvents> userEvents { get; set; }
 
-        public ICollection<Expense> Expenses { get; set; }
+        public ICollection<Expense> expenses { get; set; }
 
 
     }

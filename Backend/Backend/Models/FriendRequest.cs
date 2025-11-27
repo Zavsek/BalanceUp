@@ -9,20 +9,20 @@ namespace Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
         [Required]
         [Column("from_user_id")]
-        public Guid FromUserId { get; set; }
+        public Guid fromUserId { get; set; }
         [ForeignKey("FromUserId")]
-        public User FromUser { get; set; }
+        public User fromUser { get; set; }
         [Required]
         [Column("to_user_id")]
-        public Guid ToUserId { get; set; }
+        public Guid toUserId { get; set; }
 
         [ForeignKey("ToUserId")]
-        public User ToUser { get; set; }
+        public User toUser { get; set; }
 
         [Required]
-        public DateOnly SentAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+        public DateOnly sentAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

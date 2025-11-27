@@ -9,18 +9,18 @@ namespace Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
         [Required]
         [Column("user_id")]
-        public Guid UserId { get; set; }
+        public Guid userId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User user { get; set; }
         [Column("weekly_limit")]
-        public int? WeeklyLimit { get; set; } = 700;
+        public int? weeklyLimit { get; set; } = 700;
         [Column("daily_limit")]
-        public int? DailyLimit { get; set; } = 100;
+        public int? dailyLimit { get; set; } = 100;
         [Column("monthly_limit")]
-        public int? MonthlyLimit { get; set; } = 3000;
+        public int? monthlyLimit { get; set; } = 3000;
 
     }
 }

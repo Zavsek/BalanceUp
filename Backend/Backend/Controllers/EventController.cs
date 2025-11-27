@@ -17,12 +17,12 @@ namespace Backend.Controllers
         {
             try
             {
-                if (id != Event.Id) return TypedResults.BadRequest("Id does not match");
+                if (id != Event.id) return TypedResults.BadRequest("Id does not match");
                 var existingEvent = await _context.Events.FindAsync(id);
                 if (existingEvent == null)
                     return TypedResults.NotFound("Event not found");
-                existingEvent.Title = Event.Title;
-                existingEvent.Description = Event.Description;
+                existingEvent.title = Event.title;
+                existingEvent.description = Event.description;
                 _context.Events.Update(existingEvent);
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok(existingEvent);
@@ -36,22 +36,22 @@ namespace Backend.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(dto.Title))
+                if (string.IsNullOrWhiteSpace(dto.title))
                     return Results.BadRequest("Naslov je obvezen.");
 
                 var ev = new Event
                 {
-                    Title = dto.Title,
-                    Description = dto.Description,
-                    CreatedAt = DateTime.UtcNow
+                    title = dto.title,
+                    description = dto.description,
+                    createdAt = DateTime.UtcNow
                 };
 
                 _context.Events.Add(ev);
                 await _context.SaveChangesAsync();
 
-                foreach (var userId in dto.Users)
+                foreach (var userId in dto.users)
                 {
-                    var result = await UserEventsController.AddUserToEventInternal(userId, ev.Id, _context);
+                    var result = await UserEventsController.AddUserToEventInternal(userId, ev.id, _context);
 
                     if (!result.ok)
                         return Results.BadRequest($"Error in adding user {userId}: {result.error}");
@@ -59,7 +59,7 @@ namespace Backend.Controllers
 
                 return Results.Ok(new
                 {
-                    eventId = ev.Id,
+                    eventId = ev.id,
                     message = "Event created."
                 });
             }
@@ -73,19 +73,19 @@ namespace Backend.Controllers
             try
             {
                 var expenses = await _context.Expenses
-                    .Where(e => e.EventId == eventId)
-                    .Include(e => e.UserExpenseShares) 
+                    .Where(e => e.eventId == eventId)
+                    .Include(e => e.userExpenseShares) 
                     .ToListAsync();
 
                 var result = expenses.Select(e => new
                 {
-                    e.Id,
-                    e.EventId,
-                    e.Amount,
-                    e.Type,
-                    e.Description,
-                    e.DateTime,
-                    Shares = e.UserExpenseShares.Select(s => new { s.UserId, s.ShareAmount })
+                    e.id,
+                    e.eventId,
+                    e.amount,
+                    e.type,
+                    e.description,
+                    e.dateTime,
+                    Shares = e.userExpenseShares.Select(s => new { s.userId, s.shareAmount })
                 });
 
                 return Results.Ok(result);
@@ -100,15 +100,15 @@ namespace Backend.Controllers
             try
             {
                 var expense = await _context.Expenses
-                    .Include(e => e.UserExpenseShares)
-                    .FirstOrDefaultAsync(e => e.Id == expenseId && e.EventId == eventId);
+                    .Include(e => e.userExpenseShares)
+                    .FirstOrDefaultAsync(e => e.id == expenseId && e.eventId == eventId);
 
                 if (expense == null)
                     return Results.NotFound("Expense ne obstaja za ta event.");
 
-                if (expense.UserExpenseShares.Any())
+                if (expense.userExpenseShares.Any())
                 {
-                    _context.UserExpenseShares.RemoveRange(expense.UserExpenseShares);
+                    _context.UserExpenseShares.RemoveRange(expense.userExpenseShares);
                 }
 
                 _context.Expenses.Remove(expense);

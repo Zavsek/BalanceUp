@@ -1,5 +1,5 @@
 ﻿namespace Backend.Models.Dto
 {
-    public record UserEventDto(Guid UserId, Guid EventId);
+    public record UserEventDto(Guid userId, Guid eventId);
 
 }

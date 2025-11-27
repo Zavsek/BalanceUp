@@ -23,25 +23,25 @@ namespace Backend.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                if (string.IsNullOrWhiteSpace(request.email) || string.IsNullOrWhiteSpace(request.password))
                     return Results.BadRequest("Email and password are required!");
-                if(await _context.Users.AnyAsync(u => u.Username == request.Username))
+                if(await _context.Users.AnyAsync(u => u.username == request.username))
                     return Results.Conflict("Username already taken!");
-                var firebaseUid = await _authService.RegisterAsync(request.Email, request.Password);
+                var firebaseUid = await _authService.RegisterAsync(request.email, request.password);
                 var user = new User
                 {
-                    FirebaseUid = firebaseUid,
-                    Username = request.Username,
-                    Gender = Enum.Parse<Gender>(request.Gender),
-                    ProfilePictureUrl = null,
-                    CreatedAt = DateTime.Now,
+                    firebaseUid = firebaseUid,
+                    username = request.username,
+                    gender = Enum.Parse<Gender>(request.gender),
+                    profilePictureUrl = null,
+                    createdAt = DateTime.Now,
                 };
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync(); 
                 var spendingGoal = new SpendingGoal
                 {
-                    UserId = user.Id,
+                    userId = user.id,
                 };
 
                 _context.SpendingGoals.Add(spendingGoal);
@@ -49,10 +49,10 @@ namespace Backend.Controllers
 
                 return Results.Ok(new
                 {
-                    localId = user.Id,
-                    username = user.Username,
-                    profilePictureUrl = user.ProfilePictureUrl,
-                    gender = user.Gender.ToString()
+                    localId = user.id,
+                    username = user.username,
+                    profilePictureUrl = user.profilePictureUrl,
+                    gender = user.gender.ToString()
                 });
 
             }
@@ -67,11 +67,11 @@ namespace Backend.Controllers
             {
                 if (string.IsNullOrWhiteSpace(Uid))
                     return Results.BadRequest("Firebase UID Needed");
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.FirebaseUid == Uid);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == Uid);
                 if (user == null)
                     return Results.NotFound("User not found");
                 return Results.Ok(new
-                { user.Id, user.Username, user.Gender,  user.ProfilePictureUrl, user.CreatedAt });
+                { user.id, user.username, user.gender,  user.profilePictureUrl, user.createdAt });
             }
             catch (Exception ex)
             {

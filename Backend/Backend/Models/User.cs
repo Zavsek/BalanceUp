@@ -16,39 +16,39 @@ namespace Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
         [Required]
         [StringLength(20)]
         [Column("username")]
-        public string Username { get; set; }
+        public string username { get; set; }
         [MaxLength(100)]
         [Column("profile_picture_url")]
-        public string? ProfilePictureUrl { get; set; }
+        public string? profilePictureUrl { get; set; }
         [Required]
         [Column("gender")]
-        public Gender Gender { get; set; }
+        public Gender gender { get; set; }
         [Column("firebase_uid")]
-        public string FirebaseUid { get; set; }
+        public string firebaseUid { get; set; }
 
         [Column("created_at")]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime createdAt { get; set; } = DateTime.UtcNow;
 
         [NotMapped]
-        public ICollection<Expense> Expenses {get; set;} 
+        public ICollection<Expense> expenses {get; set;} 
 
         [NotMapped]
-        public ICollection<UserEvents> UserEvents { get; set; }
+        public ICollection<UserEvents> userEvents { get; set; }
         [NotMapped]
-        public ICollection<UserExpenseShare> UserExpenseShares { get; set; }
+        public ICollection<UserExpenseShare> userExpenseShares { get; set; }
 
         [NotMapped]
-        public ICollection<Friendship> Friendships { get; set; }
+        public ICollection<Friendship> friendships { get; set; }
         [NotMapped]
-        public ICollection<FriendRequest> SentFriendRequests { get; set; }
+        public ICollection<FriendRequest> sentFriendRequests { get; set; }
         [NotMapped]
-        public ICollection<FriendRequest> RecievedFriendRequests { get; set; }
+        public ICollection<FriendRequest> recievedFriendRequests { get; set; }
 
-        public SpendingGoal SpendingGoal { get; set; }
+        public SpendingGoal spendingGoal { get; set; }
 
 
     }

@@ -1,7 +1,7 @@
 interface friendRequest {
   id: string;
-  fromUserId: number;
-  toUserId: number;
+  fromUserId: string;
+  toUserId: string;
   sentAt: string; // ISO date string (DateOnly in backend)
 }
 

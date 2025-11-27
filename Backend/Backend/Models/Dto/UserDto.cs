@@ -1,4 +1,4 @@
 ﻿namespace Backend.Models.Dto
 {
-    public record UserDto(Guid Id, string Username, Gender Gender, string? ProfilePictureUrl);
+    public record UserDto(Guid id, string username, Gender gender, string? profilePictureUrl);
 }

@@ -11,13 +11,13 @@ namespace Backend.Endpoints
         public static void MapExpenseEndpoints(this WebApplication app)
         {
             //Get all expenses
-            app.MapGet("/api/expenses",async ([FromBody] Guid id,[FromServices] ExpenseController controller) => { return await controller.GetExpenses(id); });
+            app.MapGet("/api/expenses",async ( Guid id,[FromServices] ExpenseController controller) => { return await controller.GetExpenses(id); });
             //Add new expense
-            app.MapPost("/api/expenses", async ([FromBody] Guid userId, ExpenseDto expense, [FromServices] ExpenseController controller) => { return await controller.CreateExpense(expense, userId); });
+            app.MapPost("/api/expenses", async ( Guid userId, ExpenseDto expense, [FromServices] ExpenseController controller) => { return await controller.CreateExpense(expense, userId); });
             //Delete expense by id
-            app.MapDelete("/api/expenses/{id}", async ([FromBody] Guid id, [FromServices] ExpenseController controller) => { return await controller.DeleteExpense(id); });
+            app.MapDelete("/api/expenses/{id}", async ( Guid id, [FromServices] ExpenseController controller) => { return await controller.DeleteExpense(id); });
             //Update expense by id
-            app.MapPut("/api/expenses/{id}", async ([FromBody] Guid id, Expense expense, [FromServices] ExpenseController controller) => { return await controller.UpdateExpense(id, expense); });
+            app.MapPut("/api/expenses/{id}", async ( Guid id, Expense expense, [FromServices] ExpenseController controller) => { return await controller.UpdateExpense(id, expense); });
 
         }
     }

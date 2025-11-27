@@ -1,7 +1,7 @@
 interface userExpenseShare {
-  id: number;
-  expenseId: number;
-  userId: number;
+  id: string;
+  expenseId: string;
+  userId: string;
   shareAmount: number;
 }
 
