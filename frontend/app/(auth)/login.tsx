@@ -1,11 +1,15 @@
-import { Text, View } from 'react-native'
+import { Text, View, StatusBar,  } from 'react-native'
 import React, { Component } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import AuthBackground from '../components/AuthBackground'
+import LoginForm from '../components/LoginForm'
 
-export class login extends Component {
-  render() {
+const login = () => {
+  {
     return (
-      <View>
-        <Text>login</Text>
+      <View className='flex-1 w-screen h-screen justify-center items-center bg-black'>
+        <AuthBackground/>
+        <LoginForm/>
       </View>
     )
   }

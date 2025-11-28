@@ -1,11 +1,11 @@
-import { Text, View } from 'react-native'
+import { Text, View, StatusBar,  } from 'react-native'
 import React, { Component } from 'react'
 
-export class register extends Component {
-  render() {
+const register = () => {
+   {
     return (
-      <View>
-        <Text>register</Text>
+      <View className='flex-1  justify-center items-center bg-black'>
+        <Text className='text-white '>register </Text>
       </View>
     )
   }
