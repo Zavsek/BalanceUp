@@ -4,6 +4,7 @@ using Backend.Routes;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,9 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod()
                .AllowAnyHeader());
 });
-// Minimal API setup: do NOT add MVC controllers
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddEntityFrameworkNpgsql()
     .AddDbContext<AppDbContext>(options =>
@@ -53,6 +56,18 @@ builder.Services.AddSingleton(provider =>
             AutoConnectRealtime = false
         })
 );
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("user_limit", HttpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: HttpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
 
 builder.Services.AddScoped<FirebaseAuthService>();
 builder.Services.AddScoped<Backend.Controllers.AuthController>();
@@ -68,7 +83,7 @@ builder.Services.ConfigureHttpJsonOptions(opts =>
 });
 
 var app = builder.Build();
-
+app.UseRateLimiter();
 app.MapAuthEndpoints();
 
 if (app.Environment.IsDevelopment())
