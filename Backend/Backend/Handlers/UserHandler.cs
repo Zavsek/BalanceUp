@@ -1,20 +1,19 @@
-﻿
-using Backend.Data;
+﻿using Backend.Data;
 using Backend.Models;
 using Backend.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace Backend.Controllers
+namespace Backend.Handlers
 {
-    public class UserController
+    public class UserHandler
     {
         private readonly AppDbContext _context;
         private readonly Supabase.Client _supabase;
         private readonly HttpRequest _request;
 
-        public UserController(AppDbContext context, Supabase.Client supabase, HttpRequest request)
+        public UserHandler(AppDbContext context, Supabase.Client supabase, HttpRequest request)
         {
             _context = context;
             _supabase = supabase;

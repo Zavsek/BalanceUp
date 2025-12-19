@@ -2,12 +2,12 @@
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Controllers
+namespace Backend.Handlers
 {
-    public  class SpendingGoalsController
+    public  class SpendingGoalsHandler
     {
         private readonly AppDbContext _context;
-        public SpendingGoalsController(AppDbContext context)
+        public SpendingGoalsHandler(AppDbContext context)
         {
             _context = context;
         }

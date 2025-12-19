@@ -1,4 +1,4 @@
-using Backend.Controllers;
+using Backend.Handlers;
 using Backend.Data;
 using Backend.Models;
 using Backend.Models.Dto;
@@ -13,15 +13,15 @@ namespace Backend.Routes
         {
             // Auth Endpoints
             // POST register
-            app.MapPost("/api/users/register", async ( AuthRequestDto request, [FromServices] AuthController controller) =>
+            app.MapPost("/api/users/register", async ( AuthRequestDto request, AuthHandler handler) =>
             {
-                return await controller.Register(request);
+                return await handler.Register(request);
             });
 
             // POST login 
-            app.MapPost("/api/users/login", async (ClaimsPrincipal user, [FromServices] AuthController controller) =>
+            app.MapPost("/api/users/login", async (ClaimsPrincipal user,  AuthHandler handler) =>
             {
-                return await controller.LoginRequest(user);
+                return await handler.LoginRequest(user);
 
             }).RequireAuthorization();
         }

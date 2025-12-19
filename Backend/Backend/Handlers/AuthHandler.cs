@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 
-namespace Backend.Controllers
+namespace Backend.Handlers
 {
 
-    public class AuthController
+    public class AuthHandler
     {
         private readonly FirebaseAuthService _authService;
         private readonly AppDbContext _context;
 
-        public AuthController(FirebaseAuthService authService, AppDbContext context)
+        public AuthHandler(FirebaseAuthService authService, AppDbContext context)
         {
             _authService = authService;
             _context = context;

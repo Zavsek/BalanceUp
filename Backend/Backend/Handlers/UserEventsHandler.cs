@@ -4,12 +4,12 @@ using Backend.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Backend.Controllers
+namespace Backend.Handlers
 {
-    public  class UserEventsController
+    public  class UserEventsHandler
     {
         private readonly AppDbContext _context;
-        public UserEventsController(AppDbContext context)
+        public UserEventsHandler(AppDbContext context)
         {
             _context = context;
         }

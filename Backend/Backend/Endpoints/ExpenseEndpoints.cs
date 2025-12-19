@@ -1,5 +1,5 @@
-﻿using Backend.Controllers;
-using Backend.Data;
+﻿using Backend.Data;
+using Backend.Handlers;
 using Backend.Models;
 using Backend.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +14,13 @@ namespace Backend.Endpoints
                 .RequireAuthorization()
                 .RequireRateLimiting("user_limit");
             //Get all expenses
-            ExpenseGroup.MapGet("/", async (Guid id,  ExpenseController controller) => { return await controller.GetExpenses(id); });
+            ExpenseGroup.MapGet("/", async (Guid id,  ExpenseHandler handler) => { return await handler.GetExpenses(id); });
             //Add new expense
-            ExpenseGroup.MapPost("/", async (Guid userId, ExpenseDto expense,  ExpenseController controller) => { return await controller.CreateExpense(expense, userId); });
+            ExpenseGroup.MapPost("/", async (Guid userId, ExpenseDto expense,  ExpenseHandler handler) => { return await handler.CreateExpense(expense, userId); });
             //Delete expense by id
-            ExpenseGroup.MapDelete("/{id}", async (Guid id,  ExpenseController controller) => { return await controller.DeleteExpense(id); });
+            ExpenseGroup.MapDelete("/{id}", async (Guid id,  ExpenseHandler handler) => { return await handler.DeleteExpense(id); });
             //Update expense by id
-            ExpenseGroup.MapPut("/api/expenses/{id}", async (Guid id, Expense expense,  ExpenseController controller) => { return await controller.UpdateExpense(id, expense); });
+            ExpenseGroup.MapPut("/api/expenses/{id}", async (Guid id, Expense expense,  ExpenseHandler handler) => { return await handler.UpdateExpense(id, expense); });
 
         }
     }

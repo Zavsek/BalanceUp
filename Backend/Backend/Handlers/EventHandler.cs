@@ -4,12 +4,12 @@ using Backend.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Controllers
+namespace Backend.Handlers
 {
-    public  class EventController
+    public  class EventHandler
     {
         private readonly AppDbContext _context;
-        public EventController(AppDbContext context)
+        public EventHandler(AppDbContext context)
         {
             _context = context;
         }
@@ -51,7 +51,7 @@ namespace Backend.Controllers
 
                 foreach (var userId in dto.users)
                 {
-                    var result = await UserEventsController.AddUserToEventInternal(userId, ev.id, _context);
+                    var result = await UserEventsHandler.AddUserToEventInternal(userId, ev.id, _context);
 
                     if (!result.ok)
                         return Results.BadRequest($"Error in adding user {userId}: {result.error}");

@@ -1,6 +1,6 @@
-﻿using Backend.Controllers;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Backend.Models.Dto;
+using Backend.Handlers;
 namespace Backend.Endpoints
 {
     public static class GoalEndpoints
@@ -12,9 +12,9 @@ namespace Backend.Endpoints
                 .RequireAuthorization()
                 .RequireRateLimiting("user_limit");
             //GET spending goal for user
-            GoalsGroup.MapGet("/{userId}", async (Guid userId,  SpendingGoalsController controller) => { return await controller.GetGoal(userId);});
+            GoalsGroup.MapGet("/{userId}", async (Guid userId,  SpendingGoalsHandler handler) => { return await handler.GetGoal(userId);});
             //PUT update goal
-            GoalsGroup.MapPut("/{id}", async (Guid id,  SpendingGoalsController controller) => { return await controller.GetGoal(id); });
+            GoalsGroup.MapPut("/{id}", async (Guid id,  SpendingGoalsHandler handler) => { return await handler.GetGoal(id); });
         }
     }
 }

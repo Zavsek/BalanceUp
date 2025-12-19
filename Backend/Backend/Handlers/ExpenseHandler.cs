@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Backend.Controllers
+namespace Backend.Handlers
 {
-    public  class ExpenseController
+    public  class ExpenseHandler
     {
         private readonly AppDbContext _context;
 
-        public ExpenseController(AppDbContext context)
+        public ExpenseHandler(AppDbContext context)
         {
             _context = context;
         }

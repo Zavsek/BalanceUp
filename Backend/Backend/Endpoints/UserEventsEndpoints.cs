@@ -1,6 +1,6 @@
-﻿using Backend.Controllers;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Backend.Models.Dto;
+using Backend.Handlers;
 namespace Backend.Endpoints
 {
     public static class UserEventsEndpoints
@@ -12,13 +12,13 @@ namespace Backend.Endpoints
                 .RequireRateLimiting("user_limit");
 
             //Get events for user   
-            UserEventGroup.MapGet("/{userId}", async( Guid userId, [FromServices] UserEventsController controller) => { return await controller.GetUserEvents(userId); });
+            UserEventGroup.MapGet("/{userId}", async( Guid userId, UserEventsHandler handler) => { return await handler.GetUserEvents(userId); });
             //Add user to event
-            UserEventGroup.MapPost("/add-user", async( UserEventDto dto, [FromServices] UserEventsController controller) => { return await controller.AddUserToEvent(dto); });
+            UserEventGroup.MapPost("/add-user", async( UserEventDto dto, UserEventsHandler handler) => { return await handler.AddUserToEvent(dto); });
             //Delete user from event
-            UserEventGroup.MapDelete("/{eventId}/{userId}", async ( Guid eventId, Guid userId, [FromServices] UserEventsController controller) => { return await controller.RemoveUserFromEvent(eventId, userId); });
+            UserEventGroup.MapDelete("/{eventId}/{userId}", async ( Guid eventId, Guid userId,UserEventsHandler handler) => { return await handler.RemoveUserFromEvent(eventId, userId); });
             //Delete event for all users
-            UserEventGroup.MapDelete("/{eventId}", async ( Guid eventId, [FromServices] UserEventsController controller) => { return await controller.RemoveEventFromAllUsers(eventId); });
+            UserEventGroup.MapDelete("/{eventId}", async ( Guid eventId,UserEventsHandler handler) => { return await handler.RemoveEventFromAllUsers(eventId); });
         }
     }
 }
