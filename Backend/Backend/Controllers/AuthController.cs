@@ -61,13 +61,13 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in AuthController "+ ex.Message);
             }
         }
-        public  async Task<IResult> LoginRequest(string Uid)
+        public  async Task<IResult> LoginRequest(string uuid)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(Uid))
+                if (string.IsNullOrWhiteSpace(uuid))
                     return Results.BadRequest("Firebase UID Needed");
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == Uid);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == uuid);
                 if (user == null)
                     return Results.NotFound("User not found");
                 return Results.Ok(new

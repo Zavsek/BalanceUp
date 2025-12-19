@@ -158,3 +158,6 @@ C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\n
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\swae.build.ex.cache
 C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\zavse\Desktop\studij\3.letnik\RMR\BalanceUp\Backend\Backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
