@@ -5,12 +5,16 @@ namespace Backend.Endpoints
 {
     public static class GoalEndpoints
     {
+
         public static void MapGoalEndpoints(this WebApplication app)
         {
+            var GoalsGroup = app.MapGroup("/api/goals")
+                .RequireAuthorization()
+                .RequireRateLimiting("user_limit");
             //GET spending goal for user
-            app.MapGet("/api/goals/{userId}", async ([FromBody] Guid userId, [FromServices] SpendingGoalsController controller ) => { return await controller.GetGoal(userId); });
+            GoalsGroup.MapGet("/{userId}", async (Guid userId,  SpendingGoalsController controller) => { return await controller.GetGoal(userId);});
             //PUT update goal
-            app.MapPut("/api/goals/{id}", async ([FromBody] Guid id, [FromServices] SpendingGoalsController controller) => { return await controller.GetGoal(id); });
+            GoalsGroup.MapPut("/{id}", async (Guid id,  SpendingGoalsController controller) => { return await controller.GetGoal(id); });
         }
     }
 }

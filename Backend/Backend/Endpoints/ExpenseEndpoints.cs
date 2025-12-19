@@ -10,14 +10,17 @@ namespace Backend.Endpoints
     {
         public static void MapExpenseEndpoints(this WebApplication app)
         {
+            var ExpenseGroup = app.MapGroup("/api/expenses")
+                .RequireAuthorization()
+                .RequireRateLimiting("user_limit");
             //Get all expenses
-            app.MapGet("/api/expenses",async ( Guid id,[FromServices] ExpenseController controller) => { return await controller.GetExpenses(id); });
+            ExpenseGroup.MapGet("/", async (Guid id,  ExpenseController controller) => { return await controller.GetExpenses(id); });
             //Add new expense
-            app.MapPost("/api/expenses", async ( Guid userId, ExpenseDto expense, [FromServices] ExpenseController controller) => { return await controller.CreateExpense(expense, userId); });
+            ExpenseGroup.MapPost("/", async (Guid userId, ExpenseDto expense,  ExpenseController controller) => { return await controller.CreateExpense(expense, userId); });
             //Delete expense by id
-            app.MapDelete("/api/expenses/{id}", async ( Guid id, [FromServices] ExpenseController controller) => { return await controller.DeleteExpense(id); });
+            ExpenseGroup.MapDelete("/{id}", async (Guid id,  ExpenseController controller) => { return await controller.DeleteExpense(id); });
             //Update expense by id
-            app.MapPut("/api/expenses/{id}", async ( Guid id, Expense expense, [FromServices] ExpenseController controller) => { return await controller.UpdateExpense(id, expense); });
+            ExpenseGroup.MapPut("/api/expenses/{id}", async (Guid id, Expense expense,  ExpenseController controller) => { return await controller.UpdateExpense(id, expense); });
 
         }
     }

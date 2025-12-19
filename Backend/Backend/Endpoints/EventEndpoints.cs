@@ -12,18 +12,18 @@ namespace Backend.Endpoints
         public static void MapEventEndpoints(this WebApplication app)
         {
             //PUT update event
-            app.MapPut("/api/events/{id}",  async ( Guid id, Expense expense, [FromServices] ExpenseController controller) => { return await controller.UpdateExpense(id, expense); });
+            app.MapPut("/api/events/{id}",  async ( Guid id, Expense expense, [FromServices] ExpenseController controller) => { return await controller.UpdateExpense(id, expense); }).RequireAuthorization();
             //POST add expense to event
-            app.MapPost("/api/events/{eventId}/expenses", async ( Guid eventId, EventExpenseDto payload, [FromServices] ExpenseController controller) => { return await controller.CreateExpenseForEvent(eventId, payload); });
+            app.MapPost("/api/events/{eventId}/expenses", async ( Guid eventId, EventExpenseDto payload, [FromServices] ExpenseController controller) => { return await controller.CreateExpenseForEvent(eventId, payload); }).RequireAuthorization();
             //PUT update shares of expense
-            app.MapPut("/api/events/{eventId}/expenses/{expenseId}/shares",async (Guid eventId, Guid expenseId, UpdateSharesDto payload, [FromServices] ExpenseController controller) => { return await controller.UpdateShares(eventId, expenseId, payload); });
+            app.MapPut("/api/events/{eventId}/expenses/{expenseId}/shares",async (Guid eventId, Guid expenseId, UpdateSharesDto payload, [FromServices] ExpenseController controller) => { return await controller.UpdateShares(eventId, expenseId, payload); }).RequireAuthorization();
             //POST create new event
-            app.MapPost("/api/events",async ( CreateEventDto Event, [FromServices] EventController controller) => { return await controller.CreateEvent(Event); });
+            app.MapPost("/api/events",async ( CreateEventDto Event, [FromServices] EventController controller) => { return await controller.CreateEvent(Event); }).RequireAuthorization();
             //GET get all expenses in event
-            app.MapGet("/api/events/{eventId}/expenses", async ( Guid eventId, [FromServices] EventController controller) => { return await controller.GetExpensesForEvent(eventId); });
+            app.MapGet("/api/events/{eventId}/expenses", async ( Guid eventId, [FromServices] EventController controller) => { return await controller.GetExpensesForEvent(eventId); }).RequireAuthorization();
 
             //DELETE delete expense in event
-            app.MapDelete("/api/events/{eventId}/expenses/{expenseId}", async (Guid eventId, Guid expenseId, [FromServices] EventController controller) => { return await controller.DeleteExpenseFromEvent(eventId,expenseId); });
+            app.MapDelete("/api/events/{eventId}/expenses/{expenseId}", async (Guid eventId, Guid expenseId, [FromServices] EventController controller) => { return await controller.DeleteExpenseFromEvent(eventId,expenseId); }).RequireAuthorization();
 
         }
     }

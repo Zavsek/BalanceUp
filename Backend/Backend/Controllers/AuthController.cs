@@ -4,6 +4,7 @@ using Backend.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -61,17 +62,25 @@ namespace Backend.Controllers
                 return TypedResults.InternalServerError("Error in AuthController "+ ex.Message);
             }
         }
-        public  async Task<IResult> LoginRequest(string uuid)
+        public async Task<IResult> LoginRequest(ClaimsPrincipal userClaims)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(uuid))
-                    return Results.BadRequest("Firebase UID Needed");
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == uuid);
+                var firebaseUid = userClaims.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
+                if (string.IsNullOrEmpty(firebaseUid)){
+                    return Results.Unauthorized();
+                }
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
                 if (user == null)
-                    return Results.NotFound("User not found");
-                return Results.Ok(new
-                { user.id, user.username, user.gender,  user.profilePictureUrl, user.createdAt });
+                    return Results.NotFound("User not found. please register or try again later");
+                return Results.Ok(new {
+                    user.id,
+                    user.username,
+                    user.gender,
+                    user.profilePictureUrl,
+                    user.createdAt
+                });
             }
             catch (Exception ex)
             {

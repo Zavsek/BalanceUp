@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -100,23 +101,6 @@ namespace Backend.Controllers
                 if (user == null)
                     return TypedResults.NotFound("User not found");
                 return TypedResults.Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
-            }
-        }
-
-        public  async Task<IResult> DeleteUser(Guid Id)
-        {
-            try
-            {
-                var user = await _context.Users.FindAsync(Id);
-                if (user == null)
-                    return TypedResults.NotFound("User not found");
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-                return TypedResults.Ok("User deleted successfully");
             }
             catch (Exception ex)
             {
@@ -271,6 +255,42 @@ namespace Backend.Controllers
                 _context.Friendships.Remove(friendship);
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friend removed");
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        internal async Task<IResult> GetPersonalDetails(ClaimsPrincipal user)
+        {
+            try
+            {
+                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
+                var internalUser = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
+                if (internalUser == null)
+                    return TypedResults.NotFound("User not found");
+                return TypedResults.Ok(internalUser);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        internal async Task<IResult> DeletePersonalUser(ClaimsPrincipal user)
+        {
+            try
+            {
+                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
+                var internalUser = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
+                if (internalUser == null)
+                    return TypedResults.NotFound("User not found");
+                _context.Users.Remove(internalUser);
+                await _context.SaveChangesAsync();
+                return TypedResults.NoContent();
             }
             catch (Exception ex)
             {

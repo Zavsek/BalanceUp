@@ -1,31 +1,42 @@
 ﻿using Backend.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Models.Dto;
+using System.Security.Claims;
 namespace Backend.Endpoints
 {
     public static class UserEndpoints
     {
         public static void MapUserEndpoints(this WebApplication app)
         {
+            var UserGroup = app.MapGroup("/apis/users")
+                .RequireAuthorization()
+                .RequireRateLimiting("user_limit");
+
+            //GET get sender user details via JWT
+            UserGroup.MapGet("/me", async (UserController controller, ClaimsPrincipal user) =>
+            {
+                return await controller.GetPersonalDetails(user);
+            });
+
+            //DELETE delete sender via JWT
+            UserGroup.MapDelete("/me", async(UserController controller, ClaimsPrincipal user) => {  return await controller.DeletePersonalUser(user); });
             //PUT update user
-            app.MapPut("/api/users/{id}", async(Guid id, [FromServices] UserController controller) =>
+            UserGroup.MapPut("/{id}", async(Guid id,  UserController controller) =>
             {
                 return await controller.UpdateUser(id);
             });
             //GET user by id
-            app.MapGet("/api/users/{id}", async ( Guid id, [FromServices] UserController controller) =>
+            UserGroup.MapGet("/find-by-id/{id}", async ( Guid id,  UserController controller) =>
             {
                 return await controller.GetUserById(id);
             });
             //GET user by username
-            app.MapGet("/api/users/id/{username}", async ( string username, [FromServices] UserController controller) =>
+            UserGroup.MapGet("/find-by-username/{username}", async ( string username,  UserController controller) =>
             {
                 return await controller.GetUserByUsername(username);
             });
-            //DELETE user by id
-            app.MapDelete("/api/users/{id}", async ( Guid id, [FromServices] UserController controller) => { return await controller.DeleteUser(id); });
             //POST upload profile picture
-            app.MapPost("/api/users/{id}/profile_pic", async ( Guid id, IFormFile file, [FromServices] UserController controller) =>
+            UserGroup.MapPost("/{id}/profile_pic", async ( Guid id, IFormFile file,  UserController controller) =>
             {
                 return await controller.UploadProfilePic(id, file);
             });
@@ -33,23 +44,23 @@ namespace Backend.Endpoints
             //------------------------------------------
             // Friend Requests Endpoints
             //PUT send friend request
-            app.MapPut("/api/users/friend_requests", async ( FriendRequestDto request, [FromServices] UserController controller) => { return await controller.SendFriendRequest(request); });
+            UserGroup.MapPut("/friend_requests", async ( FriendRequestDto request,  UserController controller) => { return await controller.SendFriendRequest(request); });
             //GET friend requests for user
-            app.MapGet("/api/users/{id}/friend_requests", async ( Guid id, [FromServices] UserController controller) => { return await controller.GetFriendRequests(id); });
+            UserGroup.MapGet("/{id}/friend_requests", async ( Guid id,  UserController controller) => { return await controller.GetFriendRequests(id); });
             //DELETE friend request
-            app.MapDelete("/api/users/friend_requests/{requestId}", async ( Guid id, [FromServices] UserController controller) =>
+            UserGroup.MapDelete("/friend_requests/{requestId}", async ( Guid id,  UserController controller) =>
             {
                 return await controller.DeleteFriendRequest(id);
             });
             //POST accept friend request
-            app.MapPost("/api/users/friend_requests/{requestId}", async ( Guid requestId, [FromServices] UserController controller) => { return await controller.AddFriend(requestId); });
+            UserGroup.MapPost("/friend_requests/{requestId}", async ( Guid requestId,  UserController controller) => { return await controller.AddFriend(requestId); });
 
             //--------------------------------------------
             //Friends Endpoints
             //GET friends for user
-            app.MapGet("/api/users/{id}/friends", async ( Guid id, [FromServices] UserController controller) => { return await controller.GetFriends(id); });
+            UserGroup.MapGet("/{id}/friends", async (Guid id,  UserController controller) => { return await controller.GetFriends(id); });
             //DELETE remove friend
-            app.MapDelete("/api/users/{userId}/friends/{friendId}", async ( Guid userId, Guid friendId, [FromServices] UserController controller) =>
+            UserGroup.MapDelete("/{userId}/friends/{friendId}", async ( Guid userId, Guid friendId,  UserController controller) =>
             {
                 return await controller.RemoveFriend(userId, friendId);
             });

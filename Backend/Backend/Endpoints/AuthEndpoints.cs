@@ -3,6 +3,7 @@ using Backend.Data;
 using Backend.Models;
 using Backend.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Backend.Routes
 {
@@ -12,16 +13,17 @@ namespace Backend.Routes
         {
             // Auth Endpoints
             // POST register
-            app.MapPost("/api/register", async ( AuthRequestDto request, [FromServices] AuthController controller) =>
+            app.MapPost("/api/users/register", async ( AuthRequestDto request, [FromServices] AuthController controller) =>
             {
                 return await controller.Register(request);
             });
 
             // POST login 
-            app.MapPost("/api/login/{uid}", async (string uid, [FromServices] AuthController controller) =>
+            app.MapPost("/api/users/login", async (ClaimsPrincipal user, [FromServices] AuthController controller) =>
             {
-                return await controller.LoginRequest(uid);
-            });
+                return await controller.LoginRequest(user);
+
+            }).RequireAuthorization();
         }
     }
 }
