@@ -1,12 +1,8 @@
-enum gender{
-    Male = 1,
-    Female = 2,
-    Other = 3
-}
+export type Gender = "Male"|"Female"|"Other"
 interface registerRequest {
   email: string;
   password: string;
   username: string;
-  gender: gender;
+  gender: Gender;
 }
 export default registerRequest;

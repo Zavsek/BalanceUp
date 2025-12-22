@@ -2,17 +2,11 @@
   {
     "ContainingType": "Backend.Routes.AuthEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMapAuthEndpoints\u003Eb__0_1",
-    "RelativePath": "api/login",
+    "RelativePath": "api/users/login",
     "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "Uid",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
         "Type": "System.Void",
@@ -24,7 +18,7 @@
   {
     "ContainingType": "Backend.Routes.AuthEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMapAuthEndpoints\u003Eb__0_0",
-    "RelativePath": "api/register",
+    "RelativePath": "api/users/register",
     "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,

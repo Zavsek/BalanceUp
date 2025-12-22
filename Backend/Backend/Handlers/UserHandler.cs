@@ -11,16 +11,16 @@ namespace Backend.Handlers
     {
         private readonly AppDbContext _context;
         private readonly Supabase.Client _supabase;
-        private readonly HttpRequest _request;
+  
 
-        public UserHandler(AppDbContext context, Supabase.Client supabase, HttpRequest request)
+        public UserHandler(AppDbContext context, Supabase.Client supabase)
         {
             _context = context;
             _supabase = supabase;
-            _request = request;
+
         }
         //User tasks
-        public  async Task<IResult> UpdateUser(Guid id)
+        public  async Task<IResult> UpdateUser(Guid id, HttpRequest _request)
         {
             try
             {

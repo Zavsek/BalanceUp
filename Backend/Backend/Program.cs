@@ -3,6 +3,7 @@ using Backend.Data;
 using Backend.Routes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -108,7 +109,12 @@ builder.Services.AddRateLimiter(options =>
 
 
 builder.Services.AddScoped<FirebaseAuthService>();
-builder.Services.AddScoped<Backend.Controllers.AuthController>();
+builder.Services.AddScoped<Backend.Handlers.AuthHandler>();
+builder.Services.AddScoped<Backend.Handlers.UserHandler>();
+builder.Services.AddScoped<Backend.Handlers.EventHandler>();
+builder.Services.AddScoped<Backend.Handlers.UserEventsHandler>();
+builder.Services.AddScoped<Backend.Handlers.ExpenseHandler>();
+builder.Services.AddScoped<Backend.Handlers.SpendingGoalsHandler>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization();

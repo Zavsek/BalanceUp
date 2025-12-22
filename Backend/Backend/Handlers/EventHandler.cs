@@ -32,7 +32,7 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Event Controller " + ex.Message);
             }
         }
-        public  async Task<IResult> CreateEvent([FromBody] CreateEventDto dto)
+        public  async Task<IResult> CreateEvent(CreateEventDto dto)
         {
             try
             {

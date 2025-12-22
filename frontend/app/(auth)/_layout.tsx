@@ -1,31 +1,16 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
-import { Tabs } from 'expo-router'
+import { Stack } from 'expo-router'
 
-export class _layout extends Component {
-  render() {
-    return (
-     <Tabs
+const AuthLayout = () => {
+  return (
+    <Stack
       screenOptions={{
-      tabBarShowLabel:false,
-      tabBarStyle:{
-      display: 'none'
-      },
-      headerShown:false
+        headerShown: false,
       }}
-      >
-
-
-
-    <Tabs.Screen
-        name="login"/>
-
-    <Tabs.Screen
-        name="register"/>
-    </Tabs>
-    
-    )
-  }
+    >
+      <Stack.Screen name="login" />
+      <Stack.Screen name="register" />
+    </Stack>
+  )
 }
 
-export default _layout
+export default AuthLayout

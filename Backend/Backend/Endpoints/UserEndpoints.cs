@@ -13,56 +13,56 @@ namespace Backend.Endpoints
                 .RequireRateLimiting("user_limit");
 
             //GET get sender user details via JWT
-            UserGroup.MapGet("/me", async (UserHandler controller, ClaimsPrincipal user) =>
+            UserGroup.MapGet("/me", async (UserHandler handler, ClaimsPrincipal user) =>
             {
-                return await controller.GetPersonalDetails(user);
+                return await handler.GetPersonalDetails(user);
             });
 
             //DELETE delete sender via JWT
-            UserGroup.MapDelete("/me", async(UserHandler controller, ClaimsPrincipal user) => {  return await controller.DeletePersonalUser(user); });
+            UserGroup.MapDelete("/me", async(UserHandler handler, ClaimsPrincipal user) => {  return await handler.DeletePersonalUser(user); });
             //PUT update user
-            UserGroup.MapPut("/{id}", async(Guid id,  UserHandler controller) =>
+            UserGroup.MapPut("/{id}", async(Guid id,  UserHandler handler, HttpRequest request) =>
             {
-                return await controller.UpdateUser(id);
+                return await handler.UpdateUser(id, request );
             });
             //GET user by id
-            UserGroup.MapGet("/find-by-id/{id}", async ( Guid id,  UserHandler controller) =>
+            UserGroup.MapGet("/find-by-id/{id}", async ( Guid id,  UserHandler handler) =>
             {
-                return await controller.GetUserById(id);
+                return await handler.GetUserById(id);
             });
             //GET user by username
-            UserGroup.MapGet("/find-by-username/{username}", async ( string username,  UserHandler controller) =>
+            UserGroup.MapGet("/find-by-username/{username}", async ( string username,  UserHandler handler) =>
             {
-                return await controller.GetUserByUsername(username);
+                return await handler.GetUserByUsername(username);
             });
             //POST upload profile picture
-            UserGroup.MapPost("/{id}/profile_pic", async ( Guid id, IFormFile file,  UserHandler controller) =>
+            UserGroup.MapPost("/{id}/profile_pic", async ( Guid id, IFormFile file,  UserHandler handler) =>
             {
-                return await controller.UploadProfilePic(id, file);
+                return await handler.UploadProfilePic(id, file);
             });
 
             //------------------------------------------
             // Friend Requests Endpoints
             //PUT send friend request
-            UserGroup.MapPut("/friend_requests", async ( FriendRequestDto request,  UserHandler controller) => { return await controller.SendFriendRequest(request); });
+            UserGroup.MapPut("/friend_requests", async ( FriendRequestDto request,  UserHandler handler) => { return await handler.SendFriendRequest(request); });
             //GET friend requests for user
-            UserGroup.MapGet("/{id}/friend_requests", async ( Guid id,  UserHandler controller) => { return await controller.GetFriendRequests(id); });
+            UserGroup.MapGet("/{id}/friend_requests", async ( Guid id,  UserHandler handler) => { return await handler.GetFriendRequests(id); });
             //DELETE friend request
-            UserGroup.MapDelete("/friend_requests/{requestId}", async ( Guid id,  UserHandler controller) =>
+            UserGroup.MapDelete("/friend_requests/{requestId}", async ( Guid id,  UserHandler handler) =>
             {
-                return await controller.DeleteFriendRequest(id);
+                return await handler.DeleteFriendRequest(id);
             });
             //POST accept friend request
-            UserGroup.MapPost("/friend_requests/{requestId}", async ( Guid requestId,  UserHandler controller) => { return await controller.AddFriend(requestId); });
+            UserGroup.MapPost("/friend_requests/{requestId}", async ( Guid requestId,  UserHandler handler) => { return await handler.AddFriend(requestId); });
 
             //--------------------------------------------
             //Friends Endpoints
             //GET friends for user
-            UserGroup.MapGet("/{id}/friends", async (Guid id,  UserHandler controller) => { return await controller.GetFriends(id); });
+            UserGroup.MapGet("/{id}/friends", async (Guid id,  UserHandler handler) => { return await handler.GetFriends(id); });
             //DELETE remove friend
-            UserGroup.MapDelete("/{userId}/friends/{friendId}", async ( Guid userId, Guid friendId,  UserHandler controller) =>
+            UserGroup.MapDelete("/{userId}/friends/{friendId}", async ( Guid userId, Guid friendId,  UserHandler handler) =>
             {
-                return await controller.RemoveFriend(userId, friendId);
+                return await handler.RemoveFriend(userId, friendId);
             });
 
         }
