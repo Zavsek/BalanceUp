@@ -51,7 +51,7 @@ public sealed class FirebaseAuthService
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"Error in  deleting user from firebase uid: {uid} \n {ex.Message}")
+            Console.WriteLine($"Error in  deleting user from firebase uid: {uid} \n {ex.Message}");
         }
     }
 }

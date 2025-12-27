@@ -6,7 +6,7 @@ export default function Index() {
     <View className="flex-1  items-center bg-black justify-start">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <AppHeader />
-        <Text className="text-golden text-3xl mt-5">Welcome to Balance Up!</Text>
+        <Text className="text-golden text-3xl mt-15">Welcome to Balance Up!</Text>
 
       </ScrollView>
     </View>

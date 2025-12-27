@@ -128,8 +128,8 @@ builder.Services.ConfigureHttpJsonOptions(opts =>
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseCors("AllowExpo");
+//app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
@@ -142,4 +142,4 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-app.Run();
+app.Run("http://0.0.0.0:5245");

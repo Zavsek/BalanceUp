@@ -2,7 +2,7 @@ import { Gender } from "./registerRequest";
 
 interface user{
     id: string;
-    userName: string;
+    username: string;
     profilePictureUrl: string | null;
     gender: Gender;
     createdAt: string;

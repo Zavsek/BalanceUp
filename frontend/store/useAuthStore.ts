@@ -51,11 +51,19 @@ export const useAuthStore = create<AuthState>((set) => ({
       const firebaseUser = userCredential.user;
 
       const uid = firebaseUser.uid;
-
+      const token = await firebaseUser.getIdToken();
       if(rememberLogin){
         await SecureStore.setItemAsync("firebaseUID", uid);}
 
-      const res = await axiosInstance.get<user>(`/api/users/firebase/${uid}`);
+      const res = await axiosInstance.post<user>(
+      "/api/users/login", 
+      {}, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
       set({ userInstance: res.data });
 
       set({ checkingAuth: false });
@@ -63,7 +71,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       Toast.show({
         type: "success",
         text1: "Login Successful",
-        text2: `Welcome ${res.data.userName}!`,
+        text2: `Welcome ${res.data.username}!`,
       });
     } catch (error: any) {
       set({ checkingAuth: false });
@@ -98,7 +106,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const{username,  localId, gender, createdAt, profilePictureUrl} = res.data
       const user:user = {
         id:localId,
-        userName:username,
+        username:username,
         gender:gender,
         createdAt:createdAt,
         profilePictureUrl:profilePictureUrl

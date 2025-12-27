@@ -70,7 +70,7 @@ namespace Backend.Handlers
                 }
                 catch (Exception ex)
                 {
-                    if (!string.IsNullOrEmpty(firebaseUid)
+                    if (!string.IsNullOrEmpty(firebaseUid))
                     {
                         await _authService.DeleteUserAsync(firebaseUid);
                     }
