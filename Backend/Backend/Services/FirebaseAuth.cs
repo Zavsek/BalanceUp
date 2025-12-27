@@ -7,11 +7,14 @@ public sealed class FirebaseAuthService
     private readonly FirebaseAuth _firebaseAuth;
     public FirebaseAuthService()
     {
-        FirebaseApp.Create(new AppOptions()
+        if (FirebaseApp.DefaultInstance ==null)
         {
-            Credential = GoogleCredential.FromFile("firebase-config.json"),
-            ProjectId = "balanceup-85fcc"
-        });
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("firebase-config.json"),
+                ProjectId = "balanceup-85fcc"
+            });
+        }
 
         _firebaseAuth = FirebaseAuth.DefaultInstance;
     }
@@ -37,6 +40,18 @@ public sealed class FirebaseAuthService
         catch
         {
             return null;
+        }
+    }
+    public async Task DeleteUserAsync(string uid)
+    {
+        try
+        {
+            await FirebaseAuth.DefaultInstance.DeleteUserAsync(uid);
+            Console.WriteLine("FIrebase user succesfully deleted");
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error in  deleting user from firebase uid: {uid} \n {ex.Message}")
         }
     }
 }

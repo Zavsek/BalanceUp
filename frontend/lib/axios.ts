@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAuth } from "firebase/auth";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://localhost:7127", 
+  baseURL: "http://192.168.56.1:5245", 
    });
 
    axiosInstance.interceptors.request.use(async (config) => {

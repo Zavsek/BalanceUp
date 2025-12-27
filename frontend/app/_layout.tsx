@@ -49,6 +49,5 @@ export default function RootLayout() {
     <Stack.Screen
       name="events/[id]"/>
       <Stack.Screen name="(auth)/login" />
-      <Stack.Screen name="(auth)/register" />
   </Stack>;
 }

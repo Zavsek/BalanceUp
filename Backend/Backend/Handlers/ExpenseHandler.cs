@@ -95,11 +95,10 @@ namespace Backend.Handlers
                 };
 
                 _context.Expenses.Add(expense);
-                await _context.SaveChangesAsync();
 
                 var shares = payload.shares.Select(s => new UserExpenseShare
                 {
-                    expenseId = expense.id,
+                    expense = expense,
                     userId = s.userId,
                     shareAmount = s.shareAmount
                 }).ToList();
@@ -196,7 +195,6 @@ namespace Backend.Handlers
                 
                 var oldShares = _context.UserExpenseShares.Where(x => x.expenseId == expenseId);
                 _context.UserExpenseShares.RemoveRange(oldShares);
-                await _context.SaveChangesAsync();
 
                 
                 var newShares = payload.shares.Select(s => new UserExpenseShare

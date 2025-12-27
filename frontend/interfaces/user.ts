@@ -1,14 +1,10 @@
-enum gender{
-    Male = 1,
-    Female = 2,
-    Other = 3
-}
+import { Gender } from "./registerRequest";
 
 interface user{
     id: string;
     userName: string;
     profilePictureUrl: string | null;
-    gender: gender;
+    gender: Gender;
     createdAt: string;
 }
 export default user;

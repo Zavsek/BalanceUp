@@ -33,19 +33,18 @@ namespace Backend.Models
         [Column("created_at")]
         public DateTime createdAt { get; set; } = DateTime.UtcNow;
 
-        [NotMapped]
+
         public ICollection<Expense> expenses {get; set;} 
 
-        [NotMapped]
         public ICollection<UserEvents> userEvents { get; set; }
-        [NotMapped]
+
         public ICollection<UserExpenseShare> userExpenseShares { get; set; }
 
-        [NotMapped]
+
         public ICollection<Friendship> friendships { get; set; }
-        [NotMapped]
+
         public ICollection<FriendRequest> sentFriendRequests { get; set; }
-        [NotMapped]
+
         public ICollection<FriendRequest> recievedFriendRequests { get; set; }
 
         public SpendingGoal spendingGoal { get; set; }

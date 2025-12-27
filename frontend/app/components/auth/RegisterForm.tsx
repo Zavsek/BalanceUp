@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuthStore } from "../../../store/useAuthStore";
-import Toast from "react-native-toast-message";
-import { registerRequest } from "@/interfaces";
 import { Gender } from "@/interfaces/registerRequest";
 
 const RegisterForm = () => {

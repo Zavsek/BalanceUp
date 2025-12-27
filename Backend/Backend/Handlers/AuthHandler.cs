@@ -1,6 +1,7 @@
 using Backend.Data;
 using Backend.Models;
 using Backend.Models.Dto;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,36 +27,58 @@ namespace Backend.Handlers
             {
                 if (string.IsNullOrWhiteSpace(request.email) || string.IsNullOrWhiteSpace(request.password))
                     return Results.BadRequest("Email and password are required!");
-                if(await _context.Users.AnyAsync(u => u.username == request.username))
+
+                if (await _context.Users.AnyAsync(u => u.username == request.username))
                     return Results.Conflict("Username already taken!");
-                var firebaseUid = await _authService.RegisterAsync(request.email, request.password);
-                var user = new User
+
+                string? firebaseUid = null;
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                try
                 {
-                    firebaseUid = firebaseUid,
-                    username = request.username,
-                    gender = Enum.Parse<Gender>(request.gender),
-                    profilePictureUrl = null,
-                    createdAt = DateTime.Now,
-                };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync(); 
-                var spendingGoal = new SpendingGoal
+                    firebaseUid = await _authService.RegisterAsync(request.email, request.password);
+
+
+                    var user = new User
+                    {
+                        firebaseUid = firebaseUid,
+                        username = request.username,
+                        gender = Enum.Parse<Gender>(request.gender),
+                        createdAt = DateTime.UtcNow,
+                    };
+
+                    _context.Users.Add(user);
+
+                    _context.SpendingGoals.Add(new SpendingGoal { user = user });
+
+
+                    await _context.SaveChangesAsync();
+
+
+                    await transaction.CommitAsync();
+
+                    var customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(firebaseUid);
+
+                    return Results.Ok(new
+                    {
+                        token = customToken,
+                        localId = user.id,
+                        username = user.username,
+                        gender = user.gender.ToString()
+                    });
+                }
+                catch (Exception ex)
                 {
-                    userId = user.id,
-                };
+                    if (!string.IsNullOrEmpty(firebaseUid)
+                    {
+                        await _authService.DeleteUserAsync(firebaseUid);
+                    }
 
-                _context.SpendingGoals.Add(spendingGoal);
-                await _context.SaveChangesAsync();
-
-                return Results.Ok(new
-                {
-                    localId = user.id,
-                    username = user.username,
-                    profilePictureUrl = user.profilePictureUrl,
-                    gender = user.gender.ToString()
-                });
-
+                    
+                    return Results.InternalServerError("Registration failed: " + ex.Message);
+                }
+            
             }
             catch (Exception ex)
             {

@@ -3,9 +3,9 @@ import Toast from "react-native-toast-message";
 import { axiosInstance } from "../lib/axios";
 import * as SecureStore from "expo-secure-store";
 import { auth } from "../services/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithCustomToken, signInWithEmailAndPassword } from "firebase/auth";
 import user from "../interfaces/user";
-import { registerRequest as registerRequest } from "@/interfaces";
+import { registerRequest as registerRequest, registerResponse } from "@/interfaces";
 
 interface AuthState {
   userInstance: user | null;
@@ -88,12 +88,23 @@ export const useAuthStore = create<AuthState>((set) => ({
   registerAsync: async (request: registerRequest) => {
     set({ checkingAuth: true });
     try {
-      const res = await axiosInstance.post<user>(
+      const res = await axiosInstance.post<registerResponse>(
         "/api/users/register",
         request
       );
 
-      set({ checkingAuth: false, userNameTaken: false });
+      const token = res.data.token;
+      const userCredential = await signInWithCustomToken(auth, token);
+      const{username,  localId, gender, createdAt, profilePictureUrl} = res.data
+      const user:user = {
+        id:localId,
+        userName:username,
+        gender:gender,
+        createdAt:createdAt,
+        profilePictureUrl:profilePictureUrl
+      }
+      
+      set({ checkingAuth: false, userNameTaken: false, userInstance:user});
 
       Toast.show({
         type: "success",

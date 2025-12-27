@@ -7,3 +7,4 @@ export { default as spendingGoal } from './spendingGoal';
 export { default as userEvents } from './userEvents';
 export { default as userExpenseShare } from './userExpenseShare';
 export { default as registerRequest } from './registerRequest';
+export {default as registerResponse} from './registerResponse';

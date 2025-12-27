@@ -13,7 +13,7 @@ namespace Backend.Models
         [Required]
         [Column("user_id")]
         public Guid userId { get; set; }
-        [ForeignKey("UserId")]
+        [ForeignKey("userId")]
         public User user { get; set; }
         [Column("weekly_limit")]
         public int? weeklyLimit { get; set; } = 700;
