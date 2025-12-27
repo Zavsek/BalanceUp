@@ -13,9 +13,9 @@ namespace Backend.Endpoints
                 .RequireRateLimiting("user_limit");
 
             //GET get sender user details via JWT
-            UserGroup.MapGet("/me", async (UserHandler handler, ClaimsPrincipal user) =>
+            UserGroup.MapGet("/dashboard", async (UserHandler handler, ClaimsPrincipal user) =>
             {
-                return await handler.GetPersonalDetails(user);
+                return await handler.GetPersonalDashboard(user);
             });
 
             //DELETE delete sender via JWT

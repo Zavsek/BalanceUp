@@ -106,7 +106,7 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
-
+         
         public  async Task<IResult> UploadProfilePic(Guid id, IFormFile file) 
         {
             try
@@ -261,7 +261,7 @@ namespace Backend.Handlers
             }
         }
 
-        internal async Task<IResult> GetPersonalDetails(ClaimsPrincipal user)
+        internal async Task<IResult> GetPersonalDashboard(ClaimsPrincipal user)
         {
             try
             {
@@ -270,7 +270,45 @@ namespace Backend.Handlers
                 var internalUser = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
                 if (internalUser == null)
                     return TypedResults.NotFound("User not found");
-                return TypedResults.Ok(internalUser);
+                var now = DateTime.UtcNow;
+                var today = now.Date;
+                var tomorrow = today.AddDays(1);
+                var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1);
+
+                var monthExpenses = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
+                    .ToListAsync();
+
+                var dailySpent = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= today && e.dateTime < tomorrow)
+                    .SumAsync(e => e.amount);
+
+                var monthlySpent = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
+                    .SumAsync(e => e.amount);
+
+                var recentExpenses = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id)
+                    .OrderByDescending(e => e.dateTime)
+                    .Take(5)
+                    .ToListAsync();
+                List<RecentExpensesDto> recentExpensesDto;
+
+                if (recentExpenses != null && recentExpenses.Count > 0)
+                {
+                    recentExpensesDto = recentExpenses
+                        .Select(x => new RecentExpensesDto(
+                            x.description,
+                            x.amount,
+                            x.type.ToString()
+                        ))
+                        .ToList();
+                }
+                else
+                {
+                    recentExpensesDto = new List<RecentExpensesDto>();
+                }
+                return Results.Ok(new DashboardDto(dailySpent, internalUser.spendingGoal.dailyLimit, monthlySpent, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
             }
             catch (Exception ex)
             {
