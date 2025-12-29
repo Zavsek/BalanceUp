@@ -17,7 +17,11 @@ namespace Backend.Endpoints
             //Get all expenses
             ExpenseGroup.MapGet("/", async (Guid id,  ExpenseHandler handler) => { return await handler.GetExpenses(id); });
             //Add new expense
-            ExpenseGroup.MapPost("/", async (ClaimsPrincipal user, ExpenseDto expense,  ExpenseHandler handler) => { return await handler.CreateExpense(expense, user); });
+            // Odstrani 'ClaimsPrincipal user', ker ga ne rabiš več tukaj
+            ExpenseGroup.MapPost("/", async (ExpenseDto expense, ExpenseHandler handler) =>
+            {
+                return await handler.CreateExpense(expense);
+            }); 
             //Delete expense by id
             ExpenseGroup.MapDelete("/{id}", async (Guid id,  ExpenseHandler handler) => { return await handler.DeleteExpense(id); });
             //Update expense by id

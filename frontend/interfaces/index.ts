@@ -8,4 +8,5 @@ export { default as userEvents } from './userEvents';
 export { default as userExpenseShare } from './userExpenseShare';
 export { default as registerRequest } from './Dtos/registerRequest';
 export {default as registerResponse} from './Dtos/registerResponse';
-export {default as Dashboard} from'./dashboard'
+export {default as Dashboard} from'./dashboard';
+export{default as CreateExpense} from './Dtos/createExpense';

@@ -272,6 +272,7 @@ namespace Backend.Handlers
                     return TypedResults.NotFound("User not found");
                 var now = DateTime.UtcNow;
                 var today = now.Date;
+                var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
                 var tomorrow = today.AddDays(1);
                 var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -282,7 +283,9 @@ namespace Backend.Handlers
                 var dailySpent = await _context.Expenses
                     .Where(e => e.userId == internalUser.id && e.dateTime >= today && e.dateTime < tomorrow)
                     .SumAsync(e => e.amount);
-
+                var weeklySpent = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= sevenDaysAgo)
+                    .SumAsync(e => e.amount);
                 var monthlySpent = await _context.Expenses
                     .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
                     .SumAsync(e => e.amount);
@@ -308,7 +311,7 @@ namespace Backend.Handlers
                 {
                     recentExpensesDto = new List<RecentExpensesDto>();
                 }
-                return Results.Ok(new DashboardDto(dailySpent, internalUser.spendingGoal.dailyLimit, monthlySpent, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
+                return Results.Ok(new DashboardDto(dailySpent, internalUser.spendingGoal.dailyLimit, weeklySpent, internalUser.spendingGoal.weeklyLimit, monthlySpent, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
             }
             catch (Exception ex)
             {

@@ -34,7 +34,7 @@ namespace Backend.Handlers
             }
         }
 
-        public  async Task<IResult> CreateExpense(ExpenseDto expense, ClaimsPrincipal user)
+        public  async Task<IResult> CreateExpense( ExpenseDto expense)
         {
             try
             {

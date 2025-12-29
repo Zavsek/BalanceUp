@@ -1,20 +1,21 @@
 import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import AppHeader from "../components/Header";
 import { useRouter } from "expo-router";
-import { useUserStore } from "../../store/useUserStore"; // Preveri pot
+import { useUserStore } from "../../store/useUserStore"; 
 import { useEffect, useCallback, useState } from "react";
+import AddExpenseModal from "../components/AddExpenseModal"; 
 
 export default function Index() {
   const router = useRouter();
-  
   const { dashboard, getDashboard, gettingDashboard } = useUserStore();
   const [refreshing, setRefreshing] = useState(false);
+  
 
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getDashboard();
   }, []);
-
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -22,15 +23,12 @@ export default function Index() {
     setRefreshing(false);
   }, []);
 
-
   const calculatePercentage = () => {
     if (!dashboard || !dashboard.dailyLimit || dashboard.dailyLimit === 0) return 0;
     const percent = (dashboard.dailySpent / dashboard.dailyLimit) * 100;
     return Math.min(percent, 100); 
   };
-
   const percentage = calculatePercentage();
-
 
   if (gettingDashboard && !dashboard) {
       return (
@@ -53,16 +51,15 @@ export default function Index() {
       >
         <View className="p-6 pb-24 gap-y-8">
 
-          {/* 1. WELCOME & DAILY SNAPSHOT */}
-          <View>
+
+            <View>
             <Text className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">
               Today's Overview
             </Text>
-            
-            <View className="bg-white/10 border border-golden/30 p-5 rounded-3xl mt-2">
+            {/* ... koda za kartico ... */}
+             <View className="bg-white/10 border border-golden/30 p-5 rounded-3xl mt-2">
                 <View className="flex-row justify-between items-end mb-2">
                     <View>
-
                         <Text className="text-white text-3xl font-black">
                             € {dashboard?.dailySpent?.toFixed(2) ?? "0.00"}
                         </Text>
@@ -75,7 +72,6 @@ export default function Index() {
                         <Text className="text-gray-400 text-xs">daily limit</Text>
                     </View>
                 </View>
-
                 <View className="h-4 w-full bg-white/10 rounded-full overflow-hidden mt-3">
                     <View 
                         className="h-full bg-golden shadow-lg shadow-golden" 
@@ -88,11 +84,12 @@ export default function Index() {
             </View>
           </View>
 
-          {/* 2.  ADD EXPENSE */}
+
+          {/* 2. ADD EXPENSE GUMB - POPRAVEK */}
           <View className="items-center">
             <TouchableOpacity 
                 activeOpacity={0.8}
-                onPress={() => console.log("Open Add Expense Modal")}
+                onPress={() => setModalVisible(true)} 
                 className="w-full"
             >
                 <View className="h-20 bg-golden rounded-2xl flex-row justify-center items-center shadow-lg shadow-golden/30 border border-white/20">
@@ -104,8 +101,8 @@ export default function Index() {
             </TouchableOpacity>
           </View>
 
-          {/* 3. SECONDARY ACTIONS GRID */}
-          <View className="flex-row gap-4">
+          {/* ... OSTALA KODA (Goals, Recent Activity) ... */}
+           <View className="flex-row gap-4">
             <TouchableOpacity 
               activeOpacity={0.7}
               className="flex-1 h-28 bg-white/5 rounded-2xl border border-white/10 justify-center items-center gap-2 p-3"
@@ -137,12 +134,9 @@ export default function Index() {
             <Text className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">
               Latest Transactions
             </Text>
-
-          
             {dashboard?.recentExpenses?.length === 0 && (
                 <Text className="text-gray-500 text-center italic mt-2">No expenses today.</Text>
             )}
-
             {dashboard?.recentExpenses?.map((expense, index) => (
               <View key={index} className="w-full p-4 mb-3 bg-white/5 rounded-2xl border-l-[3px] border-l-golden/50 flex-row justify-between items-center">
                 <View>
@@ -154,8 +148,16 @@ export default function Index() {
             ))}
           </View>
 
+
         </View>
       </ScrollView>
+
+
+      <AddExpenseModal 
+        isVisible={isModalVisible} 
+        onClose={() => setModalVisible(false)} 
+      />
+
     </View>
   );
 }
