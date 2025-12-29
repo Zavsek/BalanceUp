@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuthStore } from "../../../store/useAuthStore";
-import { Gender } from "@/interfaces/registerRequest";
+import { Gender } from "@/interfaces/Dtos/registerRequest";
 
 const RegisterForm = () => {
   const router = useRouter();

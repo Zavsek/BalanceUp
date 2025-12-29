@@ -1,11 +1,8 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 import './globals.css';
-import { Header } from "@react-navigation/elements";
 import { useFonts } from 'expo-font';
-import { View, Text } from 'react-native';
 import { useAuthStore } from "../store/useAuthStore";
 import { use, useEffect } from "react";
-import login from "./(auth)/login";
 import LoadingScreen from "./components/LoadingScreen";
 
 

@@ -31,13 +31,13 @@ namespace Backend.Models
         public DateTime dateTime { get; set; } = DateTime.Now;
         [Column("user_id")]
         public Guid? userId { get; set; }
-        [ForeignKey("UserId")]
+        [ForeignKey("userId")]
         public User user { get; set; }
 
         [Column("event_id")]
         public Guid? eventId { get; set; } 
 
-        [ForeignKey("EventId")]
+        [ForeignKey("eventId")]
         public Event expenseEvent { get; set; }
 
         public ICollection<UserExpenseShare> userExpenseShares { get; set; }

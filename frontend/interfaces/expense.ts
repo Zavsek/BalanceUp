@@ -1,10 +1,5 @@
-export enum ExpenseType {
-  Travel = 1,
-  Food = 2,
-  Drinks = 3,
-  Accommodation = 4,
-  Miscellaneous = 5,
-}
+import ExpenseType from "./types/ExpenseType";
+
 
 interface expense {
   id: string;

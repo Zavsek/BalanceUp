@@ -1,5 +1,6 @@
 using Backend.Constants;
 using Backend.Data;
+using Backend.Endpoints;
 using Backend.Routes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -88,18 +89,19 @@ builder.Services.AddAuthorization();
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+
+    options.AddPolicy("user_limit", httpContext =>
     {
         var userKey = httpContext.User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value
-            ?? httpContext.Connection.RemoteIpAddress?.ToString()
-            ?? "anonymous";
+                      ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                      ?? "anonymous";
 
-        return RateLimitPartition.GetFixedWindowLimiter(
-            userKey, _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 30,
-                Window = TimeSpan.FromMinutes(1)
-            });
+        return RateLimitPartition.GetFixedWindowLimiter(userKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 30,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
     });
 });
 
@@ -132,8 +134,10 @@ var app = builder.Build();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRateLimiter();
 app.MapAuthEndpoints();
+app.UseRateLimiter();
+app.MapUserEndpoints();
+
 
 if (app.Environment.IsDevelopment())
 {

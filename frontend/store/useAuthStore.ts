@@ -52,6 +52,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       const uid = firebaseUser.uid;
       const token = await firebaseUser.getIdToken();
+      //for testing
+      console.log(token);
       if(rememberLogin){
         await SecureStore.setItemAsync("firebaseUID", uid);}
 
@@ -146,22 +148,17 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   logoutAsync: async () => {
     try {
-      await SecureStore.deleteItemAsync("firebaseUID");
-      set({ userInstance: null });
-      await auth.signOut();
-      Toast.show({
-        type: "success",
-        text1: "Logout Successful",
-        text2: "You have been logged out.",
-      });
-    } catch (error: any) {
-      Toast.show({
-        type: "error",
-        text1: "Logout Failed",
-        text2:
-          error.response?.data?.message ||
-          "An error occurred during registration.",
-      });
-    }
+    await auth.signOut();
+    await SecureStore.deleteItemAsync("firebaseUID");
+    set({ userInstance: null });
+    
+    console.log("Logout successful");
+  } catch (error: any) {
+    Toast.show({
+      type: "error",
+      text1: "Logout Failed",
+      text2: error.message || "An error occurred during logout.",
+    });
+  }
   },
 }));

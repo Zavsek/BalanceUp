@@ -1,10 +1,11 @@
 export { default as user } from './user';
 export { default as event } from './event';
-export { default as expense, ExpenseType } from './expense';
+export { default as expense } from './expense';
 export { default as friendRequest } from './friendRequest';
 export { default as friendship } from './friendship';
 export { default as spendingGoal } from './spendingGoal';
 export { default as userEvents } from './userEvents';
 export { default as userExpenseShare } from './userExpenseShare';
-export { default as registerRequest } from './registerRequest';
-export {default as registerResponse} from './registerResponse';
+export { default as registerRequest } from './Dtos/registerRequest';
+export {default as registerResponse} from './Dtos/registerResponse';
+export {default as Dashboard} from'./dashboard'

@@ -1,4 +1,4 @@
-import { Gender } from "./registerRequest";
+import { Gender } from "./Dtos/registerRequest";
 
 interface user{
     id: string;

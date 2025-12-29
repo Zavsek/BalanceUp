@@ -267,13 +267,13 @@ namespace Backend.Handlers
             {
                 var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
 
-                var internalUser = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
+                var internalUser = await _context.Users.Include(u => u.spendingGoal).FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
                 if (internalUser == null)
                     return TypedResults.NotFound("User not found");
                 var now = DateTime.UtcNow;
                 var today = now.Date;
                 var tomorrow = today.AddDays(1);
-                var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1);
+                var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
                 var monthExpenses = await _context.Expenses
                     .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))

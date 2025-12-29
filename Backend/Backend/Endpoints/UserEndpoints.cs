@@ -8,11 +8,12 @@ namespace Backend.Endpoints
     {
         public static void MapUserEndpoints(this WebApplication app)
         {
-            var UserGroup = app.MapGroup("/apis/users")
+            var UserGroup = app.MapGroup("/api/users")
                 .RequireAuthorization()
                 .RequireRateLimiting("user_limit");
 
-            //GET get sender user details via JWT
+            //GET gets user dashboard
+            // returns user daily + montly spent + limit and lst 5 tranactions
             UserGroup.MapGet("/dashboard", async (UserHandler handler, ClaimsPrincipal user) =>
             {
                 return await handler.GetPersonalDashboard(user);
