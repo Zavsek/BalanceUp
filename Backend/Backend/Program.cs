@@ -1,6 +1,7 @@
 using Backend.Constants;
 using Backend.Data;
 using Backend.Endpoints;
+using Backend.Middleware;
 using Backend.Routes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -106,7 +107,7 @@ builder.Services.AddRateLimiter(options =>
 });
 
 
-
+builder.Services.AddHttpContextAccessor();
 
 
 
@@ -120,7 +121,6 @@ builder.Services.AddScoped<Backend.Handlers.SpendingGoalsHandler>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication().AddBearerToken();
 
 builder.Services.ConfigureHttpJsonOptions(opts =>
 {
@@ -134,10 +134,11 @@ var app = builder.Build();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<UserMappingMiddleware>();
 app.MapAuthEndpoints();
 app.UseRateLimiter();
 app.MapUserEndpoints();
-
+app.MapExpenseEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

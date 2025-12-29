@@ -5,16 +5,19 @@ using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Backend.Handlers
 {
     public  class ExpenseHandler
     {
         private readonly AppDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ExpenseHandler(AppDbContext context)
+        public ExpenseHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
         public  async Task<IResult> GetExpenses([FromQuery]Guid UserId)
         {
@@ -31,21 +34,25 @@ namespace Backend.Handlers
             }
         }
 
-        public  async Task<IResult> CreateExpense(ExpenseDto expense, Guid UserId)
+        public  async Task<IResult> CreateExpense(ExpenseDto expense, ClaimsPrincipal user)
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                
+                if (userId == null)
+                    return TypedResults.Unauthorized();
                 var NewExpense = new Expense
                 {
                     amount = expense.amount,
                     type = expense.type,
                     description = expense.description,
-                    dateTime = expense.time,
-                    userId = UserId
+                    dateTime = DateTime.SpecifyKind(expense.time, DateTimeKind.Utc),
+                    userId = userId
                 };
                 _context.Expenses.Add(NewExpense);
                 await _context.SaveChangesAsync();
-                return Results.Ok(expense);
+                return Results.Ok(NewExpense);
             }
             catch (Exception ex)
             {
