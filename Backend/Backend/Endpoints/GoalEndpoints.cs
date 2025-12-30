@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Backend.Models.Dto;
 using Backend.Handlers;
+using Backend.Models;
 namespace Backend.Endpoints
 {
     public static class GoalEndpoints
@@ -14,7 +15,7 @@ namespace Backend.Endpoints
             //GET spending goal for user
             GoalsGroup.MapGet("/{userId}", async (Guid userId,  SpendingGoalsHandler handler) => { return await handler.GetGoal(userId);});
             //PUT update goal
-            GoalsGroup.MapPut("/{id}", async (Guid id,  SpendingGoalsHandler handler) => { return await handler.GetGoal(id); });
+            GoalsGroup.MapPut("/", async (SpendingGoalDto goal,  SpendingGoalsHandler handler) => { return await handler.UpdateGoal(goal); });
         }
     }
 }

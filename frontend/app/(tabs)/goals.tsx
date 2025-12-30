@@ -1,15 +1,16 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useUserStore } from "../../store/useUserStore";
 import AppHeader from "../components/Header";
+import Animated, { FadeInDown } from "react-native-reanimated"; 
 import GoalBar from "../components/GoalBar";
+import EditGoalsModal from "../components/EditGoalsModal"; 
 
 export default function Goals() {
   const { dashboard, getDashboard, gettingDashboard } = useUserStore();
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
 
-  useEffect(() => {
-    getDashboard();
-  }, []);
+  useEffect(() => { getDashboard(); }, []);
 
   if (gettingDashboard && !dashboard) {
     return (
@@ -22,84 +23,62 @@ export default function Goals() {
   return (
     <View className="flex-1 bg-black">
       <AppHeader />
-
       <ScrollView className="flex-1 px-6 pt-4" showsVerticalScrollIndicator={false}>
         
-        {/* TODO: DATE PICKER SECTION */}
-        <View className="mb-8">
-            <Text className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">
-                Time Travel
-            </Text>
-            <TouchableOpacity 
-                activeOpacity={0.7}
-                onPress={() => console.log("TODO: Implement Date Picker")}
-                className="flex-row items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl border-dashed"
-            >
-                <View className="flex-row items-center gap-3">
-                    <View className="bg-gray-700/50 w-10 h-10 rounded-full items-center justify-center">
-                        <Text className="text-gray-300">📅</Text>
-                    </View>
-                    <View>
-                        <Text className="text-gray-300 font-bold">Select Date</Text>
-                        <Text className="text-gray-500 text-xs">View past analytics</Text>
-                    </View>
-                </View>
-                <View className="bg-golden/20 px-3 py-1 rounded-full">
-                    <Text className="text-golden text-xs font-bold">TODO</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
 
-        {/* GOALS SECTION */}
-        <View className="mb-8">
-            <Text className="text-white text-2xl font-black mb-6">Spending Goals</Text>
-
-            <View className="gap-y-6">
-                <GoalBar 
-                    title="Daily Limit" 
-                    spent={dashboard?.dailySpent || 0} 
-                    limit={dashboard?.dailyLimit} 
-                    period="Today"
-                />
-
-                <GoalBar 
-                    title="Weekly Limit" 
-                    spent={dashboard?.weeklySpent || 0} 
-                    limit={dashboard?.weeklyLimit} 
-                    period="Last 7 Days"
-                />
-
-                <GoalBar 
-                    title="Monthly Limit" 
-                    spent={dashboard?.monthlySpent || 0} 
-                    limit={dashboard?.monthlyLimit} 
-                    period="This Month"
-                />
+        <Animated.View entering={FadeInDown.duration(500).delay(100)}>
+            <View className="flex-row justify-between items-center mb-6">
+                <Text className="text-white text-3xl font-black">Goals</Text>
+                <TouchableOpacity 
+                    onPress={() => setEditModalVisible(true)}
+                    className="bg-golden/10 border border-golden/50 px-4 py-2 rounded-full"
+                >
+                    <Text className="text-golden font-bold">Edit Limits</Text>
+                </TouchableOpacity>
             </View>
+        </Animated.View>
+
+
+        <View className="gap-y-8 mb-10">
+            {[
+                { t: "Daily", s: dashboard?.dailySpent, l: dashboard?.dailyLimit, p: "Today" },
+                { t: "Weekly", s: dashboard?.weeklySpent, l: dashboard?.weeklyLimit, p: "Last 7 Days" },
+                { t: "Monthly", s: dashboard?.monthlySpent, l: dashboard?.monthlyLimit, p: "This Month" }
+            ].map((item, index) => (
+                <Animated.View 
+                    key={item.t} 
+                    entering={FadeInDown.duration(500).delay(200 + index * 100)}
+                >
+                    <GoalBar 
+                        title={`${item.t} Limit`} 
+                        spent={item.s || 0} 
+                        limit={item.l ?? null} 
+                        period={item.p} 
+                    />
+                </Animated.View>
+            ))}
         </View>
 
-        {/* QUICK STATS */}
-        <View className="flex-row gap-4 pb-20">
-             <View className="flex-1 bg-white/5 p-4 rounded-2xl border border-white/10">
+
+        <Animated.View entering={FadeInDown.duration(500).delay(600)} className="flex-row gap-4 pb-20">
+             <View className="flex-1 bg-white/5 p-5 rounded-3xl border border-white/10 shadow-sm">
                 <Text className="text-gray-400 text-[10px] font-bold uppercase mb-1">Monthly Total</Text>
-                <Text className="text-white text-xl font-black">
-                    € {dashboard?.monthlySpent.toFixed(2)}
-                </Text>
+                <Text className="text-white text-2xl font-black">€ {dashboard?.monthlySpent.toFixed(2)}</Text>
              </View>
-             
-             <View className="flex-1 bg-white/5 p-4 rounded-2xl border border-white/10">
-                <Text className="text-gray-400 text-[10px] font-bold uppercase mb-1">Remaining Daily</Text>
-                <Text className={`text-xl font-black ${
-                    (dashboard?.dailyLimit && dashboard?.dailySpent > dashboard?.dailyLimit) 
-                    ? "text-red-500" : "text-green-500"
-                }`}>
-                    {dashboard?.dailyLimit 
-                        ? `€ ${(dashboard.dailyLimit - dashboard.dailySpent).toFixed(2)}`
-                        : "No Limit"}
-                </Text>
-             </View>
-        </View>
+        </Animated.View>
+
       </ScrollView>
+
+
+      <EditGoalsModal 
+        isVisible={isEditModalVisible} 
+        onClose={() => setEditModalVisible(false)}
+        goals={{
+            dailyLimit: dashboard?.dailyLimit || 0,
+            weeklyLimit: dashboard?.weeklyLimit || 0,
+            monthlyLimit: dashboard?.monthlyLimit || 0
+        }}
+      />
     </View>
   );
 }

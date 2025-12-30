@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Backend.Models;
+using Backend.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Handlers
@@ -7,9 +8,11 @@ namespace Backend.Handlers
     public  class SpendingGoalsHandler
     {
         private readonly AppDbContext _context;
-        public SpendingGoalsHandler(AppDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public SpendingGoalsHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
         public  async Task<IResult> GetGoal(Guid userId)
         {
@@ -25,23 +28,43 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("error in Spending Goals Controller " + ex.Message);
             }
         }
-        public  async Task<IResult> UpdateGoal(Guid Id,SpendingGoal spendingGoal)
+        public  async Task<IResult> UpdateGoal(SpendingGoalDto dto)
         {
             try
             {
-                if (Id != spendingGoal.id) return TypedResults.BadRequest("Id does not match!");
-                var existingGoal = await _context.SpendingGoals.FindAsync(Id);
-                if (existingGoal != null) return TypedResults.NotFound("Goal not found");
-                existingGoal.weeklyLimit = spendingGoal.weeklyLimit;
-                existingGoal.monthlyLimit = spendingGoal.monthlyLimit;
-                existingGoal.dailyLimit = spendingGoal.dailyLimit;
-                _context.SpendingGoals.Update(existingGoal);
-                await _context.SaveChangesAsync();
-                return TypedResults.Ok(existingGoal);
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null) return Results.Unauthorized();
 
+
+                var goals = await _context.SpendingGoals.FirstOrDefaultAsync(g => g.userId == userId);
+
+                if (goals == null)
+                {
+
+                    goals = new SpendingGoal
+                    {
+                        id = Guid.NewGuid(),
+                        userId = userId.Value,
+                        dailyLimit = dto.dailyLimit,
+                        weeklyLimit = dto.weeklyLimit,
+                        monthlyLimit = dto.monthlyLimit
+                    };
+                    _context.SpendingGoals.Add(goals);
+                }
+                else
+                {
+
+                    goals.dailyLimit = dto.dailyLimit;
+                    goals.weeklyLimit = dto.weeklyLimit;
+                    goals.monthlyLimit = dto.monthlyLimit;
+                }
+
+                await _context.SaveChangesAsync();
+                return Results.Ok(goals);
             }
-            catch (Exception ex) {
-                return TypedResults.InternalServerError("Error in Spending Goals Controller " + ex.Message);
+            catch (Exception ex)
+            {
+                return Results.Problem("Error updating goals: " + ex.Message);
             }
         }
     }

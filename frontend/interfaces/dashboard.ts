@@ -1,12 +1,13 @@
 
 import RecentExpese from "./Dtos/recentExpense";
+import spendingGoal from "./spendingGoal";
 interface Dashboard{
     dailySpent:number;
-    dailyLimit:number| null;
     weeklySpent:number;
-    weeklyLimit:number|null;
     monthlySpent:number;
-    monthlyLimit:number| null;
+    dailyLimit:number | null;
+    weeklyLimit: number|null;
+    monthlyLimit:number|null;
     recentExpenses: RecentExpese[];
 }
 

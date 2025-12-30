@@ -93,6 +93,50 @@
     ]
   },
   {
+    "ContainingType": "Backend.Endpoints.GoalEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapGoalEndpoints\u003Eb__0_1",
+    "RelativePath": "api/goals/",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "goal",
+        "Type": "Backend.Models.Dto.SpendingGoalDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.GoalEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapGoalEndpoints\u003Eb__0_0",
+    "RelativePath": "api/goals/{userId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMapUserEndpoints\u003Eb__0_2",
     "RelativePath": "api/users/{id}",

@@ -139,6 +139,7 @@ app.MapAuthEndpoints();
 app.UseRateLimiter();
 app.MapUserEndpoints();
 app.MapExpenseEndpoints();
+app.MapGoalEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

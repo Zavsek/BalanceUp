@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { Dashboard } from "@/interfaces";
+import { Dashboard, spendingGoal } from "@/interfaces";
 
 interface UserState{
     dashboard: Dashboard | null;
     gettingDashboard:boolean
     getDashboard: () => Promise<void>
+    updateGoal:(goalsData: { dailyLimit: number, weeklyLimit: number, monthlyLimit: number }) => Promise<boolean>
 }
 
 
@@ -23,6 +24,20 @@ export const useUserStore = create<UserState>((set)=>({
         }
         finally{
             set({gettingDashboard:false});
+        }
+    },
+    updateGoal: async(goalsData)=>{
+        try{
+            const res = await axiosInstance.put<spendingGoal>("/api/goals/", goalsData)
+            if (res.status === 200) {
+            await useUserStore.getState().getDashboard();
+            return true;
+        }
+        return false;
+        }
+        catch(error){
+            console.error("an error occured while updating goal:", error);
+        return false;
         }
     }
 }))
