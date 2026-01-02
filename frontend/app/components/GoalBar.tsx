@@ -8,7 +8,7 @@ interface GoalBarProps {
 }
 
 const GoalBar = ({ title, spent, limit, period }: GoalBarProps) => {
-    // Če ni limita, nastavimo neko privzeto max vrednost za vizualizacijo, da vrstica ni prazna
+
     const hasLimit = limit !== null && limit > 0;
     const percentage = hasLimit ? (spent / limit) * 100 : 0;
     const displayPercent = Math.min(percentage, 100);

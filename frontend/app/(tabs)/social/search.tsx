@@ -1,8 +1,10 @@
 import { View, Text, TextInput, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import React, { useState } from "react";
-import { Search as SearchIcon, UserPlus, Fingerprint } from "lucide-react-native";
+import React, { useState, useEffect } from "react"; 
+import { Search as SearchIcon, UserPlus } from "lucide-react-native";
 import { useFriendStore } from "@/store/useFriendStore"; 
 import { UserCard } from "@/interfaces";
+import { ICONS } from '../../../constants/icons';
+
 
 export default function Search() {
     const [query, setQuery] = useState("");
@@ -12,44 +14,49 @@ export default function Search() {
 
     const { findUsersByUsername, findUsersById, sendFriendRequest } = useFriendStore();
 
-
     const isGuid = (str: string) => {
         const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         return guidRegex.test(str);
     };
 
-    const handleSearch = async (text: string) => {
-        setQuery(text);
-        setError("");
 
-        if (text.length < 2) {
+    useEffect(() => {
+
+        if (query.trim().length < 2) {
             setResults([]);
+            setError("");
             return;
         }
 
-        setLoading(true);
-        try {
-            let data: UserCard[] | UserCard | null | undefined;
 
-            if (isGuid(text)) {
+        const delayDebounceFn = setTimeout(async () => {
+            setLoading(true);
+            setError("");
+            
+            try {
+                let data: UserCard[] | UserCard | null | undefined;
 
-                data = await findUsersById(text);
+                if (isGuid(query)) {
+                    data = await findUsersById(query);
+                    setResults(data ? [data as UserCard] : []);
+                } else {
+                    data = await findUsersByUsername(query);
+                    setResults((data as UserCard[]) || []);
+                }
 
-                setResults(data ? [data as UserCard] : []);
-            } else {
-                data = await findUsersByUsername(text);
-                setResults((data as UserCard[]) || []);
+                if (!data || (Array.isArray(data) && data.length === 0)) {
+                    setError("No users found");
+                }
+            } catch (err) {
+                setError("Something went wrong");
+            } finally {
+                setLoading(false);
             }
+        }, 500); 
 
-            if (!data || (Array.isArray(data) && data.length === 0)) {
-                setError("No users found");
-            }
-        } catch (err) {
-            setError("Something went wrong");
-        } finally {
-            setLoading(false);
-        }
-    };
+       
+        return () => clearTimeout(delayDebounceFn);
+    }, [query]);
 
     const onAddFriend = async (userId: string) => {
         const success = await sendFriendRequest(userId);
@@ -69,7 +76,7 @@ export default function Search() {
                     placeholder="Search by username or ID..."
                     placeholderTextColor="#666"
                     value={query}
-                    onChangeText={handleSearch}
+                    onChangeText={setQuery}
                     className="flex-1 ml-3 text-white font-medium text-base"
                     autoCapitalize="none"
                 />
@@ -90,7 +97,9 @@ export default function Search() {
                         <View className="flex-row items-center justify-between p-4 bg-white/5 rounded-2xl mb-3">
                             <View className="flex-row items-center gap-3">
                                 <Image
-                                    source={{ uri: item.profilePictureUrl || "https://i.pravatar.cc/150" }}
+                                    source={item.profilePictureUrl 
+                                        ? { uri: item.profilePictureUrl } 
+                                         : ICONS.defaultUserIcon}
                                     className="w-10 h-10 rounded-full bg-gray-700"
                                 />
                                 <View>

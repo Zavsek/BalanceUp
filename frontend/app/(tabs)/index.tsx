@@ -4,18 +4,21 @@ import { useRouter } from "expo-router";
 import { useUserStore } from "../../store/useUserStore"; 
 import { useEffect, useCallback, useState } from "react";
 import AddExpenseModal from "../components/AddExpenseModal"; 
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Index() {
   const router = useRouter();
   const { dashboard, getDashboard, gettingDashboard } = useUserStore();
+  const { userInstance } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
   
 
   const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    if(userInstance)
     getDashboard();
-  }, []);
+  }, [userInstance]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -30,7 +33,7 @@ export default function Index() {
   };
   const percentage = calculatePercentage();
 
-  if (gettingDashboard && !dashboard) {
+  if (gettingDashboard && !dashboard || !userInstance) {
       return (
           <View className="flex-1 bg-black justify-center items-center">
               <ActivityIndicator size="large" color="#FFD700" />

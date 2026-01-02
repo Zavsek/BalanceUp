@@ -16,7 +16,7 @@ export default function RootLayout() {
   });
 
   const { userInstance, checkingAuth, loginOnLoad } = useAuthStore();
-  useEffect(() => {loginOnLoad()}, [loginOnLoad]);
+  useEffect(() => {loginOnLoad()}, []);
   
   //redirect logic for auth
   useEffect(() => {

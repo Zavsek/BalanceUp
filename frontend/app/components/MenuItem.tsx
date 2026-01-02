@@ -24,11 +24,11 @@ const MenuItem = ({ icon, label, onPress, badge }: MenuItemProps) => {
             </View>
 
             <View className="flex-row items-center gap-2">
-                {badge && badge > 0 && (
+                {badge && badge > 0 ? (
                     <View className="bg-golden px-2 py-0.5 rounded-full">
                         <Text className="text-black text-xs font-bold">{badge} New</Text>
                     </View>
-                )}
+                ):null}
                 <ChevronRight size={20} color="#555" />
             </View>
         </TouchableOpacity>

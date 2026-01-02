@@ -24,40 +24,40 @@ export const useAuthStore = create<AuthState>((set) => ({
   userNameTaken: false,
   loginOnLoad: async () => {
     set({ checkingAuth: true });
-    try {
-      const uid = await SecureStore.getItemAsync("firebaseUID");
-      if (uid !== null) {
-        const res = await axiosInstance.get<user>(`/api/users/firebase/${uid}`);
-        set({ userInstance: res.data });
-      }
-      set({ checkingAuth: false });
-    } catch (error: any) {
-      if (error.response?.status === 404) {
-        await SecureStore.deleteItemAsync("firebaseUID");
-        set({ userInstance: null });
-      }
+  
+  auth.onAuthStateChanged(async (firebaseUser) => {
+    if (firebaseUser) {
+      try {
 
-      set({ checkingAuth: false });
+        const token = await firebaseUser.getIdToken();
+
+        const res = await axiosInstance.get<user>(`/api/users/firebase/${firebaseUser.uid}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        set({ userInstance: res.data, checkingAuth: false });
+      } catch (error) {
+        console.error("Error loading user data", error);
+        await SecureStore.deleteItemAsync("firebaseUID");
+        set({ userInstance: null, checkingAuth: false });
+      }
+    } else {
+
+      set({ userInstance: null, checkingAuth: false });
     }
+  });
   },
   loginAsync: async (email: string, password: string, rememberLogin:boolean) => {
     set({ checkingAuth: true });
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const firebaseUser = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const firebaseUser = userCredential.user;
+        const token = await firebaseUser.getIdToken();
+        if (rememberLogin) {
+            await SecureStore.setItemAsync("firebaseUID", firebaseUser.uid);
+        }
 
-      const uid = firebaseUser.uid;
-      const token = await firebaseUser.getIdToken();
-      //for testing
-      console.log(token);
-      if(rememberLogin){
-        await SecureStore.setItemAsync("firebaseUID", uid);}
-
-      const res = await axiosInstance.post<user>(
+        const res = await axiosInstance.post<user>(
       "/api/users/login", 
       {}, 
       {
@@ -66,15 +66,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
       }
     );
-      set({ userInstance: res.data });
-
-      set({ checkingAuth: false });
-
-      Toast.show({
-        type: "success",
-        text1: "Login Successful",
-        text2: `Welcome ${res.data.username}!`,
-      });
+        set({ userInstance: res.data, checkingAuth: false });
     } catch (error: any) {
       set({ checkingAuth: false });
       console.error("Login error:", error);
