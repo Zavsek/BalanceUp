@@ -5,6 +5,8 @@ import { Dashboard, spendingGoal } from "@/interfaces";
 interface UserState{
     dashboard: Dashboard | null;
     gettingDashboard:boolean
+    numOfPendingFriendRequests:number| null;
+    getPendingFriendRequests:()=>Promise<void>;
     getDashboard: () => Promise<void>
     updateGoal:(goalsData: { dailyLimit: number, weeklyLimit: number, monthlyLimit: number }) => Promise<boolean>
 }
@@ -13,6 +15,7 @@ interface UserState{
 export const useUserStore = create<UserState>((set)=>({
     dashboard:null,
     gettingDashboard:false,
+    numOfPendingFriendRequests:null,
     getDashboard: async() =>{
         set({gettingDashboard:true})
         try {
@@ -38,6 +41,11 @@ export const useUserStore = create<UserState>((set)=>({
         catch(error){
             console.error("an error occured while updating goal:", error);
         return false;
+        }
+    },
+    getPendingFriendRequests:async()=>{
+        try{
+            const
         }
     }
 }))

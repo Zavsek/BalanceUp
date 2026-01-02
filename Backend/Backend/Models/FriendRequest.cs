@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
 {
+
     [Table("friend_requests")]
     public class FriendRequest
     {

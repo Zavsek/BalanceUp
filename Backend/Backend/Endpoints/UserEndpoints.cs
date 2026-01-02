@@ -22,9 +22,9 @@ namespace Backend.Endpoints
             //DELETE delete sender via JWT
             UserGroup.MapDelete("/me", async(UserHandler handler, ClaimsPrincipal user) => {  return await handler.DeletePersonalUser(user); });
             //PUT update user
-            UserGroup.MapPut("/{id}", async(Guid id,  UserHandler handler, HttpRequest request) =>
+            UserGroup.MapPut("/", async(UserDto user, UserHandler handler) =>
             {
-                return await handler.UpdateUser(id, request );
+                return await handler.UpdateUserInfo(user);
             });
             //GET user by id
             UserGroup.MapGet("/find-by-id/{id}", async ( Guid id,  UserHandler handler) =>
@@ -47,7 +47,7 @@ namespace Backend.Endpoints
             //PUT send friend request
             UserGroup.MapPut("/friend_requests", async ( FriendRequestDto request,  UserHandler handler) => { return await handler.SendFriendRequest(request); });
             //GET friend requests for user
-            UserGroup.MapGet("/{id}/friend_requests", async ( Guid id,  UserHandler handler) => { return await handler.GetFriendRequests(id); });
+            UserGroup.MapGet("/friend_requests", async ( UserHandler handler) => { return await handler.GetFriendRequests(); });
             //DELETE friend request
             UserGroup.MapDelete("/friend_requests/{requestId}", async ( Guid id,  UserHandler handler) =>
             {

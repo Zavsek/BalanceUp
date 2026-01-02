@@ -1,15 +1,17 @@
-import { View, ScrollView, TouchableOpacity, Text } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import React from "react";
 import AppHeader from "../components/Header";
-import { useAuthStore } from "../../store/useAuthStore"; 
+import { useAuthStore } from "../../store/useAuthStore";
 import { useRouter } from "expo-router";
+import { User, Users, UserPlus, LogOut, ChevronRight, Edit3 } from "lucide-react-native";
+import MenuItem from '../components/MenuItem';
 
 export default function Social() {
-  const { logoutAsync } = useAuthStore();
+  const { logoutAsync, userInstance } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = async () => {
     await logoutAsync();
-
     router.replace("/(auth)/login");
   };
 
@@ -17,30 +19,81 @@ export default function Social() {
     <View className="flex-1 bg-black">
       <AppHeader />
       
-      <ScrollView 
-        className="flex-1" 
-        contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View className="p-6 w-full gap-y-10">
-          
-          <Text className="text-white text-2xl font-black text-center mt-10">
-            Community & Social
-          </Text>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        
+        {/* 1. PROFILE HEADER SECTION */}
+        <View className="items-center justify-center pt-8 pb-12 bg-black">
+            {/* Profile Image with Golden Glow */}
+            <View className="shadow-lg shadow-golden/50">
+                <Image 
+                    source={{ uri: userInstance?.profilePictureUrl || "https://i.pravatar.cc/300" }} 
+                    className="w-32 h-32 rounded-full border-4 border-golden"
+                />
+                {/* Edit Icon Floating Badge */}
+                <TouchableOpacity className="absolute bottom-0 right-0 bg-[#1a1a1a] p-2 rounded-full border border-golden/50">
+                    <Edit3 size={16} color="#FFD700" />
+                </TouchableOpacity>
+            </View>
 
-
-          <View className="h-40 bg-white/5 border border-white/10 rounded-3xl justify-center items-center">
-            <Text className="text-gray-500">Coming Soon: Friend Activity</Text>
-          </View>
-          <TouchableOpacity 
-            onPress={handleLogout}
-            activeOpacity={0.7}
-            className="w-full h-16 bg-red-500/10 border border-red-500/50 rounded-2xl justify-center items-center"
-          >
-            <Text className="text-red-500 font-bold uppercase tracking-widest">
-              Log Out
+            <Text className="text-white text-2xl font-black mt-4">
+                {userInstance?.username || "User Name"}
             </Text>
-          </TouchableOpacity>
+        </View>
+
+
+        {/* 2. MENU CONTAINER (Curve effect) */}
+        <View className="flex-1 bg-[#1a1a1a] rounded-t-[40px] px-6 pt-10 pb-20 min-h-screen">
+            
+            <Text className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4 ml-2">
+                Account & Social
+            </Text>
+
+            {/* Menu Group */}
+            <View className="bg-black/40 rounded-3xl overflow-hidden border border-white/5 mb-6">
+                
+                {/* Edit Profile */}
+                <MenuItem 
+                    icon={<User size={22} color="white" />} 
+                    label="Edit Profile Info" 
+                    onPress={() => console.log("Navigate to Edit Profile")}
+                />
+
+                <View className="h-[1px] bg-white/5 mx-4" />
+
+                {/* Friends */}
+                <MenuItem 
+                    icon={<Users size={22} color="white" />} 
+                    label="My Friends" 
+                    onPress={() => console.log("Navigate to Friends")}
+                />
+
+                <View className="h-[1px] bg-white/5 mx-4" />
+
+                {/* Friend Requests (with Badge) */}
+                <MenuItem 
+                    icon={<UserPlus size={22} color="white" />} 
+                    label="Friend Requests" 
+                    onPress={() => console.log("Navigate to Requests")}
+                    badge={3} // TODO: Replace with real data length
+                />
+            </View>
+
+
+            {/* Logout Button */}
+            <TouchableOpacity 
+                onPress={handleLogout}
+                activeOpacity={0.7}
+                className="flex-row items-center justify-center gap-3 bg-red-500/10 border border-red-500/30 p-5 rounded-2xl mt-4"
+            >
+                <LogOut size={20} color="#ef4444" />
+                <Text className="text-red-500 font-bold uppercase tracking-wider">
+                    Log Out
+                </Text>
+            </TouchableOpacity>
+
+            <Text className="text-gray-600 text-center text-xs mt-8">
+                Balance Up v1.0.0
+            </Text>
 
         </View>
       </ScrollView>

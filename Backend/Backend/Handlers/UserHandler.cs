@@ -11,65 +11,35 @@ namespace Backend.Handlers
     {
         private readonly AppDbContext _context;
         private readonly Supabase.Client _supabase;
-  
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserHandler(AppDbContext context, Supabase.Client supabase)
+
+        public UserHandler(AppDbContext context, Supabase.Client supabase, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _supabase = supabase;
+            _httpContextAccessor = httpContextAccessor;
 
         }
         //User tasks
-        public  async Task<IResult> UpdateUser(Guid id, HttpRequest _request)
+        public  async Task<IResult> UpdateUserInfo(UserDto user)
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
-                if (user == null)
-                    return Results.NotFound("User not found");
-
-                var form = await _request.ReadFormAsync();
-
-                var username = form["username"].ToString();
-                if (string.IsNullOrWhiteSpace(username))
-                    return Results.BadRequest("username cannot be empty.");
-                user.username = username;
-
-                if (!Enum.TryParse<Gender>(form["gender"], out var gender))
-                    return Results.BadRequest("Invalid gender value.");
-                user.gender = gender;
-
-                var file = form.Files.GetFile("profilePicture");
-                if (file != null && file.Length > 0)
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var existingUser =  await _context.Users.FirstOrDefaultAsync(u => u.id == userId);
+                if (existingUser == null)
                 {
-                    var allowedTypes = new[] { ".png", ".jpg", ".jpeg" };
-                    var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-                    if (!allowedTypes.Contains(ext))
-                        return Results.BadRequest("Only PNG/JPG files are allowed.");
-
-                    using var ms = new MemoryStream();
-                    await file.CopyToAsync(ms);
-                    var bytes = ms.ToArray();
-
-                    var bucket = _supabase.Storage.From(Constants.Constants.SupabaseBucket);
-                    var fileName = $"{Guid.NewGuid()}{ext}";
-
-                    await bucket.Upload(bytes, fileName, new Supabase.Storage.FileOptions
-                    {
-                        Upsert = true
-                    });
-
-                    user.profilePictureUrl = bucket.GetPublicUrl(fileName);
+                    return Results.NotFound("user not found");
                 }
+                existingUser.username = user.username;
+                existingUser.gender = Enum.Parse<Gender>(user.gender);
 
                 await _context.SaveChangesAsync();
-
-                return Results.Ok(new
-                {
-                    localId = user.id,
-                    username = user.username,
-                    profilePictureUrl = user.profilePictureUrl
-                });
+                return Results.Ok("Succesfully updated");
+                
             }
             catch (Exception ex)
             {
@@ -80,10 +50,17 @@ namespace Backend.Handlers
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
-                if (user == null)
+                var userCard = await _context.Users
+                    .Where(u => u.id == id)
+                    .Select(u => new UserCardDto(
+                        u.id,
+                        u.username,
+                        u.profilePictureUrl,
+                        u.gender.ToString())
+                    ).FirstOrDefaultAsync();
+                if (userCard == null)
                     return TypedResults.NotFound("User not found");
-                return TypedResults.Ok(user);
+                return TypedResults.Ok(userCard);
             }
             catch (Exception ex)
             {
@@ -95,11 +72,17 @@ namespace Backend.Handlers
         {
             try
             {
-                var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.username == username);
-                if (user == null)
+                var userCard = await _context.Users
+                    .Where(u => u.username.ToLower().Contains(username.ToLower()))
+                    .Select(u=> new UserCardDto(
+                        u.id,
+                        u.username,
+                        u.profilePictureUrl,
+                        u.gender.ToString())
+                    ).ToListAsync();
+                if (!userCard.Any())
                     return TypedResults.NotFound("User not found");
-                return TypedResults.Ok(user);
+                return TypedResults.Ok(userCard);
             }
             catch (Exception ex)
             {
@@ -140,17 +123,39 @@ namespace Backend.Handlers
 
         //-------------------------------------------------------
         //Friend request tasks
-        public  async Task<IResult> SendFriendRequest(FriendRequestDto FriendRequest)
+        public  async Task<IResult> SendFriendRequest(Guid toUserId)
         {
             try
             {
-                if (await _context.Users.FindAsync(FriendRequest.fromUserId, FriendRequest.toUserId) == null) return TypedResults.BadRequest("Users in request are not valid");
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
+                if (userId == toUserId)
+                    return TypedResults.BadRequest("You cannot send a friend request to yourself.");
+
+                if (await _context.Users.FindAsync(toUserId) == null)
+                    return TypedResults.BadRequest("User not found.");
+
+                var existingRequest = await _context.FriendRequests
+                    .AnyAsync(fr => (fr.fromUserId == userId && fr.toUserId == toUserId) ||
+                                    (fr.fromUserId == toUserId && fr.toUserId == userId));
+
+                if (existingRequest)
+                    return TypedResults.BadRequest("A friend request is already pending.");
+
+                var areFriends = await _context.Friendships
+                       .AnyAsync(f => (f.friend1FK == userId && f.friend2FK == toUserId) ||
+                       (f.friend1FK == toUserId && f.friend2FK == userId));
+                if (areFriends)
+                    return TypedResults.BadRequest("You are already friends with this user.");
+
                 var friendRequest = new FriendRequest
-                {
-                    fromUserId = FriendRequest.fromUserId,
-                    toUserId = FriendRequest.toUserId,
-                    sentAt = DateOnly.FromDateTime(DateTime.UtcNow)
-                };
+                    {
+                        fromUserId = userId.Value,
+                        toUserId = toUserId,
+                        sentAt = DateOnly.FromDateTime(DateTime.UtcNow)
+                    };
                 await _context.FriendRequests.AddAsync(friendRequest);
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friend Request Sent");
@@ -160,21 +165,44 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
-
-        public  async Task<IResult> GetFriendRequests(Guid id)
+        public async Task<IResult> GetNumberOfPendingFriendRequests()
         {
             try
             {
-                var requests = await _context.FriendRequests
-                    .Where(fr => fr.toUserId == id)
-                    .Select(fr => new
-                    {
-                        fromUserId = fr.fromUserId,
-                        toUserId = fr.toUserId,
-                        sentAt = fr.sentAt
-                    })
-                    .ToListAsync();
-                return TypedResults.Ok(requests);
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var numberOfPendingRequests = await _context.FriendRequests.Where(fr => fr.toUserId == userId)
+            .CountAsync();
+                return TypedResults.Ok(new{count =  numberOfPendingRequests});
+            }
+            catch(Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        public  async Task<IResult> GetFriendRequests()
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var incomingRequests = await _context.FriendRequests
+            .Where(fr => fr.toUserId == userId)
+            .Select(fr => new IncomingFriendRequestsDto(
+                fr.fromUserId,
+                fr.sentAt, 
+                new UserCardDto(
+                    fr.fromUser.id,
+                    fr.fromUser.username,
+                    fr.fromUser.profilePictureUrl,
+                    fr.fromUser.gender.ToString()
+                )
+            ))
+            .ToListAsync();
+                return TypedResults.Ok(incomingRequests);
             }
             catch (Exception ex)
             {
@@ -338,4 +366,6 @@ namespace Backend.Handlers
             }
         }
     }
+
+    
 }
