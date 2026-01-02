@@ -6,7 +6,6 @@ interface UserState{
     dashboard: Dashboard | null;
     gettingDashboard:boolean
     numOfPendingFriendRequests:number| null;
-    getPendingFriendRequests:()=>Promise<void>;
     getDashboard: () => Promise<void>
     updateGoal:(goalsData: { dailyLimit: number, weeklyLimit: number, monthlyLimit: number }) => Promise<boolean>
 }
@@ -41,11 +40,6 @@ export const useUserStore = create<UserState>((set)=>({
         catch(error){
             console.error("an error occured while updating goal:", error);
         return false;
-        }
-    },
-    getPendingFriendRequests:async()=>{
-        try{
-            const
         }
     }
 }))

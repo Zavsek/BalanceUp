@@ -1,4 +1,4 @@
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRootNavigationState, useRouter, useSegments } from "expo-router";
 import './globals.css';
 import { useFonts } from 'expo-font';
 import { useAuthStore } from "../store/useAuthStore";
@@ -9,6 +9,7 @@ import LoadingScreen from "./components/LoadingScreen";
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
+  const navigationState = useRootNavigationState();
 
   const [fontsLoaded] = useFonts({
     ShareTech: require('../assets/fonts/ShareTech-Regular.ttf'),
@@ -20,7 +21,7 @@ export default function RootLayout() {
   //redirect logic for auth
   useEffect(() => {
     if (!fontsLoaded || checkingAuth) return;
-
+    if (!navigationState?.key) return;
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!userInstance && !inAuthGroup) {

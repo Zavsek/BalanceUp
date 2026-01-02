@@ -58,8 +58,6 @@ namespace Backend.Handlers
                         u.profilePictureUrl,
                         u.gender.ToString())
                     ).FirstOrDefaultAsync();
-                if (userCard == null)
-                    return TypedResults.NotFound("User not found");
                 return TypedResults.Ok(userCard);
             }
             catch (Exception ex)
@@ -80,8 +78,6 @@ namespace Backend.Handlers
                         u.profilePictureUrl,
                         u.gender.ToString())
                     ).ToListAsync();
-                if (!userCard.Any())
-                    return TypedResults.NotFound("User not found");
                 return TypedResults.Ok(userCard);
             }
             catch (Exception ex)
@@ -192,6 +188,7 @@ namespace Backend.Handlers
                 var incomingRequests = await _context.FriendRequests
             .Where(fr => fr.toUserId == userId)
             .Select(fr => new IncomingFriendRequestsDto(
+                fr.id,
                 fr.fromUserId,
                 fr.sentAt, 
                 new UserCardDto(
@@ -214,9 +211,13 @@ namespace Backend.Handlers
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
                 var request = await _context.FriendRequests.FindAsync(id);
                 if (request == null)
                     return TypedResults.NotFound("Friend request not found");
+                if (request.toUserId != userId) return Results.BadRequest("This request was rejeted by the wrong user");
                 _context.FriendRequests.Remove(request);
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friend request deleted");
@@ -229,39 +230,55 @@ namespace Backend.Handlers
 
         //-------------------------------------------------------
         //Friendship tasks
-        public  async Task<IResult> GetFriends(Guid id)
+        public  async Task<IResult> GetFriends()
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
                 var friends = await _context.Friendships
-                    .Where(f => f.friend1FK == id || f.friend2FK == id)
-                    .Select(f => new
-                    {
-                        friendId = f.friend1FK == id ? f.friend2FK : f.friend1FK,
-                        friendsSince = f.friendsSince
+                    .Where(f => f.friend1FK == userId || f.friend2FK == userId)
+                    .Select(f => new {
+                        FriendshipId = f.id,
+                        FriendData = f.friend1FK == userId ? f.friend2 : f.friend1
                     })
+                    .Select(x => new FriendsDto(
+                        x.FriendshipId,
+                        x.FriendData.id,
+                        x.FriendData.username,
+                        x.FriendData.profilePictureUrl,
+                        x.FriendData.gender.ToString()
+                    ))
                     .ToListAsync();
+
                 return TypedResults.Ok(friends);
             }
             catch (Exception ex)
             {
-                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+                return TypedResults.InternalServerError($"Error: {ex.Message}");
             }
         }
         public  async Task<IResult> AddFriend(Guid requestId)
         {
             try
             {
-                var Request = await _context.FriendRequests.FindAsync(requestId);
-                if (Request == null) return TypedResults.BadRequest("Users in request are not valid");
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
+                var request = await _context.FriendRequests.FindAsync(requestId);
+                if (request == null) return TypedResults.BadRequest("request not found");
+                if (request.toUserId != userId) return Results.BadRequest("This request was accepted by the wrong user");
                 var Friendship = new Friendship
                 {
-                    friend1FK = Request.fromUserId,
-                    friend2FK = Request.toUserId,
+                    friend1FK = request.fromUserId,
+                    friend2FK = request.toUserId,
                     friendsSince = DateTime.UtcNow
                 };
                 await _context.Friendships.AddAsync(Friendship);
-                _context.FriendRequests.Remove(Request);
+                _context.FriendRequests.Remove(request);
                 await _context.SaveChangesAsync();
                 return TypedResults.Ok("Friendship created");
             }
@@ -270,22 +287,31 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
-        public  async Task<IResult> RemoveFriend(Guid userId, Guid friendId)
+        public  async Task<IResult> RemoveFriend(Guid friendshipId)
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
                 var friendship = await _context.Friendships
-                    .FirstOrDefaultAsync(f => (f.friend1FK == userId && f.friend2FK == friendId) ||
-                                              (f.friend1FK == friendId && f.friend2FK == userId));
+                    .FirstOrDefaultAsync(f => f.id == friendshipId);
+
                 if (friendship == null)
                     return TypedResults.NotFound("Friendship not found");
+
+                if (friendship.friend1FK != userId && friendship.friend2FK != userId)
+                    return TypedResults.Forbid(); 
+
                 _context.Friendships.Remove(friendship);
                 await _context.SaveChangesAsync();
+
                 return TypedResults.Ok("Friend removed");
             }
             catch (Exception ex)
             {
-                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+                return TypedResults.InternalServerError($"Error: {ex.Message}");
             }
         }
 

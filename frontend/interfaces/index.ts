@@ -10,3 +10,6 @@ export { default as registerRequest } from './Dtos/registerRequest';
 export {default as registerResponse} from './Dtos/registerResponse';
 export {default as Dashboard} from'./dashboard';
 export{default as CreateExpense} from './Dtos/createExpense';
+export{default as UserCard} from './Dtos/UserCard'
+export{default as IncomingFriendRequest} from './Dtos/IncomingFriendRequest';
+export{default as FriendshipCard} from './Dtos/FriendshipCard';

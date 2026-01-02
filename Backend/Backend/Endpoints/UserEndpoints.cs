@@ -45,25 +45,27 @@ namespace Backend.Endpoints
             //------------------------------------------
             // Friend Requests Endpoints
             //PUT send friend request
-            UserGroup.MapPut("/friend_requests", async ( FriendRequestDto request,  UserHandler handler) => { return await handler.SendFriendRequest(request); });
+            UserGroup.MapPost("/friend-requests/{id}", async (Guid id,  UserHandler handler) => { return await handler.SendFriendRequest(id); });
             //GET friend requests for user
-            UserGroup.MapGet("/friend_requests", async ( UserHandler handler) => { return await handler.GetFriendRequests(); });
+            UserGroup.MapGet("/friend-requests", async ( UserHandler handler) => { return await handler.GetFriendRequests(); });
+            //GET return number of pending friend requests
+            UserGroup.MapGet("/friend-requests/count", async(UserHandler handler) => { return await handler.GetNumberOfPendingFriendRequests(); });
             //DELETE friend request
-            UserGroup.MapDelete("/friend_requests/{requestId}", async ( Guid id,  UserHandler handler) =>
+            UserGroup.MapDelete("/friend-requests/reject/{requestId}", async ( Guid id,  UserHandler handler) =>
             {
                 return await handler.DeleteFriendRequest(id);
             });
             //POST accept friend request
-            UserGroup.MapPost("/friend_requests/{requestId}", async ( Guid requestId,  UserHandler handler) => { return await handler.AddFriend(requestId); });
+            UserGroup.MapPost("/friend-requests/add/{requestId}", async ( Guid requestId,  UserHandler handler) => { return await handler.AddFriend(requestId); });
 
             //--------------------------------------------
             //Friends Endpoints
             //GET friends for user
-            UserGroup.MapGet("/{id}/friends", async (Guid id,  UserHandler handler) => { return await handler.GetFriends(id); });
+            UserGroup.MapGet("/friends", async (UserHandler handler) => { return await handler.GetFriends(); });
             //DELETE remove friend
-            UserGroup.MapDelete("/{userId}/friends/{friendId}", async ( Guid userId, Guid friendId,  UserHandler handler) =>
+            UserGroup.MapDelete("friends/{friendshipId}", async ( Guid friendshipId,  UserHandler handler) =>
             {
-                return await handler.RemoveFriend(userId, friendId);
+                return await handler.RemoveFriend(friendshipId);
             });
 
         }

@@ -14,16 +14,17 @@ namespace Backend.Models
         [Required]
         [Column("from_user_id")]
         public Guid fromUserId { get; set; }
-        [ForeignKey("FromUserId")]
+        [ForeignKey("fromUserId")]
         public User fromUser { get; set; }
         [Required]
         [Column("to_user_id")]
         public Guid toUserId { get; set; }
 
-        [ForeignKey("ToUserId")]
+        [ForeignKey("toUserId")]
         public User toUser { get; set; }
 
         [Required]
+        [Column("sent_at")]
         public DateOnly sentAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }
