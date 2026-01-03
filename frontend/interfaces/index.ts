@@ -1,16 +1,18 @@
-export { default as user } from './user';
-export { default as event } from './event';
-export { default as expense } from './expense';
-export { default as friendRequest } from './friendRequest';
-export { default as friendship } from './friendship';
-export { default as spendingGoal } from './spendingGoal';
-export { default as userEvents } from './userEvents';
-export { default as userExpenseShare } from './userExpenseShare';
+export { default as User } from './User';
+export { default as EventDto } from './Dtos/EventDto';
+export { default as Expense } from './Expense';
+export { default as FriendRequest } from './FriendRequest';
+export { default as Friendship } from './Friendship';
+export { default as SpendingGoal } from './SpendingGoal';
+export { default as UserExpenseShare } from './UserExpenseShare';
 export { default as registerRequest } from './Dtos/registerRequest';
 export {default as registerResponse} from './Dtos/registerResponse';
-export {default as Dashboard} from'./dashboard';
-export{default as CreateExpense} from './Dtos/createExpense';
-export{default as UserCard} from './Dtos/UserCard'
-export{default as IncomingFriendRequest} from './Dtos/IncomingFriendRequest';
-export{default as FriendshipCard} from './Dtos/FriendshipCard';
-export{default as ExpenseDto} from './Dtos/ExpenseDto';
+export {default as Dashboard} from'./Dashboard';
+export {default as CreateExpense} from './Dtos/CreateExpense';
+export {default as UserCard} from './Dtos/UserCard'
+export {default as IncomingFriendRequest} from './Dtos/IncomingFriendRequest';
+export {default as FriendshipCard} from './Dtos/FriendshipCard';
+export {default as ExpenseDto} from './Dtos/ExpenseDto';
+export {default as CreateEvent} from './Dtos/CreateEvent';
+export {default as EventObject} from './Event';
+export {default as EventExpense} from './Dtos/EventExpense';

@@ -12,7 +12,7 @@ namespace Backend.Endpoints
                 .RequireRateLimiting("user_limit");
 
             //Get events for user   
-            UserEventGroup.MapGet("/{userId}", async( Guid userId, UserEventsHandler handler) => { return await handler.GetUserEvents(userId); });
+            UserEventGroup.MapGet("/", async( UserEventsHandler handler) => { return await handler.GetUserEvents(); });
             //Add user to event
             UserEventGroup.MapPost("/add-user", async( UserEventDto dto, UserEventsHandler handler) => { return await handler.AddUserToEvent(dto); });
             //Delete user from event

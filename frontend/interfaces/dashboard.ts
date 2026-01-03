@@ -1,6 +1,6 @@
 
 import RecentExpese from "./Dtos/recentExpense";
-import spendingGoal from "./spendingGoal";
+import SpendingGoal from "./SpendingGoal";
 interface Dashboard{
     dailySpent:number;
     weeklySpent:number;

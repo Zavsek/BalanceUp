@@ -16,8 +16,7 @@ namespace Backend.Models
         public string description { get; set; }
         [Required]
         [Column("created_at")]
-        public DateTime createdAt { get; set; }
-        [NotMapped]
+        public DateTime createdAt { get; set; } = DateTime.UtcNow;
         public ICollection<UserEvents> userEvents { get; set; }
 
         public ICollection<Expense> expenses { get; set; }

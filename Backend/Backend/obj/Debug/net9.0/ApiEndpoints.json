@@ -1,5 +1,130 @@
 [
   {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_2",
+    "RelativePath": "api/events/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Event",
+        "Type": "Backend.Models.Dto.CreateEventDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_3",
+    "RelativePath": "api/events/{eventId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_4",
+    "RelativePath": "api/events/{eventId}/expenses/{expenseId}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "expenseId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_1",
+    "RelativePath": "api/events/{eventId}/expenses/{expenseId}/shares",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "expenseId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "payload",
+        "Type": "Backend.Models.Dto.UpdateSharesDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_0",
+    "RelativePath": "api/events/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "expense",
+        "Type": "Backend.Models.Dto.ExpenseDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMapExpenseEndpoints\u003Eb__0_0",
     "RelativePath": "api/expenses/",
@@ -119,6 +244,93 @@
       {
         "Name": "userId",
         "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.UserEventsEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEventsEndpoints\u003Eb__0_0",
+    "RelativePath": "api/user-events/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.UserEventsEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEventsEndpoints\u003Eb__0_3",
+    "RelativePath": "api/user-events/{eventId}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.UserEventsEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEventsEndpoints\u003Eb__0_2",
+    "RelativePath": "api/user-events/{eventId}/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.UserEventsEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEventsEndpoints\u003Eb__0_1",
+    "RelativePath": "api/user-events/add-user",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Backend.Models.Dto.UserEventDto",
         "IsRequired": true
       }
     ],

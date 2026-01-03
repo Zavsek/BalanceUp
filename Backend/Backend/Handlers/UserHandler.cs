@@ -22,6 +22,82 @@ namespace Backend.Handlers
 
         }
         //User tasks
+        internal async Task<IResult> GetPersonalDashboard(ClaimsPrincipal user)
+        {
+            try
+            {
+                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
+                var internalUser = await _context.Users.Include(u => u.spendingGoal).FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
+                if (internalUser == null)
+                    return TypedResults.NotFound("User not found");
+                var now = DateTime.UtcNow;
+                var today = now.Date;
+                var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
+                var tomorrow = today.AddDays(1);
+                var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+
+                var monthExpenses = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
+                    .ToListAsync();
+
+                var dailySpent = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= today && e.dateTime < tomorrow)
+                    .SumAsync(e => e.amount);
+                var weeklySpent = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= sevenDaysAgo)
+                    .SumAsync(e => e.amount);
+                var monthlySpent = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
+                    .SumAsync(e => e.amount);
+
+                var recentExpenses = await _context.Expenses
+                    .Where(e => e.userId == internalUser.id)
+                    .OrderByDescending(e => e.dateTime)
+                    .Take(5)
+                    .ToListAsync();
+                List<RecentExpensesDto> recentExpensesDto;
+
+                if (recentExpenses != null && recentExpenses.Count > 0)
+                {
+                    recentExpensesDto = recentExpenses
+                        .Select(x => new RecentExpensesDto(
+                            x.description,
+                            x.amount,
+                            x.type.ToString()
+                        ))
+                        .ToList();
+                }
+                else
+                {
+                    recentExpensesDto = new List<RecentExpensesDto>();
+                }
+                return Results.Ok(new DashboardDto(dailySpent, internalUser.spendingGoal.dailyLimit, weeklySpent, internalUser.spendingGoal.weeklyLimit, monthlySpent, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
+
+        internal async Task<IResult> DeletePersonalUser(ClaimsPrincipal user)
+        {
+            try
+            {
+                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
+                var internalUser = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
+                if (internalUser == null)
+                    return TypedResults.NotFound("User not found");
+                _context.Users.Remove(internalUser);
+                await _context.SaveChangesAsync();
+                return TypedResults.NoContent();
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
+            }
+        }
         public  async Task<IResult> UpdateUserInfo(UserDto user)
         {
             try
@@ -322,82 +398,6 @@ namespace Backend.Handlers
             }
         }
 
-        internal async Task<IResult> GetPersonalDashboard(ClaimsPrincipal user)
-        {
-            try
-            {
-                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
-
-                var internalUser = await _context.Users.Include(u => u.spendingGoal).FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
-                if (internalUser == null)
-                    return TypedResults.NotFound("User not found");
-                var now = DateTime.UtcNow;
-                var today = now.Date;
-                var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
-                var tomorrow = today.AddDays(1);
-                var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-
-                var monthExpenses = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
-                    .ToListAsync();
-
-                var dailySpent = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= today && e.dateTime < tomorrow)
-                    .SumAsync(e => e.amount);
-                var weeklySpent = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= sevenDaysAgo)
-                    .SumAsync(e => e.amount);
-                var monthlySpent = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
-                    .SumAsync(e => e.amount);
-
-                var recentExpenses = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id)
-                    .OrderByDescending(e => e.dateTime)
-                    .Take(5)
-                    .ToListAsync();
-                List<RecentExpensesDto> recentExpensesDto;
-
-                if (recentExpenses != null && recentExpenses.Count > 0)
-                {
-                    recentExpensesDto = recentExpenses
-                        .Select(x => new RecentExpensesDto(
-                            x.description,
-                            x.amount,
-                            x.type.ToString()
-                        ))
-                        .ToList();
-                }
-                else
-                {
-                    recentExpensesDto = new List<RecentExpensesDto>();
-                }
-                return Results.Ok(new DashboardDto(dailySpent, internalUser.spendingGoal.dailyLimit, weeklySpent, internalUser.spendingGoal.weeklyLimit, monthlySpent, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
-            }
-            catch (Exception ex)
-            {
-                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
-            }
-        }
-
-        internal async Task<IResult> DeletePersonalUser(ClaimsPrincipal user)
-        {
-            try
-            {
-                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
-
-                var internalUser = await _context.Users.FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
-                if (internalUser == null)
-                    return TypedResults.NotFound("User not found");
-                _context.Users.Remove(internalUser);
-                await _context.SaveChangesAsync();
-                return TypedResults.NoContent();
-            }
-            catch (Exception ex)
-            {
-                return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
-            }
-        }
     }
 
     

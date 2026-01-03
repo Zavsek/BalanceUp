@@ -73,77 +73,77 @@ namespace Backend.Handlers
         }
 
 
-        public  async Task<IResult> CreateExpenseForEvent(Guid eventId,
-             EventExpenseDto payload)
-            {
-            try
-            {
+        //public  async Task<IResult> CreateExpenseForEvent(Guid eventId,
+        //     EventExpenseDto payload)
+        //    {
+        //    try
+        //    {
 
-                if (payload == null) return Results.BadRequest("Payload is Empty.");
-                if (payload.eventId != eventId) return Results.BadRequest("EventId does not match.");
-                if (payload.shares == null || !payload.shares.Any())
-                    return Results.BadRequest("There must be atleast 1 share.");
+        //        if (payload == null) return Results.BadRequest("Payload is Empty.");
+        //        if (payload.eventId != eventId) return Results.BadRequest("EventId does not match.");
+        //        if (payload.shares == null || !payload.shares.Any())
+        //            return Results.BadRequest("There must be atleast 1 share.");
 
-                var ev = await _context.Events
-                .Include(e => e.userEvents)
-                    .FirstOrDefaultAsync(e => e.id == eventId);
+        //        var ev = await _context.Events
+        //        .Include(e => e.userEvents)
+        //            .FirstOrDefaultAsync(e => e.id == eventId);
 
-                if (ev == null) return Results.NotFound("Event ne obstaja.");
+        //        if (ev == null) return Results.NotFound("Event ne obstaja.");
 
-                var eventUserIds = ev.userEvents.Select(ue => ue.userId).ToHashSet();
+        //        var eventUserIds = ev.userEvents.Select(ue => ue.userId).ToHashSet();
 
-                foreach (var s in payload.shares)
-                {
-                    if (!eventUserIds.Contains(s.userId))
-                        return Results.BadRequest($"User {s.userId} ni član dogodka.");
-                    if (s.shareAmount < 0)
-                        return Results.BadRequest("ShareAmount ne sme biti negativen.");
-                }
+        //        foreach (var s in payload.shares)
+        //        {
+        //            if (!eventUserIds.Contains(s.userId))
+        //                return Results.BadRequest($"User {s.userId} ni član dogodka.");
+        //            if (s.shareAmount < 0)
+        //                return Results.BadRequest("ShareAmount ne sme biti negativen.");
+        //        }
 
-                decimal sumShares = payload.shares.Sum(s => s.shareAmount);
-                if (Math.Round(sumShares, 2) != Math.Round(payload.amount, 2))
-                    return Results.BadRequest($"Vsota share-ov ({sumShares}) se ne ujema z Amount ({payload.amount}).");
+        //        decimal sumShares = payload.shares.Sum(s => s.shareAmount);
+        //        if (Math.Round(sumShares, 2) != Math.Round(payload.amount, 2))
+        //            return Results.BadRequest($"Vsota share-ov ({sumShares}) se ne ujema z Amount ({payload.amount}).");
 
-                var expense = new Expense
-                {
-                    eventId = payload.eventId,
-                    amount = payload.amount,
-                    type = payload.type,
-                    description = payload.description,
-                    dateTime = payload.time
-                };
+        //        var expense = new Expense
+        //        {
+        //            eventId = payload.eventId,
+        //            amount = payload.amount,
+        //            type = payload.type,
+        //            description = payload.description,
+        //            dateTime = payload.time
+        //        };
 
-                _context.Expenses.Add(expense);
+        //        _context.Expenses.Add(expense);
 
-                var shares = payload.shares.Select(s => new UserExpenseShare
-                {
-                    expense = expense,
-                    userId = s.userId,
-                    shareAmount = s.shareAmount
-                }).ToList();
+        //        var shares = payload.shares.Select(s => new UserExpenseShare
+        //        {
+        //            expense = expense,
+        //            userId = s.userId,
+        //            shareAmount = s.shareAmount
+        //        }).ToList();
 
-                _context.UserExpenseShares.AddRange(shares);
-                await _context.SaveChangesAsync();
+        //        _context.UserExpenseShares.AddRange(shares);
+        //        await _context.SaveChangesAsync();
 
                 
-                var result = new
-                {
-                    expense.id,
-                    expense.eventId,
-                    expense.amount,
-                    expense.type,
-                    expense.description,
-                    expense.dateTime,
-                    Shares = shares.Select(x => new { x.userId, x.shareAmount })
-                };
+        //        var result = new
+        //        {
+        //            expense.id,
+        //            expense.eventId,
+        //            expense.amount,
+        //            expense.type,
+        //            expense.description,
+        //            expense.dateTime,
+        //            Shares = shares.Select(x => new { x.userId, x.shareAmount })
+        //        };
 
-                return Results.Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
-            }
-        }
+        //        return Results.Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
+        //    }
+        //}
         public async Task<IResult> DeleteExpense(Guid id) 
         {
             try

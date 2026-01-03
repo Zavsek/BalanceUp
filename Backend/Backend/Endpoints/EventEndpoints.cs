@@ -17,13 +17,13 @@ namespace Backend.Endpoints
             //PUT update event
             EventGroup.MapPut("/{id}",  async (ExpenseDto expense,  ExpenseHandler handler) => { return await handler.UpdateExpense(expense); });
             //POST add expense to event
-            EventGroup.MapPost("/{eventId}/expenses", async ( Guid eventId, EventExpenseDto payload,  ExpenseHandler handler) => { return await handler.CreateExpenseForEvent(eventId, payload); });
+            //EventGroup.MapPost("/{eventId}/expenses", async ( Guid eventId, EventExpenseDto payload,  ExpenseHandler handler) => { return await handler.CreateExpenseForEvent(eventId, payload); });
             //PUT update shares of expense
             EventGroup.MapPut("/{eventId}/expenses/{expenseId}/shares",async (Guid eventId, Guid expenseId, UpdateSharesDto payload,  ExpenseHandler handler) => { return await handler.UpdateShares(eventId, expenseId, payload); });
             //POST create new event
             EventGroup.MapPost("/",async (CreateEventDto Event, Handlers.EventHandler handler) => { return await handler.CreateEvent(Event); });
-            //GET get all expenses in event
-            EventGroup.MapGet("/{eventId}/expenses", async (Guid eventId, Handlers.EventHandler handler) => { return await handler.GetExpensesForEvent(eventId); });
+            //GET get event info
+            EventGroup.MapGet("/{eventId}", async (Guid eventId, Handlers.EventHandler handler) => { return await handler.GetEventInfo(eventId); });
                 
             //DELETE delete expense in event
             EventGroup.MapDelete("/{eventId}/expenses/{expenseId}", async (Guid eventId, Guid expenseId, Handlers.EventHandler handler) => { return await handler.DeleteExpenseFromEvent(eventId, expenseId); });

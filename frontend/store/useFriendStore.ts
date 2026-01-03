@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axiosInstance from "@/lib/axios";
 import { FriendshipCard, IncomingFriendRequest, UserCard } from "@/interfaces";
 
-interface friendshipState {
+interface FriendshipState {
   numOfPendingFriendRequests: number;
   pendingFriendRequests: IncomingFriendRequest[] | null;
   friends: FriendshipCard[]|null;
@@ -20,7 +20,7 @@ interface friendshipState {
   deleteFriend:(friendshipId:string)=>Promise<boolean>;
 }
 
-export const useFriendStore = create<friendshipState>((set) => ({
+export const useFriendStore = create<FriendshipState>((set) => ({
   numOfPendingFriendRequests: 0,
   pendingFriendRequests: null,
   fetchingUsers:false,

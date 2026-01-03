@@ -4,11 +4,11 @@ import { axiosInstance } from "../lib/axios";
 import * as SecureStore from "expo-secure-store";
 import { auth } from "../services/firebase";
 import { signInWithCustomToken, signInWithEmailAndPassword } from "firebase/auth";
-import user from "../interfaces/user";
+import User from "../interfaces/User";
 import { registerRequest as registerRequest, registerResponse } from "@/interfaces";
 
 interface AuthState {
-  userInstance: user | null;
+  userInstance: User | null;
   checkingAuth: boolean;
 
   userNameTaken?: boolean;
@@ -31,7 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
         const token = await firebaseUser.getIdToken();
 
-        const res = await axiosInstance.get<user>(`/api/users/firebase/${firebaseUser.uid}`, {
+        const res = await axiosInstance.get<User>(`/api/users/firebase/${firebaseUser.uid}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             await SecureStore.setItemAsync("firebaseUID", firebaseUser.uid);
         }
 
-        const res = await axiosInstance.post<user>(
+        const res = await axiosInstance.post<User>(
       "/api/users/login", 
       {}, 
       {
@@ -100,7 +100,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const token = res.data.token;
       const userCredential = await signInWithCustomToken(auth, token);
       const{username,  localId, gender, createdAt, profilePictureUrl} = res.data
-      const user:user = {
+      const user:User = {
         id:localId,
         username:username,
         gender:gender,

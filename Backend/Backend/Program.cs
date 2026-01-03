@@ -140,6 +140,8 @@ app.UseRateLimiter();
 app.MapUserEndpoints();
 app.MapExpenseEndpoints();
 app.MapGoalEndpoints();
+app.MapUserEventsEndpoints();
+app.MapEventEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

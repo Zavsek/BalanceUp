@@ -13,13 +13,12 @@ namespace Backend.Models
         [Required]
         [Column("user_id")]
         public Guid userId { get; set; }
-        [ForeignKey("UserId")]
+        [ForeignKey("userId")]
         public User user { get; set; }
         [Required]
         [Column("event_id")]
         public Guid eventId { get; set; }
-        [ForeignKey("ExpenseId")]
-        [NotMapped]
+        [ForeignKey("eventId")]
         public Event userEvent{ get; set; } 
     }
 }

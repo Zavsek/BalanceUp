@@ -9,14 +9,19 @@ namespace Backend.Handlers
     public  class UserEventsHandler
     {
         private readonly AppDbContext _context;
-        public UserEventsHandler(AppDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UserEventsHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
-        public  async Task<IResult> GetUserEvents(Guid userId)
+        public  async Task<IResult> GetUserEvents()
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
                 var events = await _context.UserEvents
                 .Where(x => x.userId == userId)
                 .Select(x => new EventDto
@@ -96,7 +101,7 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in UserEvents Controller " + ex.Message);
             }
         }
-        public static async Task<(bool ok, string? error)> AddUserToEventInternal(Guid userId, Guid eventId, AppDbContext context)
+        public async Task<(bool ok, string? error)> AddUserToEventInternal(Guid? userId, Guid eventId, AppDbContext context)
         {
             var exists = await context.UserEvents
                 .AnyAsync(x => x.userId == userId && x.eventId == eventId);
@@ -106,7 +111,7 @@ namespace Backend.Handlers
 
             var ue = new UserEvents
             {
-                userId = userId,
+                userId = (Guid)userId,
                 eventId = eventId
             };
 

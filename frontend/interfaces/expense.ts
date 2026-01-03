@@ -1,7 +1,7 @@
 import ExpenseType from "./types/ExpenseType";
 
 
-interface expense {
+interface Expense {
   id: string;
   amount: number;
   type: ExpenseType;
@@ -11,4 +11,4 @@ interface expense {
   eventId?: string | null;
 }
 
-export default expense;
+export default Expense;

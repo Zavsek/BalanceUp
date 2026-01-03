@@ -1,8 +1,7 @@
-interface userExpenseShare {
+interface UserExpenseShare {
   id: string;
-  expenseId: string;
   userId: string;
   shareAmount: number;
 }
 
-export default userExpenseShare;
+export default UserExpenseShare;

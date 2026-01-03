@@ -1,4 +1,4 @@
-interface spendingGoal {
+interface SpendingGoal {
   id: string;
   userId: string;
   weeklyLimit?: number | null;
@@ -6,4 +6,4 @@ interface spendingGoal {
   monthlyLimit?: number | null;
 }
 
-export default spendingGoal;
+export default SpendingGoal;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { Dashboard, spendingGoal } from "@/interfaces";
+import { Dashboard, SpendingGoal } from "@/interfaces";
 
 interface UserState{
     dashboard: Dashboard | null;
@@ -30,7 +30,7 @@ export const useUserStore = create<UserState>((set)=>({
     },
     updateGoal: async(goalsData)=>{
         try{
-            const res = await axiosInstance.put<spendingGoal>("/api/goals/", goalsData)
+            const res = await axiosInstance.put<SpendingGoal>("/api/goals/", goalsData)
             if (res.status === 200) {
             await useUserStore.getState().getDashboard();
             return true;

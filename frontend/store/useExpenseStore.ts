@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { CreateExpense, expense, ExpenseDto } from "@/interfaces";
+import { CreateExpense, Expense, ExpenseDto } from "@/interfaces";
 import { useUserStore } from "./useUserStore";
 
 interface ExpenseState{
@@ -20,7 +20,7 @@ export const useExpenseStore = create<ExpenseState>((set)=>({
     createExpense:async(expense)=>{
         set({ isCreating: true });
        try{ 
-        const res =await  axiosInstance.post<expense>("/api/expenses/", expense);
+        const res =await  axiosInstance.post<Expense>("/api/expenses/", expense);
         await useUserStore.getState().getDashboard();
         return true;
     }
