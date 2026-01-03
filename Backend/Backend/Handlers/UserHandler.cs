@@ -50,8 +50,11 @@ namespace Backend.Handlers
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
                 var userCard = await _context.Users
-                    .Where(u => u.id == id)
+                    .Where(u => u.id == id && u.id != userId)
                     .Select(u => new UserCardDto(
                         u.id,
                         u.username,
@@ -70,7 +73,10 @@ namespace Backend.Handlers
         {
             try
             {
-                var userCard = await _context.Users
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var userCards = await _context.Users
                     .Where(u => u.username.ToLower().Contains(username.ToLower()))
                     .Select(u=> new UserCardDto(
                         u.id,
@@ -78,7 +84,8 @@ namespace Backend.Handlers
                         u.profilePictureUrl,
                         u.gender.ToString())
                     ).ToListAsync();
-                return TypedResults.Ok(userCard);
+
+                return TypedResults.Ok(userCards.Where(u=> u.id != userId));
             }
             catch (Exception ex)
             {
