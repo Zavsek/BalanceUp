@@ -40,12 +40,14 @@ export default function RootLayout() {
     return <LoadingScreen />;
   }
 
-  return <Stack  screenOptions={{headerShown: false}}>
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
 
-    <Stack.Screen
-      name="(tabs)"/>
-    <Stack.Screen
-      name="events/[id]"/>
+      <Stack.Screen name="(tabs)" /> 
+      
+
       <Stack.Screen name="(auth)/login" />
-  </Stack>;
+      <Stack.Screen name="events/[id]" />
+    </Stack>
+  );
 }

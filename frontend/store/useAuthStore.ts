@@ -53,6 +53,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const firebaseUser = userCredential.user;
         const token = await firebaseUser.getIdToken();
+        //used for testing
+        console.log(token);
         if (rememberLogin) {
             await SecureStore.setItemAsync("firebaseUID", firebaseUser.uid);
         }

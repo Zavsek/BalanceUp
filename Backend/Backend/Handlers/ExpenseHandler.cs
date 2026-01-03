@@ -19,12 +19,24 @@ namespace Backend.Handlers
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
-        public  async Task<IResult> GetExpenses([FromQuery]Guid UserId)
+        public  async Task<IResult> GetExpenses()
         {
             try
             {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+
+                if (userId == null)
+                    return TypedResults.Unauthorized();
                 var expenses = await _context.Expenses
-                   .Where(e => e.userId == UserId)
+                   .Where(e => e.userId == userId)
+                   .Select(e => new ExpenseDto
+                   (
+                       e.id,
+                       e.amount,
+                       e.type.ToString(),
+                       e.description,
+                       e.dateTime.ToUniversalTime()
+                   ))
                    .ToListAsync();
                 return Results.Ok(expenses);
             }
@@ -45,7 +57,7 @@ namespace Backend.Handlers
                 var NewExpense = new Expense
                 {
                     amount = expense.amount,
-                    type = expense.type,
+                    type = Enum.Parse<ExpenseType>(expense.type),
                     description = expense.description,
                     dateTime = DateTime.SpecifyKind(expense.time, DateTimeKind.Utc),
                     userId = userId
@@ -132,38 +144,57 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
             }
         }
-        public  async Task<IResult> DeleteExpense(Guid id)
+        public async Task<IResult> DeleteExpense(Guid id) 
         {
             try
             {
-                if (await _context.Expenses.FindAsync(id) is Expense expense)
-                {
-                    _context.Expenses.Remove(expense);
-                    await   _context.SaveChangesAsync();
-                    return Results.NoContent();
-                }
-                else return Results.NotFound();
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var expense = await _context.Expenses
+                    .FirstOrDefaultAsync(ex => ex.id == id && ex.userId == userId);
+
+                if (expense == null)
+                    return TypedResults.NotFound("Expense not found or you don't have permission.");
+
+                _context.Expenses.Remove(expense);
+                await _context.SaveChangesAsync();
+
+                return Results.NoContent();
             }
             catch (Exception ex)
             {
-                return TypedResults.InternalServerError("Error in Expense Controller " + ex.Message);
+                return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
             }
         }
-        public  async Task<IResult> UpdateExpense(Guid id, Expense expense)
+        public async Task<IResult> UpdateExpense( ExpenseDto expenseDto) 
         {
             try
             {
-                if (id != expense.id) return TypedResults.BadRequest("Id does not match");
-                if (!await _context.Expenses.AnyAsync(e => e.id == id)) return TypedResults.BadRequest("Expense not Found in Database");
-                
-                _context.Expenses.Update(expense);
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
+                var existingExpense = await _context.Expenses
+                    .FirstOrDefaultAsync(e => e.id == expenseDto.id && e.userId == userId);
+
+                if (existingExpense == null)
+                    return TypedResults.NotFound("Expense not found or access denied.");
+
+
+                existingExpense.amount = expenseDto.amount;
+                existingExpense.type = Enum.Parse<ExpenseType>(expenseDto.type);
+                existingExpense.description = expenseDto.description;
+                existingExpense.dateTime = expenseDto.time.ToUniversalTime();
+
                 await _context.SaveChangesAsync();
                 return Results.NoContent();
-
             }
             catch (Exception ex)
             {
-                return TypedResults.InternalServerError("Error in Expense Controller " + ex.Message);
+                return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
             }
         }
 

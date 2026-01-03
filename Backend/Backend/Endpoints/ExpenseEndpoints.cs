@@ -15,7 +15,7 @@ namespace Backend.Endpoints
                 .RequireAuthorization()
                 .RequireRateLimiting("user_limit");
             //Get all expenses
-            ExpenseGroup.MapGet("/", async (Guid id,  ExpenseHandler handler) => { return await handler.GetExpenses(id); });
+            ExpenseGroup.MapGet("/", async (  ExpenseHandler handler) => { return await handler.GetExpenses(); });
             //Add new expense
             ExpenseGroup.MapPost("/", async (ExpenseDto expense, ExpenseHandler handler) =>
             {
@@ -24,7 +24,7 @@ namespace Backend.Endpoints
             //Delete expense by id
             ExpenseGroup.MapDelete("/{id}", async (Guid id,  ExpenseHandler handler) => { return await handler.DeleteExpense(id); });
             //Update expense by id
-            ExpenseGroup.MapPut("/api/expenses/{id}", async (Guid id, Expense expense,  ExpenseHandler handler) => { return await handler.UpdateExpense(id, expense); });
+            ExpenseGroup.MapPut("/{expenseId}", async (Guid expenseId, ExpenseDto expense,  ExpenseHandler handler) => { return await handler.UpdateExpense( expense); });
 
         }
     }

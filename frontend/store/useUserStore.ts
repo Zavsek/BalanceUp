@@ -22,7 +22,7 @@ export const useUserStore = create<UserState>((set)=>({
             const dashboard:Dashboard = res.data;
             set({dashboard:dashboard})
         } catch (error) {
-             console.error("Napaka pri pridobivanju dashboarda:", error);
+             console.error("error in loading  dashboard:", error);
         }
         finally{
             set({gettingDashboard:false});

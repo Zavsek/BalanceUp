@@ -13,3 +13,4 @@ export{default as CreateExpense} from './Dtos/createExpense';
 export{default as UserCard} from './Dtos/UserCard'
 export{default as IncomingFriendRequest} from './Dtos/IncomingFriendRequest';
 export{default as FriendshipCard} from './Dtos/FriendshipCard';
+export{default as ExpenseDto} from './Dtos/ExpenseDto';

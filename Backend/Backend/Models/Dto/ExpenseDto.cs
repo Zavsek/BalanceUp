@@ -1,6 +1,6 @@
 ﻿namespace Backend.Models.Dto
 {
-    public record ExpenseDto(decimal amount, ExpenseType type, string description, DateTime time);
+    public record ExpenseDto(Guid id, decimal amount, string type, string description, DateTime time);
 
     public record UserShareDto(Guid userId, decimal shareAmount);
 

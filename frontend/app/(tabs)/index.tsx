@@ -1,157 +1,145 @@
 import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
-import AppHeader from "../components/Header";
-import { useRouter } from "expo-router";
+import { router } from "expo-router"; 
 import { useUserStore } from "../../store/useUserStore"; 
-import { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import AddExpenseModal from "../components/AddExpenseModal"; 
 import { useAuthStore } from "@/store/useAuthStore";
+import { History, Plus, Utensils, Plane, Coffee, Home, Layers, ChevronRight, LayoutGrid} from "lucide-react-native";
+import AppHeader from "../components/Header";
+import dayjs from "dayjs";
 
-export default function Index() {
-  const router = useRouter();
+export default function Dashboard() {
   const { dashboard, getDashboard, gettingDashboard } = useUserStore();
   const { userInstance } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
-  
-
   const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    if(userInstance)
-    getDashboard();
+    if (userInstance) {
+      getDashboard();
+    }
   }, [userInstance]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await getDashboard();
     setRefreshing(false);
-  }, []);
+  }, [getDashboard]);
 
-  const calculatePercentage = () => {
-    if (!dashboard || !dashboard.dailyLimit || dashboard.dailyLimit === 0) return 0;
-    const percent = (dashboard.dailySpent / dashboard.dailyLimit) * 100;
-    return Math.min(percent, 100); 
+
+  const renderCategoryIcon = (type: string) => {
+    const iconProps = { size: 16, color: "#94a3b8" };
+    switch (type) {
+      case 'Travel': return <Plane size={16} color="#3b82f6" />;
+      case 'Food': return <Utensils size={16} color="#f97316" />;
+      case 'Drinks': return <Coffee size={16} color="#eab308" />;
+      case 'Accommodation': return <Home size={16} color="#a855f7" />;
+      default: return <Layers {...iconProps} />;
+    }
   };
-  const percentage = calculatePercentage();
 
-  if (gettingDashboard && !dashboard || !userInstance) {
-      return (
-          <View className="flex-1 bg-black justify-center items-center">
-              <ActivityIndicator size="large" color="#FFD700" />
-          </View>
-      );
+  if (gettingDashboard && !dashboard) {
+    return (
+      <View className="flex-1 bg-black justify-center items-center">
+        <ActivityIndicator size="large" color="#FFD700" />
+      </View>
+    );
   }
 
   return (
     <View className="flex-1 bg-black">
       <AppHeader />
-
+      
       <ScrollView 
         className="flex-1" 
-        showsVerticalScrollIndicator={false}
         refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FFD700" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FFD700" />
         }
       >
-        <View className="p-6 pb-24 gap-y-8">
+        <View className="p-6">
+          <Text className="text-white text-3xl font-black italic uppercase tracking-tighter mb-6">
+            Overview
+          </Text>
 
 
+          <View className="bg-golden p-8 rounded-[40px] mb-6 shadow-xl">
+            <Text className="text-black/60 uppercase text-[10px] font-black tracking-widest mb-1">
+              Spent Today
+            </Text>
+            <Text className="text-black text-5xl font-black italic">
+              €{dashboard?.dailySpent?.toFixed(2) || "0.00"}
+            </Text>
+          </View>
+
+
+
+<View className="flex-row gap-3 mb-10">
+
+  <TouchableOpacity 
+    onPress={() => setModalVisible(true)}
+    activeOpacity={0.8}
+    className="flex-[2] h-16 bg-white rounded-2xl flex-row justify-center items-center shadow-sm"
+  >
+    <Plus color="black" size={20} />
+    <Text className="text-black font-black ml-2 uppercase">Add</Text>
+  </TouchableOpacity>
+
+
+  <TouchableOpacity 
+    onPress={() => router.push("/expenses")}
+    activeOpacity={0.8}
+    className="flex-1 h-16 bg-white/5 border border-white/10 rounded-2xl justify-center items-center"
+  >
+    <History color="white" size={20} />
+    <Text className="text-white text-[10px] font-black mt-1 uppercase">History</Text>
+  </TouchableOpacity>
+
+
+  <TouchableOpacity 
+    onPress={() => router.push("/(tabs)/goals")} 
+    activeOpacity={0.8}
+    className="flex-1 h-16 bg-white/5 border border-white/10 rounded-2xl justify-center items-center"
+  >
+    <LayoutGrid color="#FFD700" size={20} />
+    <Text className="text-golden text-[10px] font-black mt-1 uppercase">Goals</Text>
+  </TouchableOpacity>
+</View>
+
+          <View className="flex-row justify-between items-end mb-4 px-1">
             <View>
-            <Text className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">
-              Today's Overview
-            </Text>
-            {/* ... koda za kartico ... */}
-             <View className="bg-white/10 border border-golden/30 p-5 rounded-3xl mt-2">
-                <View className="flex-row justify-between items-end mb-2">
-                    <View>
-                        <Text className="text-white text-3xl font-black">
-                            € {dashboard?.dailySpent?.toFixed(2) ?? "0.00"}
-                        </Text>
-                        <Text className="text-gray-400 text-xs">spent today</Text>
-                    </View>
-                    <View className="items-end">
-                        <Text className="text-golden text-xl font-bold">
-                            € {dashboard?.dailyLimit?.toFixed(2) ?? "0.00"}
-                        </Text>
-                        <Text className="text-gray-400 text-xs">daily limit</Text>
-                    </View>
-                </View>
-                <View className="h-4 w-full bg-white/10 rounded-full overflow-hidden mt-3">
-                    <View 
-                        className="h-full bg-golden shadow-lg shadow-golden" 
-                        style={{ width: `${percentage}%` }} 
-                    />
-                </View>
-                <Text className="text-right text-golden/60 text-[10px] mt-1 font-bold">
-                    {percentage.toFixed(0)}% USED
-                </Text>
+              <Text className="text-white text-xl font-black uppercase italic">Latest</Text>
+              <View className="h-1 w-8 bg-golden rounded-full mt-1" />
             </View>
+            <TouchableOpacity 
+              onPress={() => router.push("/expenses")} 
+              className="flex-row items-center"
+            >
+              <Text className="text-gray-500 font-bold mr-1">See All</Text>
+              <ChevronRight size={16} color="#666" />
+            </TouchableOpacity>
           </View>
 
+          <View className="gap-y-2">
+            {!dashboard?.recentExpenses || dashboard.recentExpenses.length === 0 ? (
+              <Text className="text-gray-600 italic text-center mt-4">No transactions yet.</Text>
+            ) : (
+              dashboard.recentExpenses.map((item, i) => (
+                <View key={i} className="bg-white/5 border border-white/5 p-4 rounded-[24px] flex-row items-center">
+                  <View className="w-10 h-10 bg-white/10 rounded-xl items-center justify-center mr-4">
+                    {renderCategoryIcon(item.type)}
+                  </View>
+                  
+                  <View className="flex-1">
+                    <Text className="text-white font-bold" numberOfLines={1}>{item.description}</Text>
+                  </View>
 
-          {/* 2. ADD EXPENSE GUMB - POPRAVEK */}
-          <View className="items-center">
-            <TouchableOpacity 
-                activeOpacity={0.8}
-                onPress={() => setModalVisible(true)} 
-                className="w-full"
-            >
-                <View className="h-20 bg-golden rounded-2xl flex-row justify-center items-center shadow-lg shadow-golden/30 border border-white/20">
-                    <Text className="text-black text-3xl mr-3 font-light">+</Text>
-                    <Text className="text-black text-xl font-black uppercase tracking-widest">
-                        Add Expense
-                    </Text>
+                  <Text className="text-white font-black text-base ml-2">
+                    €{item.amount.toFixed(2)}
+                  </Text>
                 </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* ... OSTALA KODA (Goals, Recent Activity) ... */}
-           <View className="flex-row gap-4">
-            <TouchableOpacity 
-              activeOpacity={0.7}
-              className="flex-1 h-28 bg-white/5 rounded-2xl border border-white/10 justify-center items-center gap-2 p-3"
-              onPress={() => router.push("/(tabs)/goals")} 
-            >
-               <View className="w-10 h-10 rounded-full bg-golden/10 justify-center items-center mb-1">
-                  <Text className="text-golden text-xl">🎯</Text>
-               </View>
-              <Text className="text-gray-300 font-bold uppercase text-[10px] tracking-widest text-center">
-                Spending Goals
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              activeOpacity={0.7}
-              className="flex-1 h-28 bg-white/5 rounded-2xl border border-white/10 justify-center items-center gap-2 p-3"
-            >
-               <View className="w-10 h-10 rounded-full bg-blue-500/10 justify-center items-center mb-1">
-                  <Text className="text-blue-400 text-xl">📊</Text>
-               </View>
-              <Text className="text-gray-300 font-bold uppercase text-[10px] tracking-widest text-center">
-                Full Analytics
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* 4. RECENT ACTIVITY */}
-          <View>
-            <Text className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">
-              Latest Transactions
-            </Text>
-            {dashboard?.recentExpenses?.length === 0 && (
-                <Text className="text-gray-500 text-center italic mt-2">No expenses today.</Text>
+              ))
             )}
-            {dashboard?.recentExpenses?.map((expense, index) => (
-              <View key={index} className="w-full p-4 mb-3 bg-white/5 rounded-2xl border-l-[3px] border-l-golden/50 flex-row justify-between items-center">
-                <View>
-                    <Text className="text-white font-bold text-base">{expense.description}</Text>
-                    <Text className="text-gray-500 text-xs">{expense.type}</Text>
-                </View>
-                <Text className="text-white font-bold text-base">€ {expense.amount.toFixed(2)}</Text>
-              </View>
-            ))}
           </View>
-
-
         </View>
       </ScrollView>
 
@@ -160,7 +148,6 @@ export default function Index() {
         isVisible={isModalVisible} 
         onClose={() => setModalVisible(false)} 
       />
-
     </View>
   );
 }

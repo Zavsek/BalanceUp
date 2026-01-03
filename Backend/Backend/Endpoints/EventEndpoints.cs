@@ -15,7 +15,7 @@ namespace Backend.Endpoints
                 .RequireAuthorization()
                 .RequireRateLimiting("user_limit");
             //PUT update event
-            EventGroup.MapPut("/{id}",  async ( Guid id, Expense expense,  ExpenseHandler handler) => { return await handler.UpdateExpense(id, expense); });
+            EventGroup.MapPut("/{id}",  async (ExpenseDto expense,  ExpenseHandler handler) => { return await handler.UpdateExpense(expense); });
             //POST add expense to event
             EventGroup.MapPost("/{eventId}/expenses", async ( Guid eventId, EventExpenseDto payload,  ExpenseHandler handler) => { return await handler.CreateExpenseForEvent(eventId, payload); });
             //PUT update shares of expense
