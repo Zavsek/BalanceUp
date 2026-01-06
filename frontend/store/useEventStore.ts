@@ -15,8 +15,10 @@ getEventInfo:(eventId:string)=>Promise<void>;
 addUserToList:(id:string)=>void;
 removeUserFromList: (id: string) => void; 
   clearCurrentEvent: () => void; 
-      addEventExpense:(eventId:string, expense:EventExpense) => Promise<boolean>
+ addEventExpense:(eventId:string, expense:EventExpense) => Promise<boolean>;
+updateEventExpense:(eventId:string, expenseId:string, expense:EventExpense)=>Promise<boolean>
     getExpensesForEvent:(eventId:string)=>Promise<void>;
+    deleteEventExpense:(expenseId:string)=>Promise<Boolean>;
 }
 
 export const useEventStore = create<EventState>((set, get)=>({
@@ -104,12 +106,65 @@ removeUserFromList: (id) => {
         return false;
     }
 },
-    getExpensesForEvent:async(eventId)=>{
+updateEventExpense: async (eventId, expenseId, expense) => {
+    try {
+        const res = await axiosInstance.put<EventExpense>(
+            `/api/events/${eventId}/expenses/${expenseId}`, 
+            expense
+        );
+        
+        const updatedExpense: EventExpense = res.data;
+
+        set((state) => {
+
+            const updatedExpenses = (state.eventExpenses || []).map(e => 
+                e.id === expenseId ? updatedExpense : e
+            );
+
+
+            let updatedCurrentEvent = state.currentEvent;
+            if (state.currentEvent) {
+                const newEventExpenses = (state.currentEvent.expenses || []).map(e => 
+                    e.id === expenseId ? updatedExpense : e
+                );
+
+                updatedCurrentEvent = {
+                    ...state.currentEvent,
+                    expenses: newEventExpenses
+                };
+            }
+
+            return {
+                eventExpenses: updatedExpenses,
+                currentEvent: updatedCurrentEvent
+            };
+        });
+
+        return true;
+    } catch (error) {
+        console.error('An error occurred while updating the expense: ' + error);
+        return false;
+    }
+},
+getExpensesForEvent:async(eventId)=>{
         try {
             const res  =await  axiosInstance.get<EventExpense[]>(`/api/expenses/${eventId}`);
             set({eventExpenses: res.data});
         } catch (error) {
             console.error('An error occured while fetching event expenses -->'+error);
         }
-    }
+},
+deleteEventExpense:async(id)=>{
+        try {
+            await axiosInstance.delete(`/api/expenses/${id}`);
+            set((state) => ({
+                eventExpenses:
+                state.eventExpenses?.filter((e)=> e.id !== id) || []
+            }));
+            return true;
+        } catch (error) {
+            console.error("failed to delete expense "+error );
+            return false;
+        }
+    },
 }))

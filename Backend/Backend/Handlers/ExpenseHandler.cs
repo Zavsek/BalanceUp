@@ -30,6 +30,7 @@ namespace Backend.Handlers
                     return TypedResults.Unauthorized();
                 var expenses = await _context.Expenses
                    .Where(e => e.userId == userId)
+                   .OrderByDescending(e=> e.dateTime)
                    .Select(e => new ExpenseDto
                    (
                        e.id,
@@ -170,6 +171,73 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
             }
         }
+        public async Task<IResult> UpdateExpenseForEvent(Guid eventId, Guid expenseId, EventExpensesDto payload)
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null) return TypedResults.Unauthorized();
+
+                if (payload == null) return Results.BadRequest("Payload is Empty.");
+                if (payload.shares == null || !payload.shares.Any())
+                    return Results.BadRequest("There must be at least 1 share.");
+
+                decimal sum = payload.shares.Sum(s => s.shareAmount);
+                if (Math.Ceiling(sum) != 100) return Results.BadRequest("Share amounts do not add up to 100%.");
+
+
+                var expense = await _context.Expenses
+                    .Include(e => e.userExpenseShares)
+                    .FirstOrDefaultAsync(e => e.id == expenseId && e.eventId == eventId);
+
+                if (expense == null) return Results.NotFound("Strošek ne obstaja.");
+
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                try
+                {
+
+                    expense.amount = payload.amount;
+                    expense.description = payload.description;
+                    expense.dateTime = payload.dateTime;
+                    expense.type = Enum.Parse<ExpenseType>(payload.type);
+
+                    _context.UserExpenseShares.RemoveRange(expense.userExpenseShares);
+
+
+                    foreach (var s in payload.shares)
+                    {
+                        var share = new UserExpenseShare
+                        {
+                            expenseId = expense.id,
+                            userId = s.userId,
+                            shareAmount = s.shareAmount
+                        };
+                        _context.UserExpenseShares.Add(share);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return Results.Ok(new EventExpensesDto(
+                        expense.id,
+                        expense.amount,
+                        expense.description,
+                        payload.type,
+                        expense.dateTime,
+                        payload.shares));
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return TypedResults.InternalServerError("Napaka pri posodabljanju baze: " + ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Sistemska napaka: " + ex.Message);
+            }
+        }
         public async Task<IResult> DeleteExpense(Guid id) 
         {
             try
@@ -179,7 +247,9 @@ namespace Backend.Handlers
                 if (userId == null)
                     return TypedResults.Unauthorized();
                 var expense = await _context.Expenses
-                    .FirstOrDefaultAsync(ex => ex.id == id && ex.userId == userId);
+            .Include(ex => ex.userExpenseShares)
+            .FirstOrDefaultAsync(ex => ex.id == id &&
+                (ex.userId == userId || ex.userExpenseShares.Any(s => s.userId == userId)));
 
                 if (expense == null)
                     return TypedResults.NotFound("Expense not found or you don't have permission.");
