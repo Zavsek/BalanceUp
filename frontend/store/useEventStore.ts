@@ -1,12 +1,13 @@
 import { create} from "zustand";
 import axiosInstance from "@/lib/axios";
-import { CreateEvent, EventDto, EventObject } from "@/interfaces";
+import { CreateEvent, EventDto, EventExpense, EventObject } from "@/interfaces";
 
 interface EventState{
 events:EventDto[]|null;
 currentEvent:EventObject|null;
 fetchingEvents:boolean;
 creatingEvent:boolean;
+eventExpenses:EventExpense[];
 addedUsers:string[];//list of ids
 getEvents:()=>Promise<void>;
 createEvent:(title:string, description:string|null)=>Promise<boolean>;
@@ -14,6 +15,8 @@ getEventInfo:(eventId:string)=>Promise<void>;
 addUserToList:(id:string)=>void;
 removeUserFromList: (id: string) => void; 
   clearCurrentEvent: () => void; 
+      addEventExpense:(eventId:string, expense:EventExpense) => Promise<boolean>
+    getExpensesForEvent:(eventId:string)=>Promise<void>;
 }
 
 export const useEventStore = create<EventState>((set, get)=>({
@@ -21,6 +24,7 @@ events:null,
 fetchingEvents:false,
 creatingEvent:false,
 currentEvent:null,
+eventExpenses:[],
 addedUsers:[],
 getEvents:async()=>{
     set({fetchingEvents:true});
@@ -74,5 +78,38 @@ removeUserFromList: (id) => {
     set((state) => ({ addedUsers: state.addedUsers.filter(uid => uid !== id) }));
   },
   
-  clearCurrentEvent: () => set({ currentEvent: null })
+  clearCurrentEvent: () => set({ currentEvent: null }),
+  addEventExpense:async(eventId, expense)=>{
+        try {
+            const res  = await axiosInstance.post<EventExpense>(`/api/events/${eventId}/expenses`, expense)
+            const createdExpense:EventExpense = res.data;
+            set((state) => {
+            const updatedExpenses = [createdExpense, ...(state.eventExpenses || [])];
+            let updatedCurrentEvent = state.currentEvent;
+            if (state.currentEvent) {
+                updatedCurrentEvent = {
+                    ...state.currentEvent,
+                    expenses: [createdExpense, ...(state.currentEvent.expenses || [])]
+                };
+            }
+            return {
+                eventExpenses: updatedExpenses,
+                currentEvent: updatedCurrentEvent
+            };
+        });
+
+        return true;
+    } catch (error) {
+        console.error('An error occured while adding an expense: ' + error);
+        return false;
+    }
+},
+    getExpensesForEvent:async(eventId)=>{
+        try {
+            const res  =await  axiosInstance.get<EventExpense[]>(`/api/expenses/${eventId}`);
+            set({eventExpenses: res.data});
+        } catch (error) {
+            console.error('An error occured while fetching event expenses -->'+error);
+        }
+    }
 }))

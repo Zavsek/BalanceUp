@@ -14,8 +14,10 @@ namespace Backend.Endpoints
             var ExpenseGroup = app.MapGroup("/api/expenses")
                 .RequireAuthorization()
                 .RequireRateLimiting("user_limit");
-            //Get all expenses
-            ExpenseGroup.MapGet("/", async (  ExpenseHandler handler) => { return await handler.GetExpenses(); });
+            //Get all expenses for user
+            ExpenseGroup.MapGet("/", async (  ExpenseHandler handler) => { return await handler.GetExpensesForUser(); });
+            //Get all expenses for event
+            ExpenseGroup.MapGet("/${eventId}", async ( Guid eventId,ExpenseHandler handler) => { return await handler.GetExpensesForEvent(eventId); });
             //Add new expense
             ExpenseGroup.MapPost("/", async (ExpenseDto expense, ExpenseHandler handler) =>
             {

@@ -11,7 +11,7 @@ interface EventObject {
 
 
 export interface EventUser{
-  userId:string;
+  id:string;
   username:string;
 }
 export default EventObject;

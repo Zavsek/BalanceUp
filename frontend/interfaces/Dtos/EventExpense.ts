@@ -2,7 +2,7 @@ import ExpenseType from "../types/ExpenseType";
 import UserExpenseShare from "../UserExpenseShare";
 
 interface EventExpense{
-    id:string;
+    id:string|null;
     amount:number;
     description:string;
     type:ExpenseType;

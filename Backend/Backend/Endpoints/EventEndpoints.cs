@@ -17,7 +17,7 @@ namespace Backend.Endpoints
             //PUT update event
             EventGroup.MapPut("/{id}",  async (ExpenseDto expense,  ExpenseHandler handler) => { return await handler.UpdateExpense(expense); });
             //POST add expense to event
-            //EventGroup.MapPost("/{eventId}/expenses", async ( Guid eventId, EventExpenseDto payload,  ExpenseHandler handler) => { return await handler.CreateExpenseForEvent(eventId, payload); });
+            EventGroup.MapPost("/{eventId}/expenses", async ( Guid eventId, EventExpensesDto payload,  ExpenseHandler handler) => { return await handler.CreateExpenseForEvent(eventId, payload); });
             //PUT update shares of expense
             EventGroup.MapPut("/{eventId}/expenses/{expenseId}/shares",async (Guid eventId, Guid expenseId, UpdateSharesDto payload,  ExpenseHandler handler) => { return await handler.UpdateShares(eventId, expenseId, payload); });
             //POST create new event

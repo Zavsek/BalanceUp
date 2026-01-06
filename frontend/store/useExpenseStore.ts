@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { CreateExpense, Expense, ExpenseDto } from "@/interfaces";
+import { CreateExpense, EventExpense, Expense, ExpenseDto } from "@/interfaces";
 import { useUserStore } from "./useUserStore";
 
 interface ExpenseState{
@@ -10,13 +10,15 @@ interface ExpenseState{
     createExpense:(expense:CreateExpense) => Promise<boolean>
     getExpenses:()=> Promise<void>;
     deleteExpense:(id:string)=>Promise<boolean>;
-    updateExpense:(expense:ExpenseDto)=>Promise<boolean>
+    updateExpense:(expense:ExpenseDto)=>Promise<boolean>;
+
 }
 
 export const useExpenseStore = create<ExpenseState>((set)=>({
     expenses:null,
     fetchingExpenses:false,
     isCreating: false,
+    eventExpenses:[],
     createExpense:async(expense)=>{
         set({ isCreating: true });
        try{ 

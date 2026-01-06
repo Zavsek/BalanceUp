@@ -122,6 +122,7 @@ namespace Backend.Handlers
                         .ThenInclude(ue => ue.user)
                     .Include(e => e.expenses)
                         .ThenInclude(ex => ex.userExpenseShares)
+                            .ThenInclude(s => s.user)
                     .FirstOrDefaultAsync(e => e.id == eventId);
 
                 if (ev == null) return TypedResults.NotFound("Dogodek ne obstaja.");
@@ -148,6 +149,7 @@ namespace Backend.Handlers
                         ex.dateTime.ToUniversalTime(),
                         ex.userExpenseShares.Select(s => new ExpenseShareDto(
                             s.userId,
+                            s.user.username ?? "Unknown",
                             s.shareAmount
                         )).ToList()
                     )).OrderByDescending(ex => ex.dateTime).ToList()

@@ -19,9 +19,9 @@ namespace Backend.Models.Dto
     public record EventUserDto(Guid id, string username);
 
     //expenses for event
-    public record EventExpensesDto(Guid id, decimal amount, string description, string type, DateTime dateTime,  List<ExpenseShareDto> shares);
+    public record EventExpensesDto(Guid? id, decimal amount, string description, string type, DateTime dateTime,  List<ExpenseShareDto> shares);
 
     //Expense shares for event expense
-    public record ExpenseShareDto( Guid userId, decimal shareAmount);
+    public record ExpenseShareDto( Guid userId,string username, decimal shareAmount);
 
 }

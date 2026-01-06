@@ -42,12 +42,16 @@ export default function RootLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
+      {userInstance ? (
 
-      <Stack.Screen name="(tabs)" /> 
-      
+        <>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="events/[id]" />
+        </>
+      ) : (
 
-      <Stack.Screen name="(auth)/login" />
-      <Stack.Screen name="events/[id]" />
+        <Stack.Screen name="(auth)/login" />
+      )}
     </Stack>
   );
 }

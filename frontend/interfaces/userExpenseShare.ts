@@ -1,6 +1,6 @@
 interface UserExpenseShare {
-  id: string;
   userId: string;
+  username:string;
   shareAmount: number;
 }
 

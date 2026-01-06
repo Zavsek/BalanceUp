@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapEventEndpoints\u003Eb__0_2",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_3",
     "RelativePath": "api/events/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -23,7 +23,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapEventEndpoints\u003Eb__0_3",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_4",
     "RelativePath": "api/events/{eventId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -45,7 +45,34 @@
   },
   {
     "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapEventEndpoints\u003Eb__0_4",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_1",
+    "RelativePath": "api/events/{eventId}/expenses",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "payload",
+        "Type": "Backend.Models.Dto.EventExpensesDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_5",
     "RelativePath": "api/events/{eventId}/expenses/{expenseId}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -72,7 +99,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapEventEndpoints\u003Eb__0_1",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_2",
     "RelativePath": "api/events/{eventId}/expenses/{expenseId}/shares",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -142,7 +169,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_1",
+    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_2",
     "RelativePath": "api/expenses/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -164,7 +191,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_3",
+    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_4",
     "RelativePath": "api/expenses/{expenseId}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -191,7 +218,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_2",
+    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_3",
     "RelativePath": "api/expenses/{id}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -199,6 +226,28 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_1",
+    "RelativePath": "api/expenses/${eventId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
         "Type": "System.Guid",
         "IsRequired": true
       }

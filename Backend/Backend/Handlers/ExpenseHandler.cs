@@ -4,6 +4,7 @@ using Backend.Models.Dto;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
@@ -19,7 +20,7 @@ namespace Backend.Handlers
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
-        public  async Task<IResult> GetExpenses()
+        public  async Task<IResult> GetExpensesForUser()
         {
             try
             {
@@ -45,7 +46,41 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Expense Controller " + ex.Message);
             }
         }
+        public async Task<IResult> GetExpensesForEvent(Guid eventId)
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
 
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
+                var expenses = await _context.Expenses
+                    .Where(e => e.eventId == eventId)
+                    .OrderByDescending(e => e.dateTime) 
+                    .Select(e => new EventExpensesDto
+                    (
+                        e.id,
+                        e.amount,
+                        e.description,
+                        e.type.ToString(),
+                        e.dateTime,
+                        e.userExpenseShares.Select(s => new ExpenseShareDto
+                        (
+                            s.userId,
+                            s.user.username, 
+                            s.shareAmount
+                        )).ToList()
+                    ))
+                    .ToListAsync();
+
+                return Results.Ok(expenses);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
+            }
+        }
         public  async Task<IResult> CreateExpense( ExpenseDto expense)
         {
             try
@@ -73,77 +108,68 @@ namespace Backend.Handlers
         }
 
 
-        //public  async Task<IResult> CreateExpenseForEvent(Guid eventId,
-        //     EventExpenseDto payload)
-        //    {
-        //    try
-        //    {
+        public async Task<IResult> CreateExpenseForEvent(Guid eventId,
+             EventExpensesDto payload)
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
 
-        //        if (payload == null) return Results.BadRequest("Payload is Empty.");
-        //        if (payload.eventId != eventId) return Results.BadRequest("EventId does not match.");
-        //        if (payload.shares == null || !payload.shares.Any())
-        //            return Results.BadRequest("There must be atleast 1 share.");
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                if (payload == null) return Results.BadRequest("Payload is Empty.");
+                if (payload.shares == null || !payload.shares.Any())
+                    return Results.BadRequest("There must be atleast 1 share.");
+                decimal sum = payload.shares.Sum(s => s.shareAmount);
+                if (Math.Ceiling(sum) != 100) return Results.BadRequest("share ammounts do not add upp");
 
-        //        var ev = await _context.Events
-        //        .Include(e => e.userEvents)
-        //            .FirstOrDefaultAsync(e => e.id == eventId);
+                var ev = await _context.Events
+                .Include(e => e.userEvents)
+                    .FirstOrDefaultAsync(e => e.id == eventId);
 
-        //        if (ev == null) return Results.NotFound("Event ne obstaja.");
+                if (ev == null) return Results.NotFound("Event ne obstaja.");
+                using var transaction = await _context.Database.BeginTransactionAsync();
 
-        //        var eventUserIds = ev.userEvents.Select(ue => ue.userId).ToHashSet();
+                try
+                {
+                    var expense = new Expense
+                    {
+                        id = Guid.NewGuid(),
+                        amount = payload.amount,
+                        dateTime = payload.dateTime,
+                        description = payload.description,
+                        type = Enum.Parse<ExpenseType>(payload.type),
+                        eventId = eventId
+                    };
+                    _context.Expenses.Add(expense);
+                    await _context.SaveChangesAsync();
+                    foreach(var s in payload.shares)
+                    {
+                        Console.WriteLine($"Vstavljam share za UserID: {s.userId}");
+                        var share = new UserExpenseShare
+                        {
+                            expenseId = expense.id,
+                            userId = s.userId,
+                            shareAmount = s.shareAmount
+                        };
+                        _context.UserExpenseShares.Add(share);
+                    }
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
 
-        //        foreach (var s in payload.shares)
-        //        {
-        //            if (!eventUserIds.Contains(s.userId))
-        //                return Results.BadRequest($"User {s.userId} ni član dogodka.");
-        //            if (s.shareAmount < 0)
-        //                return Results.BadRequest("ShareAmount ne sme biti negativen.");
-        //        }
+                    return Results.Ok(new EventExpensesDto(expense.id, expense.amount, expense.description, payload.type, expense.dateTime, payload.shares));
 
-        //        decimal sumShares = payload.shares.Sum(s => s.shareAmount);
-        //        if (Math.Round(sumShares, 2) != Math.Round(payload.amount, 2))
-        //            return Results.BadRequest($"Vsota share-ov ({sumShares}) se ne ujema z Amount ({payload.amount}).");
-
-        //        var expense = new Expense
-        //        {
-        //            eventId = payload.eventId,
-        //            amount = payload.amount,
-        //            type = payload.type,
-        //            description = payload.description,
-        //            dateTime = payload.time
-        //        };
-
-        //        _context.Expenses.Add(expense);
-
-        //        var shares = payload.shares.Select(s => new UserExpenseShare
-        //        {
-        //            expense = expense,
-        //            userId = s.userId,
-        //            shareAmount = s.shareAmount
-        //        }).ToList();
-
-        //        _context.UserExpenseShares.AddRange(shares);
-        //        await _context.SaveChangesAsync();
-
-                
-        //        var result = new
-        //        {
-        //            expense.id,
-        //            expense.eventId,
-        //            expense.amount,
-        //            expense.type,
-        //            expense.description,
-        //            expense.dateTime,
-        //            Shares = shares.Select(x => new { x.userId, x.shareAmount })
-        //        };
-
-        //        return Results.Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
-        //    }
-        //}
+                }
+                catch (Exception ex)
+                {
+                    return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
+            }
+        }
         public async Task<IResult> DeleteExpense(Guid id) 
         {
             try

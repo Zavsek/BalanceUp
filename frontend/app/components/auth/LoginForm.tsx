@@ -3,13 +3,13 @@ import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "reac
 import Checkbox from "expo-checkbox"; 
 import { useAuthStore } from "../../../store/useAuthStore"; 
 import { useRouter } from "expo-router";
-import { Eye, EyeOff } from "lucide-react-native"; // Uvozi ikone
+import { Eye, EyeOff } from "lucide-react-native"; 
 
 const LoginForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [showPassword, setShowPassword] = useState<boolean>(false); // Stanje za vidnost
+  const [showPassword, setShowPassword] = useState<boolean>(false); 
   const [rememberLogin, setRememberLogin] = useState<boolean>(false);
   const { loginAsync, checkingAuth } = useAuthStore();
 

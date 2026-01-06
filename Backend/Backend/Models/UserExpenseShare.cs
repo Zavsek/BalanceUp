@@ -12,11 +12,11 @@ namespace Backend.Models
         public Guid id { get; set; }
         [Column("expense_id")]
         public Guid expenseId { get; set; }
-        [ForeignKey("ExpenseId")]
+        [ForeignKey("expenseId")]
         public Expense expense { get; set; }
         [Column("user_id")]
         public Guid userId { get; set; }
-        [ForeignKey("UserId")]
+        [ForeignKey("userId")]
         public User user { get; set; }
         [Column("share_amount")]
         public decimal shareAmount { get; set; }

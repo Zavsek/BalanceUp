@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,10 +21,15 @@ import {
 } from "lucide-react-native";
 import dayjs from "dayjs";
 
+import AddExpenseModal from "../components/AddExpenseModal"; 
+
 export default function EventDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { currentEvent, getEventInfo } = useEventStore();
+  
+
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (id && typeof id === "string") {
@@ -34,16 +39,11 @@ export default function EventDetailScreen() {
 
   const getExpenseIcon = (type: string) => {
     switch (type) {
-      case "Food":
-        return <Utensils size={18} color="#f97316" />;
-      case "Travel":
-        return <Plane size={18} color="#3b82f6" />;
-      case "Drinks":
-        return <Coffee size={18} color="#eab308" />;
-      case "Accommodation":
-        return <Home size={18} color="#a855f7" />;
-      default:
-        return <Layers size={18} color="#94a3b8" />;
+      case "Food": return <Utensils size={18} color="#f97316" />;
+      case "Travel": return <Plane size={18} color="#3b82f6" />;
+      case "Drinks": return <Coffee size={18} color="#eab308" />;
+      case "Accommodation": return <Home size={18} color="#a855f7" />;
+      default: return <Layers size={18} color="#94a3b8" />;
     }
   };
 
@@ -65,7 +65,7 @@ export default function EventDetailScreen() {
     <View className="flex-1 bg-black">
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Header */}
+
       <View className="pt-14 px-4 pb-4 bg-black flex-row items-center gap-4 border-b border-white/5">
         <TouchableOpacity
           onPress={() => router.back()}
@@ -87,7 +87,7 @@ export default function EventDetailScreen() {
       </View>
 
       <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-        {/* Total Card */}
+
         <View className="bg-golden p-6 rounded-[32px] mb-6 mt-4 shadow-xl shadow-golden/20">
           <Text className="text-black/60 uppercase text-[10px] font-black tracking-widest mb-1">
             Total Group Spending
@@ -97,7 +97,7 @@ export default function EventDetailScreen() {
           </Text>
         </View>
 
-        {/* Participants Section */}
+
         <View className="mb-8">
           <View className="flex-row items-center mb-4">
             <Users size={16} color="#FFD700" />
@@ -112,7 +112,7 @@ export default function EventDetailScreen() {
           >
             {currentEvent.users.map((u) => (
               <View
-                key={u.userId}
+                key={u.id}
                 className="bg-white/10 px-4 py-2 rounded-full border border-white/5"
               >
                 <Text className="text-white font-bold">{u.username}</Text>
@@ -121,7 +121,7 @@ export default function EventDetailScreen() {
           </ScrollView>
         </View>
 
-        {/* Expenses Section */}
+
         <View className="pb-24">
           <View className="flex-row items-center justify-between mb-6">
             <View className="flex-row items-center">
@@ -131,7 +131,7 @@ export default function EventDetailScreen() {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => console.log("TODO ---- Add expense for event")}
+              onPress={() => setModalVisible(true)} 
               className="bg-golden/10 px-3 py-1 rounded-lg border border-golden/20 flex-row items-center"
             >
               <Plus size={14} color="#FFD700" />
@@ -170,31 +170,40 @@ export default function EventDetailScreen() {
                   </Text>
                 </View>
 
+
                 <View className="mt-4 pt-4 border-t border-white/5 flex-row flex-wrap gap-2">
-                  {expense.shares.map((share) => {
-                    const participant = currentEvent.users.find(
-                      (u) => u.userId === share.userId
-                    );
-                    return (
+                <Text className="text-gray-300">
+                  Shares:
+                  </Text>
+                  {expense.shares.map((share) => (
                       <View
                         key={share.userId}
                         className="bg-white/5 px-2 py-1 rounded-lg border border-white/5"
                       >
                         <Text className="text-[10px] text-gray-400">
+
                           <Text className="font-bold text-gray-300">
-                            {participant?.username || "User"}:
+                            {share.username}:
                           </Text>{" "}
-                          €{share.shareAmount.toFixed(2)}
+                          {share.shareAmount.toFixed(2)}%
                         </Text>
                       </View>
-                    );
-                  })}
+                  ))}
                 </View>
               </View>
             ))
           )}
         </View>
       </ScrollView>
+
+
+      <AddExpenseModal
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        eventId={id as string}
+        participants={currentEvent.users} 
+      />
+
     </View>
   );
 }
