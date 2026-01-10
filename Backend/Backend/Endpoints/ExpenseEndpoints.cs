@@ -16,6 +16,9 @@ namespace Backend.Endpoints
                 .RequireRateLimiting("user_limit");
             //Get all expenses for user
             ExpenseGroup.MapGet("/", async (  ExpenseHandler handler) => { return await handler.GetExpensesForUser(); });
+            //Get paginated Expenses
+            ExpenseGroup.MapGet("/{page}", async (int page, ExpenseHandler handler) => { return await handler.GetExpensesForUserPaginated(page); });
+
             //Get all expenses for event
             ExpenseGroup.MapGet("/${eventId}", async ( Guid eventId,ExpenseHandler handler) => { return await handler.GetExpensesForEvent(eventId); });
             //Add new expense

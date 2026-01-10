@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { CreateExpense, EventExpense, Expense, ExpenseDto } from "@/interfaces";
+import { CreateExpense, EventExpense, Expense, ExpenseDto, ExpenseResponse } from "@/interfaces";
 import { useUserStore } from "./useUserStore";
 
 interface ExpenseState{
     expenses:ExpenseDto[]|null;
     fetchingExpenses:boolean
     isCreating: boolean;
+    pageNumber:number;
+    totalCount:number|null;
+    totalPages:number|null;
     createExpense:(expense:CreateExpense) => Promise<boolean>
     getExpenses:()=> Promise<void>;
     deleteExpense:(id:string)=>Promise<boolean>;
@@ -18,6 +21,10 @@ export const useExpenseStore = create<ExpenseState>((set)=>({
     expenses:null,
     fetchingExpenses:false,
     isCreating: false,
+    pageNumber:0,
+    pageSize:20,
+    totalCount: null,
+    totalPages: null,
     eventExpenses:[],
     createExpense:async(expense)=>{
         set({ isCreating: true });
@@ -35,10 +42,19 @@ export const useExpenseStore = create<ExpenseState>((set)=>({
         }
     },
     getExpenses:async()=>{
+        const { pageNumber, totalPages, fetchingExpenses } = useExpenseStore.getState();
+        if (totalPages !== null && pageNumber >= totalPages) return;
         set({fetchingExpenses:true})
         try {
-            const res = await axiosInstance.get<ExpenseDto[]>("/api/expenses/");
-            set({expenses:res.data});
+           const nextPage = pageNumber + 1;
+        const res = await axiosInstance.get<ExpenseResponse>(`/api/expenses/${nextPage}`);
+        
+        set((state) => ({
+            expenses: state.expenses ? [...state.expenses, ...res.data.data] : res.data.data,
+            pageNumber: nextPage,
+            totalCount: res.data.totalCount,
+            totalPages: res.data.totalPages
+        }));
         } catch (error) {
             console.error("Failed to retrieve expenses "+error);
         }

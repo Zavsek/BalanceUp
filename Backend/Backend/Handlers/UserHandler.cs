@@ -187,11 +187,14 @@ namespace Backend.Handlers
                 {
                     try
                     {
-                        // Tukaj bi moral iz URL-ja izluščiti filename, če ga želiš pobrisati
-                        // var oldFileName = Path.GetFileName(new Uri(user.profilePictureUrl).LocalPath);
-                        // await _supabase.Storage.From("profile-pictures").Remove(oldFileName);
+                        var uri = new Uri(user.profilePictureUrl);
+                        var oldFileName = Path.GetFileName(uri.LocalPath);
+                        await bucket.Remove(new List<string> { oldFileName });
                     }
-                    catch { /* Logiraj napako, a ne prekini procesa */ }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Napaka pri brisanju stare slike: {ex.Message}");
+                    }
                 }
 
                 var bucket = _supabase.Storage.From("profile-pictures");

@@ -47,6 +47,52 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Expense Controller " + ex.Message);
             }
         }
+
+        //duplicated for easier implementation
+        public async Task<IResult> GetExpensesForUserPaginated(int page = 1)
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
+
+                if (page < 1) page = 1;
+                var query = _context.Expenses
+             .Where(e => e.userId == userId);
+
+                var totalCount = await query.CountAsync();
+
+                var expenses = await query
+                    .OrderByDescending(e => e.dateTime)
+                    .Skip((page - 1) * 20) 
+                    .Take(20)              
+                    .Select(e => new ExpenseDto(
+                        e.id,
+                        e.amount,
+                        e.type.ToString(),
+                        e.description,
+                        e.dateTime.ToUniversalTime()
+                    ))
+                    .ToListAsync();
+                return Results.Ok(new
+                {
+                    totalCount = totalCount,
+                    page = page,
+                    totalPages = (int)Math.Ceiling(totalCount / (double)20),
+                    data = expenses
+                });
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Error in Expense Controller " + ex.Message);
+            }
+        }
+
+
+
         public async Task<IResult> GetExpensesForEvent(Guid eventId)
         {
             try
@@ -82,6 +128,8 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
             }
         }
+
+
         public  async Task<IResult> CreateExpense( ExpenseDto expense)
         {
             try
@@ -171,6 +219,8 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Napaka pri ustvarjanju expense: " + ex.Message);
             }
         }
+
+
         public async Task<IResult> UpdateExpenseForEvent(Guid eventId, Guid expenseId, EventExpensesDto payload)
         {
             try
@@ -238,6 +288,9 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Sistemska napaka: " + ex.Message);
             }
         }
+
+
+
         public async Task<IResult> DeleteExpense(Guid id) 
         {
             try
@@ -264,6 +317,9 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
             }
         }
+
+
+
         public async Task<IResult> UpdateExpense( ExpenseDto expenseDto) 
         {
             try
@@ -293,6 +349,9 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
             }
         }
+
+
+
 
         public  async Task<IResult> UpdateShares(Guid eventId, Guid expenseId, UpdateSharesDto payload)
         {
