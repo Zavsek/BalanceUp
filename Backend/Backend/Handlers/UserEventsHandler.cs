@@ -35,6 +35,32 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in UserEvents Controller " + ex.Message);
             }
         }
+        public async Task<IResult> AddUsersToEvent(Guid eventId, List<Guid> invitieIds)
+        {
+            var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+            if (userId == null)
+                return TypedResults.Unauthorized();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                foreach (var i in invitieIds)
+                {
+                    var inviteeResult = await AddUserToEventInternal(i, eventId, _context);
+                    if (!inviteeResult.ok)
+                    {
+                        await transaction.RollbackAsync();
+                        return Results.BadRequest($"Error in adding user {i}: {inviteeResult.error}");
+                    }
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return Results.Ok("Users added succefully");
+            }
+            catch (Exception ex) {
+                await transaction.RollbackAsync();
+                return TypedResults.InternalServerError("AN error occured while adding a user to an event " + ex.Message); 
+            }
+        }
         public  async Task<IResult> AddUserToEvent(UserEventDto dto)
         {
             try

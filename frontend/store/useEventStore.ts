@@ -2,6 +2,7 @@ import { create} from "zustand";
 import axiosInstance from "@/lib/axios";
 import { CreateEvent, EventDto, EventExpense, EventObject } from "@/interfaces";
 
+
 interface EventState{
 events:EventDto[]|null;
 currentEvent:EventObject|null;
@@ -14,11 +15,12 @@ createEvent:(title:string, description:string|null)=>Promise<boolean>;
 getEventInfo:(eventId:string)=>Promise<void>;
 addUserToList:(id:string)=>void;
 removeUserFromList: (id: string) => void; 
-  clearCurrentEvent: () => void; 
- addEventExpense:(eventId:string, expense:EventExpense) => Promise<boolean>;
+clearCurrentEvent: () => void; 
+addEventExpense:(eventId:string, expense:EventExpense) => Promise<boolean>;
 updateEventExpense:(eventId:string, expenseId:string, expense:EventExpense)=>Promise<boolean>
-    getExpensesForEvent:(eventId:string)=>Promise<void>;
-    deleteEventExpense:(expenseId:string)=>Promise<Boolean>;
+getExpensesForEvent:(eventId:string)=>Promise<void>;
+deleteEventExpense:(expenseId:string)=>Promise<Boolean>;
+addUsersToEvent:(eventId:string, inviteeIds:string[])=>Promise<boolean>;
 }
 
 export const useEventStore = create<EventState>((set, get)=>({
@@ -167,4 +169,15 @@ deleteEventExpense:async(id)=>{
             return false;
         }
     },
+addUsersToEvent:async(eventId, inviteeIds)=>{
+    try{
+        await axiosInstance.put(`/api/events/${eventId}/users`, inviteeIds);
+        await useEventStore.getState().getEventInfo(eventId);
+        return true;
+    }
+    catch(error){
+        console.error("An error occured while adding users to event "+error);
+        return false;
+    }
+}
 }))

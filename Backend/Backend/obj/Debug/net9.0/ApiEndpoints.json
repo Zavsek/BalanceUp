@@ -23,7 +23,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapEventEndpoints\u003Eb__0_4",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_5",
     "RelativePath": "api/events/{eventId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -72,7 +72,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapEventEndpoints\u003Eb__0_5",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_6",
     "RelativePath": "api/events/{eventId}/expenses/{expenseId}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -118,6 +118,33 @@
       {
         "Name": "payload",
         "Type": "Backend.Models.Dto.UpdateSharesDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.EventEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapEventEndpoints\u003Eb__0_4",
+    "RelativePath": "api/events/{eventId}/users",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "inviteeIds",
+        "Type": "System.Collections.Generic.List\u00601[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": true
       }
     ],

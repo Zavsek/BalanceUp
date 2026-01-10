@@ -1,257 +1,248 @@
-import React, { useState, useEffect } from "react";
-import {
-  View, Text, Modal, TextInput, TouchableOpacity, ActivityIndicator,
-  KeyboardAvoidingView, Platform, ScrollView
-} from "react-native";
-import Slider from '@react-native-community/slider';
-import { useEventStore } from "../../store/useEventStore";
-import { useExpenseStore } from "../../store/useExpenseStore";
-import { X } from "lucide-react-native";
-import { EventUser } from "@/interfaces/Event";
-import ExpenseType from "@/interfaces/types/ExpenseType";
-import { ExpenseDto } from "@/interfaces";
+import React, { useState, useEffect } from 'react';
+import { View, Text, Modal, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Keyboard } from 'react-native';
+import { useEventStore } from '../../store/useEventStore';
+import { useFriendStore } from '../../store/useFriendStore';
+import { X, Search, Check, Calendar, Users } from 'lucide-react-native';
+import { UserCard } from '@/interfaces'; 
 
-interface AddExpenseModalProps {
+interface CreateEventModalProps {
   isVisible: boolean;
   onClose: () => void;
-  eventId?: string;
-  participants?: EventUser[];
-  initialData?: ExpenseDto | null;
 }
 
-const CATEGORIES: ExpenseType[] = ["Food", "Drinks", "Travel", "Accommodation", "Miscellaneous"];
 
-export default function AddExpenseModal({ isVisible, onClose, eventId, participants, initialData }: AddExpenseModalProps) {
-  const { addEventExpense, updateEventExpense } = useEventStore();
-  const { createExpense, updateExpense } = useExpenseStore();
+interface DisplayUser {
+  id: string;
+  username: string;
+  type: 'friend' | 'search_result';
+}
+
+export default function CreateEventModal({ isVisible, onClose }: CreateEventModalProps) {
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   
-  const [editingValue, setEditingValue] = useState<{ [key: string]: string }>({});
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState<ExpenseType>("Food");
-  const [isLoading, setIsLoading] = useState(false);
-  const [userShares, setUserShares] = useState<{ [key: string]: number }>({});
 
-  const isEventExpense = !!(eventId && participants && participants.length > 0);
-  const totalAmount = parseFloat(amount.replace(',', '.')) || 0;
+  const [query, setQuery] = useState('');
+  const [localSearchResults, setLocalSearchResults] = useState<DisplayUser[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<DisplayUser[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+
+  const { createEvent, creatingEvent, addUserToList } = useEventStore();
+  const { 
+    friends, 
+    showFriendsList, 
+    findUsersByUsername, 
+    fetchingUsers 
+  } = useFriendStore();
+
 
   useEffect(() => {
     if (isVisible) {
-      if (initialData) {
-        setAmount(initialData.amount.toString());
-        setDescription(initialData.description);
-        setType(initialData.type as ExpenseType);
-        
-        const initialShares: { [key: string]: number } = {};
-        const dataWithShares = initialData as any; 
-        
-        if (dataWithShares.shares && Array.isArray(dataWithShares.shares)) {
-          dataWithShares.shares.forEach((s: any) => {
-            initialShares[s.userId] = s.shareAmount;
-          });
-        }
-        setUserShares(initialShares);
-      } else {
-        setAmount("");
-        setDescription("");
-        setType("Food");
-        const initial: { [key: string]: number } = {};
-        if (isEventExpense && participants) {
-          participants.forEach(u => initial[u.id] = 0);
-        }
-        setUserShares(initial);
-      }
-      setEditingValue({});
+      showFriendsList(); 
+      setQuery('');
+      setLocalSearchResults([]);
+      setSelectedUsers([]);
+      setTitle('');
+      setDescription('');
     }
-  }, [isVisible, isEventExpense, initialData]);
-
-  if (!isVisible) return null;
-
-  const handleSliderChange = (userId: string, val: number) => {
-    const otherTotal = Object.entries(userShares)
-      .filter(([id]) => id !== userId)
-      .reduce((sum, [_, v]) => sum + v, 0);
-    const maxAllowed = 100 - otherTotal;
-    const finalVal = val > maxAllowed ? maxAllowed : Math.round(val);
-    setUserShares(prev => ({ ...prev, [userId]: finalVal }));
-  };
-
-  const handleEuroInput = (userId: string, text: string) => {
-    setEditingValue(prev => ({ ...prev, [userId]: text }));
-  };
-
-  const syncEuroToPercent = (userId: string) => {
-    const text = editingValue[userId];
-    if (text === undefined || totalAmount <= 0) {
-      setEditingValue(prev => {
-        const next = { ...prev };
-        delete next[userId];
-        return next;
-      });
-      return;
-    }
-
-    const euroVal = parseFloat(text.replace(',', '.')) || 0;
-    let targetPercent = Math.round((euroVal / totalAmount) * 100);
-    const otherTotal = Object.entries(userShares).filter(([id]) => id !== userId).reduce((sum, [_, v]) => sum + v, 0);
-    const maxAllowed = 100 - otherTotal;
-    
-    if (targetPercent > maxAllowed) targetPercent = maxAllowed;
-    if (targetPercent < 0) targetPercent = 0;
-
-    setUserShares(prev => ({ ...prev, [userId]: targetPercent }));
-    setEditingValue(prev => {
-      const next = { ...prev };
-      delete next[userId];
-      return next;
-    });
-  };
-
-  const currentTotalPercent = Object.values(userShares).reduce((a, b) => a + b, 0);
-
-  const handleSubmit = async () => {
-    if (!amount || !description) return;
-    if (isEventExpense && currentTotalPercent !== 100) return;
-
-    setIsLoading(true);
-    let success = false;
+  }, [isVisible]);
 
 
-    const expensePayload: any = {
-      id: initialData?.id || null, 
-      amount: totalAmount,
-      description,
-      type,
-      dateTime: initialData?.time || new Date().toISOString(),
-      shares: Object.entries(userShares).map(([id, share]) => ({
-        userId: id,
-        username: participants?.find(p => p.id === id)?.username || "Unknown",
-        shareAmount: share,
-      })),
-    };
+  const handleSearch = async (text: string) => {
+    setQuery(text);
+    if (text.length > 2) {
+      setIsSearching(true);
+      const results = await findUsersByUsername(text);
+      
+      if (results) {
 
-    if (initialData) {
-      if (isEventExpense && eventId && initialData.id) {
-        success = await updateEventExpense(eventId, initialData.id, expensePayload);
-      } else {
-        success = await updateExpense({ ...initialData, ...expensePayload });
+        const mappedResults: DisplayUser[] = results.map(u => ({
+          id: u.id,
+          username: u.username,
+          type: 'search_result'
+        }));
+        setLocalSearchResults(mappedResults);
       }
+      setIsSearching(false);
     } else {
-      if (isEventExpense && eventId) {
-        success = await addEventExpense(eventId, expensePayload);
-      } else {
-        success = await createExpense({ ...expensePayload, time: expensePayload.dateTime });
-      }
+      setLocalSearchResults([]);
     }
-
-    setIsLoading(false);
-    if (success) onClose();
   };
 
-  const isSubmitDisabled = isLoading || (isEventExpense ? currentTotalPercent !== 100 : (!amount || !description));
+  const toggleUserSelection = (user: DisplayUser) => {
+    const isSelected = selectedUsers.some(u => u.id === user.id);
+    if (isSelected) {
+      setSelectedUsers(prev => prev.filter(u => u.id !== user.id));
+    } else {
+      setSelectedUsers(prev => [...prev, user]);
+    }
+  };
+
+
+  const handleCreate = async () => {
+    if (!title.trim()) return;
+
+
+    
+    selectedUsers.forEach(u => {
+      addUserToList(u.id);
+    });
+
+
+    const success = await createEvent(title, description);
+    
+    if (success) {
+      onClose();
+    }
+  };
+
+
+  const isQueryActive = query.length > 2;
+  
+  const dataToShow: DisplayUser[] = isQueryActive 
+    ? localSearchResults 
+    : (friends || []).map(f => ({
+        id: f.userId, 
+        username: f.username, 
+        type: 'friend'
+      }));
 
   return (
     <Modal visible={isVisible} animationType="slide" transparent>
-      <View className="flex-1 justify-end bg-black/80">
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 justify-end">
-          <View className="bg-[#121212] rounded-t-[40px] pt-8 border-t border-white/10 max-h-[92%]">
-            <View className="flex-row justify-between items-center mb-6 px-8">
-              <Text className="text-white text-2xl font-black uppercase italic tracking-tighter">
-                {initialData ? 'Edit Expense' : 'New Expense'}
-              </Text>
-              <TouchableOpacity onPress={onClose} className="bg-white/5 p-2 rounded-full">
-                <X color="white" size={20} />
-              </TouchableOpacity>
+      <View className="flex-1 bg-black/80 justify-end">
+        <TouchableOpacity style={{flex:1}} onPress={onClose} />
+        
+        <View className="bg-[#121212] h-[85%] w-full rounded-t-[40px] border-t border-white/10 overflow-hidden">
+          
+          {/* HEADER */}
+          <View className="p-6 border-b border-white/5 flex-row justify-between items-center bg-[#121212]">
+            <View>
+              <Text className="text-white text-2xl font-black italic tracking-tighter uppercase">New Event</Text>
+            </View>
+            <TouchableOpacity onPress={onClose} className="bg-white/10 p-2 rounded-full">
+              <X color="white" size={24} />
+            </TouchableOpacity>
+          </View>
+
+          <View className="flex-1 p-6">
+            
+            {/* INPUTS */}
+            <View className="gap-y-4 mb-6">
+              <TextInput
+                placeholder="Title (e.g., Pizza Night)"
+                placeholderTextColor="#666"
+                value={title}
+                onChangeText={setTitle}
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white text-lg font-bold"
+              />
+              <TextInput
+                placeholder="Description"
+                placeholderTextColor="#666"
+                value={description}
+                onChangeText={setDescription}
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white text-base"
+              />
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 32 }}>
-              <View className="mb-6">
-                <Text className="text-gray-500 text-[10px] font-bold uppercase mb-2 ml-1">Amount (€)</Text>
+            {/* SEARCH SECTION */}
+            <View className="flex-1">
+              <Text className="text-golden font-bold uppercase text-xs mb-3 tracking-widest">Invite People</Text>
+              
+              <View className="bg-white/5 border border-white/10 rounded-2xl flex-row items-center px-4 mb-4 h-12">
+                <Search size={18} color="#666" />
                 <TextInput
-                  value={amount}
-                  onChangeText={setAmount}
-                  placeholder="0.00"
-                  placeholderTextColor="#333"
-                  keyboardType="numeric"
-                  className="bg-white/5 border border-white/10 text-white text-3xl font-black p-5 rounded-2xl"
+                  placeholder="Search by username..."
+                  placeholderTextColor="#666"
+                  value={query}
+                  onChangeText={handleSearch}
+                  className="flex-1 ml-3 text-white font-medium"
+                  autoCapitalize="none"
                 />
+                {isSearching && <ActivityIndicator size="small" color="#FFD700" />}
               </View>
 
-              <View className="mb-6">
-                <Text className="text-gray-500 text-[10px] font-bold uppercase mb-2 ml-1">Description</Text>
-                <TextInput
-                  value={description}
-                  onChangeText={setDescription}
-                  placeholder="What was this for?"
-                  placeholderTextColor="#444"
-                  className="bg-white/5 border border-white/10 text-white px-5 py-4 rounded-2xl font-bold min-h-[60px]"
-                />
-              </View>
+              {/* Selected Users (CHIPS) */}
+              {selectedUsers.length > 0 && (
+                <View className="flex-row flex-wrap gap-2 mb-4">
+                  {selectedUsers.map(u => (
+                    <TouchableOpacity 
+                      key={u.id} 
+                      onPress={() => toggleUserSelection(u)}
+                      className="bg-golden px-3 py-1 rounded-full flex-row items-center"
+                    >
+                      <Text className="text-black text-xs font-bold mr-1">{u.username}</Text>
+                      <X size={12} color="black" />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
 
-              <View className="mb-8 flex-row flex-wrap gap-2">
-                {CATEGORIES.map((cat) => (
-                  <TouchableOpacity key={cat} onPress={() => setType(cat)} className={`px-4 py-2 rounded-xl border ${type === cat ? "bg-golden border-golden" : "bg-white/5 border-white/10"}`}>
-                    <Text className={`font-bold text-[11px] ${type === cat ? "text-black" : "text-gray-400"}`}>{cat}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              {isEventExpense && participants?.map((user) => {
-                  const sharePercent = userShares[user.id] || 0;
-                  const shareEuro = ((totalAmount * sharePercent) / 100).toFixed(2);
-                  const displayValue = editingValue[user.id] !== undefined ? editingValue[user.id] : (sharePercent > 0 ? shareEuro : "");
+              <FlatList
+                data={dataToShow}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={
+                  <View className="items-center mt-10">
+                    <Users size={40} color="#333" />
+                    <Text className="text-gray-600 mt-2 italic">
+                       {isQueryActive ? "No users found." : "No friends loaded."}
+                    </Text>
+                  </View>
+                }
+                renderItem={({ item }) => {
+                  const isSelected = selectedUsers.some(u => u.id === item.id);
                   return (
-                      <View key={user.id} className="mb-6 bg-white/5 p-5 rounded-3xl border border-white/5">
-                          <View className="flex-row justify-between items-center mb-4">
-                              <Text className="text-white font-bold">{user.username}</Text>
-                              <View className="flex-row gap-2">
-                                  <View className="bg-black/40 px-3 py-1 rounded-xl border border-white/10 flex-row items-center">
-                                      <TextInput
-                                          keyboardType="numeric"
-                                          placeholder="0.00"
-                                          placeholderTextColor="#333"
-                                          value={displayValue}
-                                          onChangeText={(t) => handleEuroInput(user.id, t)}
-                                          onBlur={() => syncEuroToPercent(user.id)}
-                                          className="text-golden font-black text-right min-w-[50px]"
-                                      />
-                                      <Text className="text-golden font-bold ml-1 text-[10px]">€</Text>
-                                  </View>
-                                  <View className="bg-white/5 px-3 py-1 rounded-xl border border-white/5 flex-row items-center">
-                                      <Text className="text-white font-black">{sharePercent}%</Text>
-                                  </View>
-                              </View>
-                          </View>
-                          <Slider
-                              style={{ width: '100%', height: 40 }}
-                              minimumValue={0}
-                              maximumValue={100}
-                              step={1}
-                              value={sharePercent}
-                              onValueChange={(v) => handleSliderChange(user.id, v)}
-                              minimumTrackTintColor="#FFD700"
-                              thumbTintColor="#FFD700"
-                          />
+                    <TouchableOpacity
+                      onPress={() => toggleUserSelection(item)}
+                      className={`p-4 rounded-2xl mb-2 flex-row items-center border ${isSelected ? 'bg-white/10 border-golden' : 'bg-white/5 border-white/5'}`}
+                    >
+                      <View className="w-10 h-10 rounded-full bg-white/10 items-center justify-center mr-3">
+                        <Text className="text-white font-bold">{item.username.charAt(0).toUpperCase()}</Text>
                       </View>
-                  );
-              })}
-            </ScrollView>
+                      
+                      <View className="flex-1">
+                        <Text className={`text-base font-bold ${isSelected ? 'text-golden' : 'text-white'}`}>
+                          {item.username}
+                        </Text>
+                        <Text className="text-gray-500 text-[10px] uppercase">
+                           {item.type === 'friend' ? 'Friend' : 'Search Result'}
+                        </Text>
+                      </View>
 
-            <View className="pt-4 px-8 pb-10">
-              <TouchableOpacity
-                onPress={handleSubmit}
-                disabled={isSubmitDisabled}
-                className={`h-16 rounded-2xl items-center justify-center ${!isSubmitDisabled ? 'bg-golden' : 'bg-white/5 opacity-20'}`}
-              >
-                {isLoading ? <ActivityIndicator color="black" /> : (
-                  <Text className="text-black font-black uppercase tracking-widest text-lg">
-                      {initialData ? 'Update Expense' : 'Add Expense'}
-                  </Text>
-                )}
-              </TouchableOpacity>
+                      {isSelected && (
+                        <View className="bg-golden w-6 h-6 rounded-full items-center justify-center">
+                          <Check size={14} color="black" />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  );
+                }}
+              />
             </View>
           </View>
-        </KeyboardAvoidingView>
+
+          {/* CREATE BUTTON */}
+          <View className="p-6 border-t border-white/10 bg-[#121212]">
+            <TouchableOpacity
+              onPress={handleCreate}
+              disabled={creatingEvent || !title}
+              className={`w-full h-16 rounded-2xl flex-row items-center justify-center ${!title ? 'bg-white/10' : 'bg-golden'}`}
+            >
+              {creatingEvent ? (
+                <ActivityIndicator color="black" />
+              ) : (
+                <>
+                  <Calendar size={20} color={!title ? "#666" : "black"} />
+                  <Text className={`font-black uppercase text-lg ml-2 ${!title ? 'text-gray-500' : 'text-black'}`}>
+                    Create Event
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </Modal>
   );

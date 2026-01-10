@@ -173,24 +173,41 @@ namespace Backend.Handlers
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                     return TypedResults.NotFound("User not found");
-                if (file != null && file.Length > 0)
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                var extension = Path.GetExtension(file.FileName).ToLower();
+                if (!allowedExtensions.Contains(extension))
+                    return TypedResults.BadRequest("Invalid file type. Only images are allowed.");
+                if (!string.IsNullOrEmpty(user.profilePictureUrl))
                 {
-                    using var ms = new MemoryStream();
-                    await file.CopyToAsync(ms);
-                    var bytes = ms.ToArray();
-                    var bucket = _supabase.Storage.From("profile-pictures");
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    await bucket.Upload(bytes, fileName, new Supabase.Storage.FileOptions { Upsert = true });
-                    user.profilePictureUrl = bucket.GetPublicUrl(fileName);
+                    try
+                    {
+                        // Tukaj bi moral iz URL-ja izluščiti filename, če ga želiš pobrisati
+                        // var oldFileName = Path.GetFileName(new Uri(user.profilePictureUrl).LocalPath);
+                        // await _supabase.Storage.From("profile-pictures").Remove(oldFileName);
+                    }
+                    catch { /* Logiraj napako, a ne prekini procesa */ }
                 }
+
+                var bucket = _supabase.Storage.From("profile-pictures");
+                var fileName = $"{id}/{Guid.NewGuid()}{extension}";
+
+                using var stream = file.OpenReadStream();
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+
+               await bucket.Upload(ms.ToArray(), fileName, new Supabase.Storage.FileOptions { Upsert = true });
+
+                user.profilePictureUrl = bucket.GetPublicUrl(fileName);
                 await _context.SaveChangesAsync();
+
                 return TypedResults.Ok(new
                 {
-                    localId = user.id,
-                    username = user.username,
                     profilePictureUrl = user.profilePictureUrl
                 });
             }

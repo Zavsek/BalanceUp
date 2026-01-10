@@ -25,6 +25,7 @@ import {
 import dayjs from "dayjs";
 
 import AddExpenseModal from "../components/AddExpenseModal"; 
+import AddUsersModal from "../components/AddUsersModal"; 
 import { ExpenseDto } from "@/interfaces";
 
 export default function EventDetailScreen() {
@@ -33,6 +34,7 @@ export default function EventDetailScreen() {
   const { currentEvent, getEventInfo, deleteEventExpense } = useEventStore();
   
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isUsersModalVisible, setUsersModalVisible] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<ExpenseDto | null>(null);
 
   useEffect(() => {
@@ -42,7 +44,6 @@ export default function EventDetailScreen() {
   }, [id]);
 
   const handleEditExpense = (expense: any) => {
-
     setSelectedExpense(expense);
     setModalVisible(true);
   };
@@ -58,7 +59,6 @@ export default function EventDetailScreen() {
           style: "destructive", 
           onPress: async () => {
             await deleteEventExpense(expenseId);
-
             if (id) getEventInfo(id as string);
           } 
         },
@@ -69,7 +69,6 @@ export default function EventDetailScreen() {
   const closeModal = () => {
     setModalVisible(false);
     setSelectedExpense(null);
-
     if (id) getEventInfo(id as string);
   };
 
@@ -132,20 +131,39 @@ export default function EventDetailScreen() {
 
         {/* Participants */}
         <View className="mb-8">
-          <View className="flex-row items-center mb-4">
-            <Users size={16} color="#FFD700" />
-            <Text className="text-white font-black ml-2 uppercase text-xs tracking-widest">
-              Participants
-            </Text>
-          </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="gap-x-3">
-            {currentEvent.users.map((u) => (
-              <View key={u.id} className="bg-white/10 px-4 py-2 rounded-full border border-white/5">
-                <Text className="text-white font-bold">{u.username}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+  <View className="flex-row items-center justify-between mb-4 px-4">
+    <View className="flex-row items-center">
+      <Users size={16} color="#FFD700" />
+      <Text className="text-white font-black ml-2 uppercase text-xs tracking-widest">
+        Participants
+      </Text>
+    </View>
+    <TouchableOpacity 
+      onPress={() => setUsersModalVisible(true)}
+      className="bg-golden/10 p-2 rounded-xl border border-golden/20"
+    >
+      <Plus size={16} color="#FFD700" />
+    </TouchableOpacity>
+  </View>
+
+  {/* POPRAVLJEN SCROLLVIEW */}
+  <ScrollView 
+    horizontal 
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}
+  >
+    {currentEvent.users.map((u) => (
+      <View 
+        key={u.id} 
+        className="bg-white/10 px-5 py-2.5 rounded-full border border-white/5"
+      >
+        <Text className="text-white font-black uppercase italic text-xs">
+          {u.username}
+        </Text>
+      </View>
+    ))}
+  </ScrollView>
+</View>
 
         {/* Expenses List */}
         <View className="pb-24">
@@ -218,6 +236,12 @@ export default function EventDetailScreen() {
         eventId={id as string}
         participants={currentEvent.users} 
         initialData={selectedExpense}
+      />
+
+      <AddUsersModal 
+        isVisible={isUsersModalVisible}
+        onClose={() => setUsersModalVisible(false)}
+        eventId={id as string}
       />
     </View>
   );

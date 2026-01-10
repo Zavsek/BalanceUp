@@ -41,11 +41,8 @@ export default function AddExpenseModal({ isVisible, onClose, eventId, participa
         setAmount(initialData.amount.toString());
         setDescription(initialData.description);
         setType(initialData.type as ExpenseType);
-        
-        // Če urejamo, moramo pobrati obstoječe deleže, če so na voljo
+      
         const initial: { [key: string]: number } = {};
-        // Tukaj ne uporabljamo .shares, ker si rekel, da ga ni v DTO, 
-        // zato pustimo prazno ali implementiramo tvojo logiko za pridobivanje share-ov
         setUserShares({}); 
       } else {
         setAmount("");
