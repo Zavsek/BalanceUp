@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { useExpenseStore } from '../../store/useExpenseStore'; 
 import { Trash2, ArrowLeft, Edit3, Plane, Utensils, Coffee, Home, Layers, Plus } from 'lucide-react-native'; 
@@ -8,23 +8,35 @@ import AddExpenseModal from '../components/AddExpenseModal';
 import { ExpenseDto } from '@/interfaces';
 
 export default function ExpensesScreen() {
-  const { expenses, getExpenses, fetchingExpenses, deleteExpense } = useExpenseStore();
-  const [refreshing, setRefreshing] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  
 
+  const { expenses, getExpenses, fetchingExpenses, deleteExpense, resetExpenses } = useExpenseStore();
+  const [refreshing, setRefreshing] = useState(false);
+  
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<ExpenseDto | null>(null);
 
   useEffect(() => {
-    getExpenses();
+    loadInitial();
   }, []);
+
+  const loadInitial = async () => {
+    if (resetExpenses) resetExpenses();
+    await getExpenses();
+  };
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    if (resetExpenses) resetExpenses();
     await getExpenses();
     setRefreshing(false);
-  }, [getExpenses]);
+  }, [getExpenses, resetExpenses]);
+
+  // Funkcija, ki se sproži, ko uporabnik pride do konca seznama
+  const handleLoadMore = () => {
+    if (!fetchingExpenses) {
+      getExpenses();
+    }
+  };
 
   const getCategoryIcon = (type: string) => {
     switch (type) {
@@ -36,15 +48,46 @@ export default function ExpensesScreen() {
     }
   };
 
-  const handleEdit = (item: ExpenseDto) => {
-    setSelectedExpense(item);
-    setModalVisible(true);
-  };
+  const renderExpenseItem = ({ item }: { item: ExpenseDto }) => (
+    <View className="w-full bg-white/5 border border-white/10 rounded-[24px] p-4 flex-row items-center mb-3">
+      <View className="w-12 h-12 bg-white/10 rounded-2xl items-center justify-center mr-4">
+        {getCategoryIcon(item.type)}
+      </View>
 
-  const handleAddNew = () => {
-    setSelectedExpense(null); 
-    setModalVisible(true);
-  };
+      <View className="flex-1">
+          <Text className="text-white font-bold text-base" numberOfLines={1}>{item.description}</Text>
+          <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-tighter">
+            {item.type} • {dayjs(item.time).format('DD.MM.YYYY HH:mm')}
+          </Text>
+      </View>
+
+      <View className="items-end">
+          <Text className="text-golden font-black text-base mb-2">€{item.amount.toFixed(2)}</Text>
+          <View className="flex-row gap-x-2">
+              <TouchableOpacity 
+                onPress={() => {
+                  setSelectedExpense(item);
+                  setModalVisible(true);
+                }}
+                className="bg-white/10 p-2 rounded-full border border-white/5"
+              >
+                <Edit3 size={14} color="#ccc" />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => {
+                  Alert.alert("Delete", "Are you sure?", [
+                    { text: "Cancel" },
+                    { text: "Delete", style: 'destructive', onPress: () => deleteExpense(item.id.toString()) }
+                  ]);
+                }}
+                className="bg-red-500/10 p-2 rounded-full border border-red-500/10"
+              >
+                <Trash2 size={14} color="#ef4444" />
+              </TouchableOpacity>
+          </View>
+      </View>
+    </View>
+  );
 
   return (
     <View className="flex-1 bg-black">
@@ -55,81 +98,44 @@ export default function ExpensesScreen() {
           headerStyle: { backgroundColor: 'black' },
           headerTintColor: '#fff',
           headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.replace("/(tabs)")} 
-              className="p-2 mr-2"
-            >
+            <TouchableOpacity onPress={() => router.replace("/(tabs)")} className="p-2 mr-2">
                <ArrowLeft color="white" size={24} />
             </TouchableOpacity>
           )
         }} 
       />
 
-      {fetchingExpenses && !expenses && !refreshing ? (
-         <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#FFD700" />
-         </View>
-      ) : (
-        <ScrollView 
-          className="flex-1 px-4"
-          contentContainerStyle={{ paddingBottom: 100 }} 
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FFD700" />}
-        >
-          <View className="py-6 gap-y-3">
-            {expenses?.length === 0 ? (
-               <Text className="text-gray-500 text-center mt-10 font-bold">No transactions found.</Text>
-            ) : (
-              expenses?.map((item) => (
-                <View key={item.id} className="w-full bg-white/5 border border-white/10 rounded-[24px] p-4 flex-row items-center">
-                  <View className="w-12 h-12 bg-white/10 rounded-2xl items-center justify-center mr-4">
-                    {getCategoryIcon(item.type)}
-                  </View>
-
-                  <View className="flex-1">
-                      <Text className="text-white font-bold text-base" numberOfLines={1}>{item.description}</Text>
-                      <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-tighter">
-                        {item.type} • {dayjs(item.time).format('DD.MM.YYYY HH:mm')}
-                      </Text>
-                  </View>
-
-                  <View className="items-end">
-                      <Text className="text-golden font-black text-base mb-2">€{item.amount.toFixed(2)}</Text>
-                      <View className="flex-row gap-x-2">
-                          <TouchableOpacity 
-                            onPress={() => handleEdit(item)}
-                            className="bg-white/10 p-2 rounded-full border border-white/5"
-                          >
-                            <Edit3 size={14} color="#ccc" />
-                          </TouchableOpacity>
-                          <TouchableOpacity 
-                            onPress={() => {
-                              Alert.alert("Delete", "Are you sure?", [
-                                { text: "Cancel" },
-                                { text: "Delete", style: 'destructive', onPress: () => deleteExpense(item.id.toString()) }
-                              ]);
-                            }}
-                            className="bg-red-500/10 p-2 rounded-full border border-red-500/10"
-                          >
-                            <Trash2 size={14} color="#ef4444" />
-                          </TouchableOpacity>
-                      </View>
-                  </View>
-                </View>
-              ))
-            )}
-          </View>
-        </ScrollView>
-      )}
-
+      <FlatList
+        data={expenses}
+        renderItem={renderExpenseItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 120 }}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5} 
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FFD700" />
+        }
+        ListEmptyComponent={() => (
+          !fetchingExpenses ? (
+            <Text className="text-gray-500 text-center mt-10 font-bold">No transactions found.</Text>
+          ) : null
+        )}
+        ListFooterComponent={() => (
+          fetchingExpenses && !refreshing ? (
+            <View className="py-4">
+              <ActivityIndicator color="#FFD700" />
+            </View>
+          ) : null
+        )}
+      />
 
       <TouchableOpacity 
-        onPress={handleAddNew}
+        onPress={() => { setSelectedExpense(null); setModalVisible(true); }}
         activeOpacity={0.8}
         className="absolute bottom-10 right-6 w-16 h-16 bg-golden rounded-full items-center justify-center shadow-2xl shadow-golden/40"
       >
         <Plus color="black" size={32} />
       </TouchableOpacity>
-
 
       <AddExpenseModal 
         isVisible={isModalVisible} 

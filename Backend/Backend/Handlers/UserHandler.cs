@@ -183,6 +183,7 @@ namespace Backend.Handlers
                 var extension = Path.GetExtension(file.FileName).ToLower();
                 if (!allowedExtensions.Contains(extension))
                     return TypedResults.BadRequest("Invalid file type. Only images are allowed.");
+                var bucket = _supabase.Storage.From("profile-pictures");
                 if (!string.IsNullOrEmpty(user.profilePictureUrl))
                 {
                     try
@@ -197,7 +198,6 @@ namespace Backend.Handlers
                     }
                 }
 
-                var bucket = _supabase.Storage.From("profile-pictures");
                 var fileName = $"{id}/{Guid.NewGuid()}{extension}";
 
                 using var stream = file.OpenReadStream();

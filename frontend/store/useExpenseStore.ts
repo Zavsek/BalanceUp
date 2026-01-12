@@ -14,7 +14,7 @@ interface ExpenseState{
     getExpenses:()=> Promise<void>;
     deleteExpense:(id:string)=>Promise<boolean>;
     updateExpense:(expense:ExpenseDto)=>Promise<boolean>;
-
+    resetExpenses:()=>void;
 }
 
 export const useExpenseStore = create<ExpenseState>((set)=>({
@@ -86,5 +86,13 @@ export const useExpenseStore = create<ExpenseState>((set)=>({
             console.error("error while updating expense "+ error);
             return false;
         }
-    }
+    },
+    resetExpenses: () => {
+    set({
+        expenses: null,
+        pageNumber: 0,
+        totalPages: null,
+        totalCount: null
+    });
+},
 }));

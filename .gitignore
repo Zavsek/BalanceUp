@@ -2,4 +2,6 @@ pgpass.txt
 Backend/Backend/Constants/
 Backend/.vs/
 Backend/Backend/bin/
+Backend/Backend/firebase-config.json
 
+frontend/serivces/
