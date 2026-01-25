@@ -1,8 +1,9 @@
 import axios from "axios";
 import { getAuth } from "firebase/auth";
+import {API_URL} from "../constants/ApiConfig";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://172.20.10.2:5245", 
+  baseURL: `${API_URL}`, 
   timeout: 30000,
    });
 

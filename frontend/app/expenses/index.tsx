@@ -31,7 +31,6 @@ export default function ExpensesScreen() {
     setRefreshing(false);
   }, [getExpenses, resetExpenses]);
 
-  // Funkcija, ki se sproži, ko uporabnik pride do konca seznama
   const handleLoadMore = () => {
     if (!fetchingExpenses) {
       getExpenses();

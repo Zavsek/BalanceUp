@@ -5,7 +5,6 @@ interface EventObject {
   title: string;
   description: string;
   createdAt: string; // ISO date string
-  expenses:EventExpense[];
   users:EventUser[];
 }
 

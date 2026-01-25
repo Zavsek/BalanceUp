@@ -47,7 +47,7 @@ export const useExpenseStore = create<ExpenseState>((set)=>({
         set({fetchingExpenses:true})
         try {
            const nextPage = pageNumber + 1;
-        const res = await axiosInstance.get<ExpenseResponse>(`/api/expenses/${nextPage}`);
+        const res = await axiosInstance.get<ExpenseResponse>(`/api/expenses/page/${nextPage}`);
         
         set((state) => ({
             expenses: state.expenses ? [...state.expenses, ...res.data.data] : res.data.data,

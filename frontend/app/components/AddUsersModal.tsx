@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Modal, TouchableOpacity, ActivityIndicator, ScrollView, TextInput } from "react-native";
 import { useEventStore } from "../../store/useEventStore";
-import { useFriendStore } from "../../store/useFriendStore"; // Uvoz tvojega friend stora
+import { useFriendStore } from "../../store/useFriendStore"; 
 import { X, CheckCircle2, Circle, Search } from "lucide-react-native";
 
 interface AddUsersModalProps {

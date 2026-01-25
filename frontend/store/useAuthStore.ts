@@ -10,7 +10,7 @@ import { registerRequest as registerRequest, registerResponse } from "@/interfac
 interface AuthState {
   userInstance: User | null;
   checkingAuth: boolean;
-
+ token:string|null;
   userNameTaken?: boolean;
   loginOnLoad: () => Promise<void>;
   loginAsync: (email: string, password: string, rememberLogin:boolean) => Promise<void>;
@@ -22,6 +22,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   userInstance: null,
   checkingAuth: false,
   userNameTaken: false,
+  token: null,
   loginOnLoad: async () => {
     set({ checkingAuth: true });
   
@@ -53,6 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const firebaseUser = userCredential.user;
         const token = await firebaseUser.getIdToken();
+
         //used for testing
         console.log(token);
         if (rememberLogin) {
@@ -68,7 +70,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
       }
     );
-        set({ userInstance: res.data, checkingAuth: false });
+        set({ userInstance: res.data, checkingAuth: false, token: token });
     } catch (error: any) {
       set({ checkingAuth: false });
       console.error("Login error:", error);
