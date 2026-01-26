@@ -13,7 +13,7 @@ namespace Backend.Models.Dto
         List<Guid> users
         );
     //used for getting full event details
-    public record EventDetailsDto(Guid id, string title, string? desctiption, DateTime createdAt, List<EventUserDto> users, List<EventExpensesDto> expenses);
+    public record EventDetailsDto(Guid id, string title, string? desctiption, DateTime createdAt, List<EventUserDto> users);
 
     //User for event
     public record EventUserDto(Guid id, string username);

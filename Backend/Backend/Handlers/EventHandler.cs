@@ -120,9 +120,6 @@ namespace Backend.Handlers
                 var ev = await _context.Events
                     .Include(e => e.userEvents)
                         .ThenInclude(ue => ue.user)
-                    .Include(e => e.expenses)
-                        .ThenInclude(ex => ex.userExpenseShares)
-                            .ThenInclude(s => s.user)
                     .FirstOrDefaultAsync(e => e.id == eventId);
 
                 if (ev == null) return TypedResults.NotFound("Dogodek ne obstaja.");
@@ -140,19 +137,7 @@ namespace Backend.Handlers
                     ev.userEvents.Select(ue => new EventUserDto(
                         ue.userId,
                         ue.user.username ?? "Unknown"
-                    )).ToList(),
-                    ev.expenses.Select(ex => new EventExpensesDto(
-                        ex.id,
-                        ex.amount,
-                        ex.description,
-                        ex.type.ToString(),
-                        ex.dateTime.ToUniversalTime(),
-                        ex.userExpenseShares.Select(s => new ExpenseShareDto(
-                            s.userId,
-                            s.user.username ?? "Unknown",
-                            s.shareAmount
-                        )).ToList()
-                    )).OrderByDescending(ex => ex.dateTime).ToList()
+                    )).ToList()
                 );
 
                 return Results.Ok(result);

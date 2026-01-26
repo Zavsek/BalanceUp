@@ -1,6 +1,7 @@
 using Backend.Constants;
 using Backend.Data;
 using Backend.Endpoints;
+using Backend.Hubs;
 using Backend.Middleware;
 using Backend.Routes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -62,7 +63,7 @@ builder.Services.AddSingleton(provider =>
             AutoConnectRealtime = false
         })
 );
-
+builder.Services.AddSignalR();
 
 //Firebase JWT middleware
 var firebaseProjectId = builder.Configuration["Firebase:Firebase__ProjectId"];
@@ -142,6 +143,7 @@ app.MapExpenseEndpoints();
 app.MapGoalEndpoints();
 app.MapUserEventsEndpoints();
 app.MapEventEndpoints();
+app.MapHub<EventHub>("/eventHub");
 
 if (app.Environment.IsDevelopment())
 {

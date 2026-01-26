@@ -43,8 +43,7 @@ export const useExpenseStore = create<ExpenseState>((set)=>({
     },
     getExpenses:async()=>{
         const { pageNumber, totalPages, fetchingExpenses } = useExpenseStore.getState();
-        if (totalPages !== null && pageNumber >= totalPages) return;
-        set({fetchingExpenses:true})
+        if (totalPages !== null && pageNumber !== 0 && pageNumber >= totalPages) return;        set({fetchingExpenses:true})
         try {
            const nextPage = pageNumber + 1;
         const res = await axiosInstance.get<ExpenseResponse>(`/api/expenses/page/${nextPage}`);

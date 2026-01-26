@@ -1,12 +1,14 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { Dashboard, SpendingGoal } from "@/interfaces";
+import { Dashboard, SpendingGoal, SpendingsCalendar } from "@/interfaces";
 
 interface UserState{
     dashboard: Dashboard | null;
     gettingDashboard:boolean
     numOfPendingFriendRequests:number| null;
-    getDashboard: () => Promise<void>
+    currentCalendar: SpendingsCalendar|null;
+    getDashboard: () => Promise<void>;
+    getSpendingsCalendar:(year: number, month:number) => Promise<void>; 
     updateGoal:(goalsData: { dailyLimit: number, weeklyLimit: number, monthlyLimit: number }) => Promise<boolean>
 }
 
@@ -14,6 +16,7 @@ interface UserState{
 export const useUserStore = create<UserState>((set)=>({
     dashboard:null,
     gettingDashboard:false,
+    currentCalendar: null,
     numOfPendingFriendRequests:null,
     getDashboard: async() =>{
         set({gettingDashboard:true})
@@ -26,6 +29,15 @@ export const useUserStore = create<UserState>((set)=>({
         }
         finally{
             set({gettingDashboard:false});
+        }
+    },
+    getSpendingsCalendar: async (year, month)=>{
+        try{
+            const res = await axiosInstance.get<SpendingsCalendar>(`/api/users/stats/calendar/${year}/${month}`);
+            set({currentCalendar: res.data})
+        }
+        catch(error){
+            console.error(error);
         }
     },
     updateGoal: async(goalsData)=>{
@@ -42,4 +54,4 @@ export const useUserStore = create<UserState>((set)=>({
         return false;
         }
     }
-}))
+}));

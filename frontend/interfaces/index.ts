@@ -18,3 +18,4 @@ export {default as EventObject} from './Event';
 export {default as EventExpense} from './Dtos/EventExpense';
 export {default as ExpenseResponse} from './Dtos/ExpenseResponse';
 export {default as EventExpenseResponse} from './Dtos/EventExpenseResponse';
+export {default as SpendingsCalendar} from './SpendingsCalendar';

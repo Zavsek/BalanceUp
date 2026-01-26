@@ -19,6 +19,9 @@ namespace Backend.Endpoints
                 return await handler.GetPersonalDashboard(user);
             });
 
+            //GET daily calendar
+            UserGroup.MapGet("/stats/calendar/{year}/{month}", async (int year, int month, UserHandler handler) => { return await handler.getMontlyCalendar(month, year); });
+
             //DELETE delete sender via JWT
             UserGroup.MapDelete("/me", async(UserHandler handler, ClaimsPrincipal user) => {  return await handler.DeletePersonalUser(user); });
             //PUT update user

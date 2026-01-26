@@ -1,8 +1,10 @@
 ﻿using Backend.Data;
+using Backend.Hubs;
 using Backend.Models;
 using Backend.Models.Dto;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Logging;
@@ -14,11 +16,13 @@ namespace Backend.Handlers
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHubContext<EventHub> _hubContext;
 
-        public ExpenseHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public ExpenseHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor, IHubContext<EventHub> hubContext)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _hubContext = hubContext;
         }
         public  async Task<IResult> GetExpensesForUser()
         {
@@ -93,7 +97,7 @@ namespace Backend.Handlers
 
 
 
-        public async Task<IResult> GetExpensesForEvent(Guid eventId)
+        public async Task<IResult> GetExpensesForEvent(Guid eventId, int page = 1)
         {
             try
             {
@@ -128,7 +132,55 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
             }
         }
+        //duplicated for easier implementation
+        public async Task<IResult> GetExpensesForEventPaginated(Guid eventId, Guid? lastId)
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
 
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+
+                
+                var query =  _context.Expenses
+                    .Where(e => e.eventId == eventId);
+                var totalCount = query.Count();
+                if (lastId.HasValue) {
+                    var lastExpense = await _context.Expenses.FirstOrDefaultAsync(e => e.id == lastId);
+                    query = query.Where(e => e.dateTime < lastExpense.dateTime);
+                }
+                var expenses = await query
+                    .OrderByDescending(e => e.dateTime)
+                    .Take(20)
+                    .Select(e => new EventExpensesDto
+                    (
+                        e.id,
+                        e.amount,
+                        e.description,
+                        e.type.ToString(),
+                        e.dateTime,
+                        e.userExpenseShares.Select(s => new ExpenseShareDto
+                        (
+                            s.userId,
+                            s.user.username,
+                            s.shareAmount
+                        )).ToList()
+                    ))
+                    .ToListAsync();
+
+                return Results.Ok(new
+                {
+                    totalCount = totalCount,
+                    totalPages = (int)Math.Ceiling(totalCount / (double)20),
+                    data = expenses
+                });
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.InternalServerError("Error in Expense Controller: " + ex.Message);
+            }
+        }
 
         public  async Task<IResult> CreateExpense( ExpenseDto expense)
         {
@@ -205,8 +257,10 @@ namespace Backend.Handlers
                     }
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-
-                    return Results.Ok(new EventExpensesDto(expense.id, expense.amount, expense.description, payload.type, expense.dateTime, payload.shares));
+                    EventExpensesDto expenseDto = new EventExpensesDto(expense.id, expense.amount, expense.description, payload.type, expense.dateTime, payload.shares);
+                    await _hubContext.Clients.Group(eventId.ToString())
+                        .SendAsync("ReceiveNewExpense", expenseDto);
+                    return Results.Ok(expenseDto);
 
                 }
                 catch (Exception ex)
@@ -269,13 +323,18 @@ namespace Backend.Handlers
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    return Results.Ok(new EventExpensesDto(
+                    var newExpense = new EventExpensesDto(
                         expense.id,
                         expense.amount,
                         expense.description,
                         payload.type,
                         expense.dateTime,
-                        payload.shares));
+                        payload.shares);
+                    await _hubContext.Clients.Group(eventId.ToString())
+                        .SendAsync("ReceiveUpdateExpense", newExpense);
+
+
+                    return Results.Ok(newExpense);
                 }
                 catch (Exception ex)
                 {
@@ -309,7 +368,11 @@ namespace Backend.Handlers
 
                 _context.Expenses.Remove(expense);
                 await _context.SaveChangesAsync();
-
+                if(expense.eventId != null)
+                {
+                    await _hubContext.Clients.Group(expense.eventId.ToString())
+                        .SendAsync("ReceiveDeleteExpense", id);
+                }
                 return Results.NoContent();
             }
             catch (Exception ex)
@@ -342,6 +405,8 @@ namespace Backend.Handlers
                 existingExpense.dateTime = expenseDto.time.ToUniversalTime();
 
                 await _context.SaveChangesAsync();
+
+
                 return Results.NoContent();
             }
             catch (Exception ex)

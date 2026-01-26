@@ -3,5 +3,7 @@ Backend/Backend/Constants/
 Backend/.vs/
 Backend/Backend/bin/
 Backend/Backend/firebase-config.json
+toDoList.txt
+frontend/services/
 
-frontend/serivces/
+frontend/constants/ApiConfig.js

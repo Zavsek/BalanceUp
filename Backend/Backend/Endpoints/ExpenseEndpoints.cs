@@ -17,13 +17,15 @@ namespace Backend.Endpoints
             //Get all expenses for user
             ExpenseGroup.MapGet("/", async (  ExpenseHandler handler) => { return await handler.GetExpensesForUser(); });
             //Get paginated Expenses
-            ExpenseGroup.MapGet("/{page}", async (int page, ExpenseHandler handler) => { return await handler.GetExpensesForUserPaginated(page); });
+            ExpenseGroup.MapGet("/page/{page}", async (int page, ExpenseHandler handler) => { return await handler.GetExpensesForUserPaginated(page); });
 
             //Get all expenses for event
-            ExpenseGroup.MapGet("/${eventId}", async ( Guid eventId,ExpenseHandler handler) => { return await handler.GetExpensesForEvent(eventId); });
+            //ExpenseGroup.MapGet("/${eventId}", async ( Guid eventId,ExpenseHandler handler) => { return await handler.GetExpensesForEvent(eventId); });
+            //Get paginated expenses for event
+            ExpenseGroup.MapGet("/events/{eventId}", async ([FromRoute] Guid eventId, [FromQuery] Guid? lastId, ExpenseHandler handler) => { return await handler.GetExpensesForEventPaginated(eventId, lastId); });
             //Add new expense
             ExpenseGroup.MapPost("/", async (ExpenseDto expense, ExpenseHandler handler) =>
-            {
+            { 
                 return await handler.CreateExpense(expense);
             }); 
             //Delete expense by id

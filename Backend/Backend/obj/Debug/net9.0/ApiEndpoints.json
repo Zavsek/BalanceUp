@@ -267,16 +267,21 @@
   },
   {
     "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_1",
-    "RelativePath": "api/expenses/{page}",
+    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_2",
+    "RelativePath": "api/expenses/events/{eventId}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "page",
-        "Type": "System.Int32",
+        "Name": "eventId",
+        "Type": "System.Guid",
         "IsRequired": true
+      },
+      {
+        "Name": "lastId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -289,15 +294,15 @@
   },
   {
     "ContainingType": "Backend.Endpoints.ExpenseEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_2",
-    "RelativePath": "api/expenses/${eventId}",
+    "Method": "\u003CMapExpenseEndpoints\u003Eb__0_1",
+    "RelativePath": "api/expenses/page/{page}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "eventId",
-        "Type": "System.Guid",
+        "Name": "page",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -442,7 +447,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_2",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_3",
     "RelativePath": "api/users/",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -464,7 +469,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_5",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_6",
     "RelativePath": "api/users/{id}/profile_pic",
     "HttpMethod": "POST",
     "IsController": false,
@@ -507,7 +512,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_3",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_4",
     "RelativePath": "api/users/find-by-id/{id}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -529,7 +534,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_4",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_5",
     "RelativePath": "api/users/find-by-username/{username}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -551,7 +556,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_7",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_8",
     "RelativePath": "api/users/friend-requests",
     "HttpMethod": "GET",
     "IsController": false,
@@ -567,7 +572,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_6",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_7",
     "RelativePath": "api/users/friend-requests/{id}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -589,7 +594,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_10",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_11",
     "RelativePath": "api/users/friend-requests/add/{requestId}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -611,7 +616,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_8",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_9",
     "RelativePath": "api/users/friend-requests/count",
     "HttpMethod": "GET",
     "IsController": false,
@@ -627,7 +632,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_9",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_10",
     "RelativePath": "api/users/friend-requests/reject/{requestId}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -649,7 +654,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_11",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_12",
     "RelativePath": "api/users/friends",
     "HttpMethod": "GET",
     "IsController": false,
@@ -665,7 +670,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_12",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_13",
     "RelativePath": "api/users/friends/{friendshipId}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -703,7 +708,7 @@
   },
   {
     "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMapUserEndpoints\u003Eb__0_1",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_2",
     "RelativePath": "api/users/me",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -728,6 +733,33 @@
       {
         "Name": "request",
         "Type": "Backend.Models.Dto.AuthRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Backend.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_1",
+    "RelativePath": "api/users/stats/calendar/{year}/{month}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

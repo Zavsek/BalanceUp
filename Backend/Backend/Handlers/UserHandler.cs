@@ -80,6 +80,28 @@ namespace Backend.Handlers
             }
         }
 
+        public async Task<IResult> getMontlyCalendar(int month, int year)
+        {
+            var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+            if (userId == null)
+                return TypedResults.Unauthorized();
+
+            var startOfMonth = new DateTime(year, month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endTime = startOfMonth.AddMonths(1);
+
+            var expenses = await _context.Expenses
+                .Where(e => e.dateTime >= startOfMonth && e.dateTime < endTime && e.userId == userId)
+                .ToListAsync();
+            var totalMonthly = expenses.Sum(e => e.amount);
+
+            var dailyTotals = expenses
+                .GroupBy(e=> e.dateTime.ToString("yyyy-MM-dd"))
+                .ToDictionary(d=> d.Key, d=> d.Sum(e=>e.amount));
+
+            return Results.Ok(new CalendarDto(totalMonthly, dailyTotals));
+            
+        }
+
         internal async Task<IResult> DeletePersonalUser(ClaimsPrincipal user)
         {
             try
@@ -98,6 +120,8 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
         }
+
+
         public  async Task<IResult> UpdateUserInfo(UserDto user)
         {
             try
@@ -122,6 +146,8 @@ namespace Backend.Handlers
                 return TypedResults.InternalServerError("Error in User Controller " + ex.Message);
             }
         }
+        
+        
         public  async Task<IResult> GetUserById(Guid id)
         {
             try
@@ -145,6 +171,7 @@ namespace Backend.Handlers
             }
         }
 
+        
         public  async Task<IResult> GetUserByUsername(string username)
         {
             try
