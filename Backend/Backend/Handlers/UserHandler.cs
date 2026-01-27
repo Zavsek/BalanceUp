@@ -1,6 +1,7 @@
 ﻿using Backend.Data;
 using Backend.Models;
 using Backend.Models.Dto;
+using Backend.Models.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -22,37 +23,40 @@ namespace Backend.Handlers
 
         }
         //User tasks
-        internal async Task<IResult> GetPersonalDashboard(ClaimsPrincipal user)
+
+        //Personal Dashboard - the data that comes up upon login/load
+        internal async Task<IResult> GetPersonalDashboard()
         {
             try
             {
-                var firebaseUid = user.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+                var userId = _httpContextAccessor.HttpContext?.Items["InternalUserId"] as Guid?;
+                if (userId == null)
+                    return TypedResults.Unauthorized();
+                var internalUser = await _context.Users.Include(u=>u.spendingGoal).FirstOrDefaultAsync(u=> u.id == userId);
+                CurrentTimeFrame currentTimeFrame = getCurrentTimeFrame();
+                
 
-                var internalUser = await _context.Users.Include(u => u.spendingGoal).FirstOrDefaultAsync(u => u.firebaseUid == firebaseUid);
-                if (internalUser == null)
-                    return TypedResults.NotFound("User not found");
-                var now = DateTime.UtcNow;
-                var today = now.Date;
-                var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
-                var tomorrow = today.AddDays(1);
-                var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+                var userEventsExpenses = await _context.UserExpenseShares.Where(ues => ues.userId == userId)
+                        .Include(e => e.expense)
+                        .ToListAsync();
 
+                EventExpenseSum sums = calculateEventSums(userId, userEventsExpenses);
                 var monthExpenses = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
+                    .Where(e => e.userId == userId && e.dateTime >= currentTimeFrame.firstOfMovingMonth && e.dateTime < currentTimeFrame.firstOfMovingMonth.AddMonths(1))
                     .ToListAsync();
 
                 var dailySpent = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= today && e.dateTime < tomorrow)
+                    .Where(e => e.userId == userId && e.dateTime >= currentTimeFrame.today && e.dateTime < currentTimeFrame.tomorrow)
                     .SumAsync(e => e.amount);
                 var weeklySpent = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= sevenDaysAgo)
+                    .Where(e => e.userId == userId && e.dateTime >= currentTimeFrame.sevenDaysAgo)
                     .SumAsync(e => e.amount);
                 var monthlySpent = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id && e.dateTime >= firstOfMovingMonth && e.dateTime < firstOfMovingMonth.AddMonths(1))
+                    .Where(e => e.userId == userId && e.dateTime >= currentTimeFrame.firstOfMovingMonth && e.dateTime < currentTimeFrame.firstOfMovingMonth.AddMonths(1))
                     .SumAsync(e => e.amount);
 
                 var recentExpenses = await _context.Expenses
-                    .Where(e => e.userId == internalUser.id)
+                    .Where(e => e.userId == userId)
                     .OrderByDescending(e => e.dateTime)
                     .Take(5)
                     .ToListAsync();
@@ -72,12 +76,22 @@ namespace Backend.Handlers
                 {
                     recentExpensesDto = new List<RecentExpensesDto>();
                 }
-                return Results.Ok(new DashboardDto(dailySpent, internalUser.spendingGoal.dailyLimit, weeklySpent, internalUser.spendingGoal.weeklyLimit, monthlySpent, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
+                return Results.Ok(new DashboardDto(dailySpent+ sums.dailySum, internalUser.spendingGoal.dailyLimit, weeklySpent + sums.weeklySum, internalUser.spendingGoal.weeklyLimit, monthlySpent + sums.monthlySum, internalUser.spendingGoal.monthlyLimit, recentExpensesDto));
             }
             catch (Exception ex)
             {
                 return TypedResults.InternalServerError($"Error in User Controller {ex.Message}");
             }
+        }
+
+        private CurrentTimeFrame getCurrentTimeFrame()
+        {
+            var now = DateTime.UtcNow;
+            var today = now.Date;
+            var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
+            var tomorrow = today.AddDays(1);
+            var firstOfMovingMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            return new CurrentTimeFrame( today, sevenDaysAgo, tomorrow, firstOfMovingMonth);
         }
 
         public async Task<IResult> getMontlyCalendar(int month, int year)
@@ -221,7 +235,7 @@ namespace Backend.Handlers
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Napaka pri brisanju stare slike: {ex.Message}");
+                        Console.WriteLine($"An error occured while deleting old picture: {ex.Message}");
                     }
                 }
 
@@ -245,6 +259,22 @@ namespace Backend.Handlers
             {
                 return TypedResults.InternalServerError("Error in User Controller " + ex.Message);
             }
+        }
+
+
+        private EventExpenseSum calculateEventSums(Guid? userId, List<UserExpenseShare> userExpenseShare)
+        {
+            if (userId == null || userExpenseShare == null) return new EventExpenseSum(0,0,0);
+
+            CurrentTimeFrame currentTimeFrame = getCurrentTimeFrame();
+
+            var dailySum = userExpenseShare.Where(ues=> ues.expense.dateTime>= currentTimeFrame.today)
+                .Sum(ues => ues.shareAmount * ues.expense.amount / 100);
+            var weeklySum = userExpenseShare.Where(ues => ues.expense.dateTime >= currentTimeFrame.sevenDaysAgo)
+                .Sum(ues => ues.shareAmount * ues.expense.amount/100);
+            var montlySums = userExpenseShare.Where(ues => ues.expense.dateTime >= currentTimeFrame.firstOfMovingMonth)
+                .Sum(ues => ues.shareAmount * ues.expense.amount/100);
+            return new EventExpenseSum(dailySum, weeklySum, montlySums);
         }
 
         //-------------------------------------------------------

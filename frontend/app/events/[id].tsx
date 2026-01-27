@@ -269,7 +269,7 @@ export default function EventDetailScreen() {
                     {expense.shares && expense.shares.length > 0 && (
                         <View className="mt-4 pt-4 border-t border-white/5 flex-row flex-wrap gap-2">
                         <Text className="text-gray-500 text-[10px] font-bold uppercase py-1">Split:</Text>
-                        {expense.shares.map((share) => (
+                        {expense.shares.filter((share)=> share.shareAmount >0).map((share) => (
                             <View key={share.userId} className="bg-white/5 px-2 py-1 rounded-lg border border-white/5">
                             <Text className="text-[10px] text-gray-400">
                                 <Text className="font-bold text-gray-300">{share.username}:</Text> {share.shareAmount}%

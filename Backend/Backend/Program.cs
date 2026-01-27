@@ -144,7 +144,7 @@ app.MapGoalEndpoints();
 app.MapUserEventsEndpoints();
 app.MapEventEndpoints();
 app.MapHub<EventHub>("/eventHub");
-
+app.UseDeveloperExceptionPage();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

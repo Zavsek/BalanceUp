@@ -13,16 +13,17 @@ namespace Backend.Endpoints
                 .RequireRateLimiting("user_limit");
 
             //GET gets user dashboard
-            // returns user daily + montly spent + limit and lst 5 tranactions
-            UserGroup.MapGet("/dashboard", async (UserHandler handler, ClaimsPrincipal user) =>
+            // returns user daily + montly spent + limit and lst 5 tranactions - DashboardDto
+            UserGroup.MapGet("/dashboard", async (UserHandler handler) =>
             {
-                return await handler.GetPersonalDashboard(user);
+                return await handler.GetPersonalDashboard();
             });
 
             //GET daily calendar
+            //returns CalendarDto - monthly spending + HashMap (key: Days of the month, Value: sum for that day)
             UserGroup.MapGet("/stats/calendar/{year}/{month}", async (int year, int month, UserHandler handler) => { return await handler.getMontlyCalendar(month, year); });
 
-            //DELETE delete sender via JWT
+            //DELETE delete your account
             UserGroup.MapDelete("/me", async(UserHandler handler, ClaimsPrincipal user) => {  return await handler.DeletePersonalUser(user); });
             //PUT update user
             UserGroup.MapPut("/", async(UserDto user, UserHandler handler) =>
@@ -30,11 +31,13 @@ namespace Backend.Endpoints
                 return await handler.UpdateUserInfo(user);
             });
             //GET user by id
+            //returns UserCardDto
             UserGroup.MapGet("/find-by-id/{id}", async ( Guid id,  UserHandler handler) =>
             {
                 return await handler.GetUserById(id);
             });
             //GET user by username
+            //returns UserCardDto
             UserGroup.MapGet("/find-by-username/{username}", async ( string username,  UserHandler handler) =>
             {
                 return await handler.GetUserByUsername(username);
@@ -43,10 +46,13 @@ namespace Backend.Endpoints
             UserGroup.MapPost("/{id}/profile_pic", async ( Guid id, IFormFile file,  UserHandler handler) =>
             {
                 return await handler.UploadProfilePic(id, file);
-            });
+            }).DisableAntiforgery();
 
             //------------------------------------------
             // Friend Requests Endpoints
+
+
+
             //PUT send friend request
             UserGroup.MapPost("/friend-requests/{id}", async (Guid id,  UserHandler handler) => { return await handler.SendFriendRequest(id); });
             //GET friend requests for user
@@ -63,7 +69,10 @@ namespace Backend.Endpoints
 
             //--------------------------------------------
             //Friends Endpoints
+            
+
             //GET friends for user
+            //returns FriendsDto
             UserGroup.MapGet("/friends", async (UserHandler handler) => { return await handler.GetFriends(); });
             //DELETE remove friend
             UserGroup.MapDelete("friends/{friendshipId}", async ( Guid friendshipId,  UserHandler handler) =>

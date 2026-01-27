@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { Dashboard, SpendingGoal, SpendingsCalendar } from "@/interfaces";
+import { useAuthStore } from "./useAuthStore";
 
 interface UserState{
     dashboard: Dashboard | null;
@@ -9,7 +10,8 @@ interface UserState{
     currentCalendar: SpendingsCalendar|null;
     getDashboard: () => Promise<void>;
     getSpendingsCalendar:(year: number, month:number) => Promise<void>; 
-    updateGoal:(goalsData: { dailyLimit: number, weeklyLimit: number, monthlyLimit: number }) => Promise<boolean>
+    updateGoal:(goalsData: { dailyLimit: number, weeklyLimit: number, monthlyLimit: number }) => Promise<boolean>;
+    uploadProfilePicture:(imageUri: string) => Promise<string|null>
 }
 
 
@@ -53,5 +55,49 @@ export const useUserStore = create<UserState>((set)=>({
             console.error("an error occured while updating goal:", error);
         return false;
         }
+    },
+    uploadProfilePicture: async (imageUri: string) => {
+  try {
+    const userInstance = useAuthStore.getState().userInstance;
+    
+    if (!userInstance || !userInstance.id) {
+      console.error("User instance not found.");
+      return null;
     }
+
+    const formData = new FormData();
+    const uriParts = imageUri.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+    const fileName = `${userInstance.id}-${Date.now()}.${fileType}`;
+
+    // @ts-ignore
+    formData.append('file', {
+      uri: imageUri,
+      name: fileName,
+      type: `image/${fileType === 'jpg' ? 'jpeg' : fileType}`,
+    });
+
+    const res = await axiosInstance.post(
+      `/api/users/${userInstance.id}/profile_pic`, 
+      formData, 
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+
+    if (res.status === 200) {
+      const newUrl = res.data.profilePictureUrl;
+
+      useAuthStore.setState({
+        userInstance: { ...userInstance, profilePictureUrl: newUrl }
+      });
+
+      return newUrl;
+    }
+    return null;
+  } catch (error) {
+    console.error("an error occured while uploading:", error);
+    return null;
+  }
+},
 }));
